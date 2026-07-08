@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}— Добавить участок{% endblock %}
+{% block body %}
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/plots" style="color:#94a3b8;text-decoration:none">←</a>
+    <div class="header-title">Добавить участок</div>
+  </div>
+  <div style="font-size:0.85rem;color:#64748b">Шаг {{ step }}/3</div>
+</div>
+<div class="content">
+  <!-- Прогресс -->
+  <div style="display:flex;gap:8px;margin-bottom:24px">
+    {% for i in [1,2,3] %}
+    <div style="flex:1;height:4px;border-radius:2px;background:{% if i <= step %}#4ade80{% else %}#2d3748{% endif %}"></div>
+    {% endfor %}
+  </div>
+
+  {% if step == 1 %}
+  <div class="section-title">📍 Данные участка</div>
+  <form method="POST" id="step1form">
+    <input type="hidden" name="step" value="2">
+    <div class="input-group">
+      <label>Название участка</label>
+      <input type="text" name="name" placeholder="Например: Сад Жетысу" required>
+    </div>
+    <div class="input-group">
+      <label>Площадь (га)</label>
+      <input type="number" name="area_ha" placeholder="5.0" step="0.1" min="0.1" required>
+    </div>
+    <div class="input-group">
+      <label>Тип сада</label>
+      <select name="garden_type">
+        <option value="extensive">Экстенсивный (10–20 т/га)</option>
+        <option value="semi_intensive">Полуинтенсивный (25–40 т/га)</option>
+        <option value="intensive" selected>Интенсивный (40–70 т/га)</option>
+        <option value="super_intensive">Суперинтенсивный (80–100 т/га)</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label>GPS-метка (нажмите на карте)</label>
+      <div id="map" style="width:100%;height:200px;border-radius:10px;background:#1e2433;border:1.5px solid #2d3748;margin-bottom:8px;overflow:hidden"></div>
+      <input type="hidden" name="lat" id="lat" value="43.2551">
+      <input type="hidden" name="lng" id="lng" value="76.9126">
+      <input type="text" name="address" id="address" placeholder="Адрес определится автоматически">
+    </div>
+    <button type="submit" class="btn btn-primary btn-full">Далее →</button>
+  </form>
+
+  {% elif step == 2 %}
+  <div class="section-title">🍎 Сорта</div>
+  <form method="POST" id="step2form">
+    <input type="hidden" name="step" value="3">
+    <input type="hidden" name="name" value="{{ form_data.name }}">
+    <input type="hidden" name="area_ha" value="{{ form_data.area_ha }}">
+    <input type="hidden" name="garden_type" value="{{ form_data.garden_type }}">
+    <input type="hidden" name="lat" value="{{ form_data.lat }}">
+    <input type="hidden" name="lng" value="{{ form_data.lng }}">
+    <input type="hidden" name="address" value="{{ form_data.address }}">
+    <input type="hidden" name="varieties_json" id="varieties_json" value="[]">
+    <div id="varieties_list"></div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title" style="margin-bottom:12px">Добавить сорт</div>
+      <div class="input-group">
+        <label>Сорт</label>
+        <select id="v_name">
+          <option>Гала</option><option>Голден</option>
+          <option>Апорт</option><option>Симиренко</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Площадь (га)</label>
+        <input type="number" id="v_area" placeholder="2.0" step="0.1" min="0.1">
+      </div>
+      <div class="input-group">
+        <label>Ожидаемый урожай (т)</label>
+        <input type="number" id="v_yield" placeholder="100" min="1">
+      </div>
+      <button type="button" class="btn btn-outline btn-full" onclick="addVariety()">➕ Добавить</button>
+    </div>
+    <button type="submit" class="btn btn-primary btn-full">Далее →</button>
+  </form>
+
+  {% elif step == 3 %}
+  <div class="section-title">✅ Подтверждение</div>
+  <div class="card">
+    <div class="card-title">{{ form_data.name }}</div>
+    <div style="color:#64748b;font-size:0.9rem">{{ form_data.area_ha }} га · {{ form_data.garden_type }}</div>
+    {% if form_data.address %}<div style="font-size:0.85rem;color:#475569;margin-top:6px">📍 {{ form_data.address }}</div>{% endif %}
+  </div>
+  <div class="info-box">🏆 За добавление участка вам будет начислено <strong>+100 бонусов</strong>!</div>
+  <form method="POST">
+    <input type="hidden" name="step" value="3">
+    {% for key, val in form_data.items() %}
+    <input type="hidden" name="{{ key }}" value="{{ val }}">
+    {% endfor %}
+    <button type="submit" class="btn btn-primary btn-full">🌾 Сохранить участок</button>
+  </form>
+  {% endif %}
+</div>
+{% block scripts %}
+<script src="https://api-maps.yandex.ru/2.1/?apikey={{ yandex_key }}&lang=ru_RU" type="text/javascript"></script>
+<script>
+let varieties = [];
+function addVariety() {
+  const name = document.getElementById('v_name').value;
+  const area = document.getElementById('v_area').value;
+  const yld = document.getElementById('v_yield').value;
+  if (!area) return alert('Укажите площадь');
+  varieties.push({name, area_ha: parseFloat(area), expected_yield: parseFloat(yld)||0});
+  document.getElementById('varieties_json').value = JSON.stringify(varieties);
+  const list = document.getElementById('varieties_list');
+  list.innerHTML = varieties.map(v =>
+    `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between">
+      <span>🍎 ${v.name}</span><span style="color:#64748b">${v.area_ha}га · ${v.expected_yield}т</span>
+    </div>`
+  ).join('');
+}
+// Yandex Maps
+if (document.getElementById('map')) {
+  ymaps.ready(() => {
+    const map = new ymaps.Map('map', {center:[43.2551,76.9126], zoom:10});
+    let placemark = new ymaps.Placemark([43.2551,76.9126], {}, {preset:'islands#greenDotIcon'});
+    map.geoObjects.add(placemark);
+    map.events.add('click', e => {
+      const coords = e.get('coords');
+      placemark.geometry.setCoordinates(coords);
+      document.getElementById('lat').value = coords[0].toFixed(6);
+      document.getElementById('lng').value = coords[1].toFixed(6);
+      ymaps.geocode(coords).then(res => {
+        const addr = res.geoObjects.get(0);
+        if (addr) document.getElementById('address').value = addr.getAddressLine();
+      });
+    });
+  });
+}
+</script>
+{% endblock %}
+{% endblock %}
