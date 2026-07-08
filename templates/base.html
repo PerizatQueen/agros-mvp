@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AgrOS {% block title %}{% endblock %}</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; max-width: 480px; margin: 0 auto; min-height: 100vh; position: relative; }
+.header { background: #111827; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #1e2433; }
+.header-title { font-size: 1.1rem; font-weight: 700; color: #4ade80; }
+.header-icons { display: flex; gap: 16px; align-items: center; }
+.header-icons a { color: #94a3b8; text-decoration: none; font-size: 1.2rem; }
+.header-user { font-size: 0.8rem; color: #64748b; }
+.content { padding: 20px; padding-bottom: 80px; }
+.bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #111827; border-top: 1px solid #1e2433; display: flex; z-index: 100; }
+.nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 4px; text-decoration: none; color: #64748b; font-size: 0.7rem; gap: 4px; transition: color 0.2s; }
+.nav-item.active, .nav-item:hover { color: #4ade80; }
+.nav-item .icon { font-size: 1.3rem; }
+.card { background: #1e2433; border-radius: 12px; padding: 16px; margin-bottom: 12px; border: 1px solid #2d3748; }
+.card-title { font-weight: 600; color: #f1f5f9; margin-bottom: 8px; }
+.badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+.badge-green { background: rgba(74,222,128,0.15); color: #4ade80; }
+.badge-yellow { background: rgba(251,191,36,0.15); color: #fcd34d; }
+.badge-blue { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.badge-red { background: rgba(248,113,113,0.15); color: #f87171; }
+.badge-gray { background: rgba(100,116,139,0.15); color: #94a3b8; }
+.btn { display: inline-block; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; text-decoration: none; text-align: center; transition: opacity 0.2s; }
+.btn-primary { background: #4ade80; color: #0f1117; }
+.btn-primary:hover { opacity: 0.85; }
+.btn-outline { background: transparent; color: #4ade80; border: 1.5px solid #4ade80; }
+.btn-full { width: 100%; display: block; }
+.section-title { font-size: 1rem; font-weight: 700; color: #f1f5f9; margin: 20px 0 12px; }
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px; }
+.input-group input, .input-group select, .input-group textarea { width: 100%; background: #1e2433; border: 1.5px solid #2d3748; border-radius: 10px; padding: 12px 14px; color: #e2e8f0; font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+.input-group input:focus, .input-group select:focus { border-color: #4ade80; }
+.info-box { background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.2); border-radius: 8px; padding: 12px 16px; color: #86efac; font-size: 0.88rem; margin-bottom: 16px; }
+.warn-box { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.2); border-radius: 8px; padding: 12px 16px; color: #fcd34d; font-size: 0.88rem; margin-bottom: 16px; }
+/* COMP-001 — Бонусный оверлей */
+.bonus-overlay { display: none; position: fixed; inset: 0; background: #15803d; z-index: 999; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.bonus-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
+.bonus-amount { font-size: 5rem; font-weight: 900; color: #fff; line-height: 1; }
+.bonus-text { font-size: 1.3rem; color: #bbf7d0; margin-top: 12px; }
+.bonus-sub { font-size: 0.9rem; color: #86efac; margin-top: 8px; }
+.bonus-close { margin-top: 32px; background: #fff; color: #15803d; border: none; padding: 12px 32px; border-radius: 10px; font-weight: 700; font-size: 1rem; cursor: pointer; }
+@keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+{% block extra_styles %}{% endblock %}
+</style>
+</head>
+<body>
+{% block body %}{% endblock %}
+
+<!-- COMP-001 -->
+<div class="bonus-overlay" id="bonusOverlay">
+  <div style="font-size:3rem;">🌾</div>
+  <div class="bonus-amount" id="bonusAmount">+0</div>
+  <div class="bonus-text">Бонусы начислены!</div>
+  <div class="bonus-sub">1 бонус = 1 ₸</div>
+  <button class="bonus-close" onclick="closeBonusOverlay()">Отлично!</button>
+</div>
+
+<script>
+function showBonus(amount) {
+  document.getElementById('bonusAmount').textContent = '+' + amount;
+  document.getElementById('bonusOverlay').classList.add('show');
+  setTimeout(() => closeBonusOverlay(), 3000);
+}
+function closeBonusOverlay() {
+  document.getElementById('bonusOverlay').classList.remove('show');
+}
+// Авто-показ бонуса из URL
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('bonus')) { showBonus(urlParams.get('bonus')); }
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
