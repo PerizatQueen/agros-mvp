@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}— План ухода{% endblock %}
+{% block body %}
+<div class="header">
+  <div class="header-title">✅ План ухода</div>
+  <div class="header-icons"><a href="/chat">💬</a></div>
+</div>
+<div class="content">
+  <!-- Фильтр по месяцам -->
+  <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px">
+    <a href="/tasks" class="badge {% if not current_month %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap">Все</a>
+    {% for m in [('7','Июл'),('8','Авг'),('9','Сен'),('10','Окт'),('11','Ноя'),('12','Дек')] %}
+    <a href="/tasks?month={{ m[0] }}" class="badge {% if current_month == m[0]|int %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap">{{ m[1] }}</a>
+    {% endfor %}
+  </div>
+
+  {% if not tasks %}
+  <div class="card" style="text-align:center;padding:40px">
+    <div style="font-size:3rem">🌱</div>
+    <div style="margin-top:12px;color:#64748b">Задач нет</div>
+    <div style="font-size:0.85rem;color:#475569;margin-top:6px">Задачи появятся после подписания договора</div>
+  </div>
+  {% else %}
+  {% for t in tasks %}
+  <div class="card" id="task-{{ t.id }}"
+    {% if t.status == 'overdue' %}style="border-color:#f87171"
+    {% elif t.status == 'soon' %}style="border-color:#fcd34d"
+    {% elif t.status == 'approved' %}style="opacity:0.6"{% endif %}>
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
+      <div class="card-title">{{ t.title }}</div>
+      <span class="badge
+        {% if t.status == 'upcoming' %}badge-blue
+        {% elif t.status == 'soon' %}badge-yellow
+        {% elif t.status == 'in_progress' %}badge-blue
+        {% elif t.status == 'approved' %}badge-green
+        {% elif t.status == 'overdue' %}badge-red
+        {% else %}badge-gray{% endif %}">
+        {% if t.status == 'upcoming' %}Предстоит
+        {% elif t.status == 'soon' %}Скоро срок
+        {% elif t.status == 'in_progress' %}В работе
+        {% elif t.status == 'approved' %}Одобрена
+        {% elif t.status == 'overdue' %}Просрочена
+        {% else %}{{ t.status }}{% endif %}
+      </span>
+    </div>
+    <div style="font-size:0.82rem;color:#64748b;margin-bottom:8px">{{ t.plot_name }}</div>
+    {% if t.description %}
+    <div style="font-size:0.85rem;color:#94a3b8;margin-bottom:10px">{{ t.description }}</div>
+    {% endif %}
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:0.82rem;color:#4ade80">🏆 +{{ t.bonus_amount }} бонусов</div>
+      {% if t.status not in ['approved'] %}
+      <button onclick="completeTask('{{ t.id }}', {{ t.bonus_amount }})" class="btn btn-primary" style="padding:6px 14px;font-size:0.8rem">Выполнить</button>
+      {% else %}
+      <span style="color:#4ade80;font-size:0.85rem">✅ Готово</span>
+      {% endif %}
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
+  <a href="/tasks" class="nav-item active"><span class="icon">✅</span>План</a>
+</nav>
+{% block scripts %}
+<script>
+function completeTask(taskId, bonus) {
+  fetch(`/tasks/${taskId}/complete`, {method:'POST', headers:{'Content-Type':'application/json'}})
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      const card = document.getElementById('task-' + taskId);
+      if (card) card.style.opacity = '0.6';
+      showBonus(data.bonus);
+    }
+  });
+}
+</script>
+{% endblock %}
+{% endblock %}
