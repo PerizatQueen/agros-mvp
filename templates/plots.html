@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}— Участки{% endblock %}
+{% block body %}
+<div class="header">
+  <div class="header-title">🌱 Мои участки</div>
+  <div class="header-icons"><a href="/chat">💬</a></div>
+</div>
+<div class="content">
+  <a href="/plots/create" class="btn btn-primary btn-full" style="margin-bottom:20px">➕ Добавить участок</a>
+  {% if not plots %}
+  <div class="card" style="text-align:center;padding:40px">
+    <div style="font-size:3rem">🌱</div>
+    <div style="margin-top:12px;color:#64748b">У вас пока нет участков</div>
+    <div style="font-size:0.85rem;color:#475569;margin-top:6px">Добавьте свой сад и получите +100 бонусов</div>
+  </div>
+  {% else %}
+  {% for plot in plots %}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
+      <div>
+        <div class="card-title">🍎 {{ plot.name }}</div>
+        <div style="font-size:0.85rem;color:#64748b">{{ plot.area_ha }} га ·
+          {% if plot.garden_type == 'intensive' %}Интенсивный
+          {% elif plot.garden_type == 'semi_intensive' %}Полуинтенсивный
+          {% elif plot.garden_type == 'extensive' %}Экстенсивный
+          {% else %}Суперинтенсивный{% endif %}
+        </div>
+      </div>
+    </div>
+    {% if plot.varieties %}
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      {% for v in plot.varieties %}
+      <span style="background:#1a2744;border:1px solid #2d3748;border-radius:8px;padding:4px 10px;font-size:0.78rem;color:#94a3b8">
+        {{ v.variety_name }} · {{ v.area_ha }}га
+      </span>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% if plot.address %}
+    <div style="font-size:0.78rem;color:#475569;margin-top:8px">📍 {{ plot.address }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
+  <a href="/plots" class="nav-item active"><span class="icon">🌱</span>Участки</a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+</nav>
+{% endblock %}
