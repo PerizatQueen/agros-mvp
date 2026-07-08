@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}— Лента спроса{% endblock %}
+{% block body %}
+<div class="header">
+  <div class="header-title">💰 Лента спроса</div>
+  <div class="header-icons"><a href="/chat">💬</a></div>
+</div>
+<div class="content">
+  <div class="info-box">📅 Цены сезона 2026 · Алматинская область</div>
+
+  {% if user_varieties %}
+  <div class="section-title">🌱 Вы выращиваете</div>
+  {% for p in prices %}
+  {% if p.on_my_plot %}
+  <div class="card" style="border-color:#4ade80;margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="card-title" style="font-size:1.1rem">🍎 {{ p.variety_name }}</div>
+          <span class="badge badge-green">На вашем участке</span>
+        </div>
+        <div style="font-size:0.82rem;color:#64748b;margin-top:4px">Сезон сбора: июль–сентябрьь</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:1.6rem;font-weight:900;color:#4ade80">{{ p.price_commercial }} ₸</div>
+        <div style="font-size:0.75rem;color:#64748b">за кг (товарные)</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:#0f1117;border-radius:8px;margin-bottom:10px">
+      <div style="font-size:0.85rem;color:#94a3b8">🍂 Падалица</div>
+      <div style="font-weight:700;color:#fcd34d">{{ p.price_fallen }} ₸/кг</div>
+    </div>
+    <a href="/contracts/create" class="btn btn-primary btn-full" style="font-size:0.85rem">📄 Создать договор</a>
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endif %}
+
+  <div class="section-title">📊 Все сорта</div>
+  {% for p in prices %}
+  <div class="card" style="margin-bottom:12px{% if not p.on_my_plot %}{% endif %}">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
+      <div>
+        <div class="card-title">🍎 {{ p.variety_name }}</div>
+        {% if p.on_my_plot %}<span class="badge badge-green" style="margin-top:4px">На вашем участке</span>{% endif %}
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:1.4rem;font-weight:800;color:#4ade80">{{ p.price_commercial }} ₸</div>
+        <div style="font-size:0.75rem;color:#64748b">за кг</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:0.85rem;color:#64748b">🍂 Падалица:</div>
+      <div style="font-weight:600;color:#fcd34d">{{ p.price_fallen }} ₸/кг</div>
+    </div>
+    <a href="/contracts/create" class="btn btn-outline btn-full" style="font-size:0.82rem">Создать договор</a>
+  </div>
+  {% endfor %}
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+</nav>
+{% endblock %}
