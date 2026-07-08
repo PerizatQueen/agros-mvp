@@ -1,24 +1,38 @@
 {% extends 'base.html' %}
-{% block title %}— План ухода{% endblock %}
+{% block title %}- {% if lang == 'kz' %}Жоспар{% else %}План ухода{% endif %}{% endblock %}
 {% block body %}
 <div class="header">
-  <div class="header-title">✅ План ухода</div>
-  <div class="header-icons"><a href="/chat">💬</a></div>
+  <div class="header-title">✅ {% if lang == 'kz' %}Күтім жоспары{% else %}План ухода{% endif %}</div>
+  <div class="header-icons">
+    <div class="lang-switcher">
+      <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
+      <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+    </div>
+    <a href="/chat">💬</a>
+    <a href="/logout" style="font-size:0.78rem;color:#f87171;font-weight:600;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 9px;border-radius:6px">{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}</a>
+  </div>
 </div>
 <div class="content">
+
   <!-- Фильтр по месяцам -->
-  <div style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px">
-    <a href="/tasks" class="badge {% if not current_month %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap">Все</a>
-    {% for m in [('7','Июл'),('8','Авг'),('9','Сен'),('10','Окт'),('11','Ноя'),('12','Дек')] %}
-    <a href="/tasks?month={{ m[0] }}" class="badge {% if current_month == m[0]|int %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap">{{ m[1] }}</a>
+  <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:16px;-webkit-overflow-scrolling:touch">
+    <a href="/tasks" class="badge {% if not current_month %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap;font-size:0.78rem">
+      {% if lang == 'kz' %}Барлығы{% else %}Все{% endif %}
+    </a>
+    {% if lang == 'kz' %}
+      {% for m in [('7','Шіл'),('8','Там'),('9','Қыр'),('10','Қаз'),('11','Қар'),('12','Жел')] %}
+    {% else %}
+      {% for m in [('7','Июл'),('8','Авг'),('9','Сен'),('10','Окт'),('11','Ноя'),('12','Дек')] %}
+    {% endif %}
+    <a href="/tasks?month={{ m[0] }}" class="badge {% if current_month == m[0]|int %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap;font-size:0.78rem">{{ m[1] }}</a>
     {% endfor %}
   </div>
 
   {% if not tasks %}
   <div class="card" style="text-align:center;padding:40px">
     <div style="font-size:3rem">🌱</div>
-    <div style="margin-top:12px;color:#64748b">Задач нет</div>
-    <div style="font-size:0.85rem;color:#475569;margin-top:6px">Задачи появятся после подписания договора</div>
+    <div style="margin-top:12px;color:#64748b">{% if lang == 'kz' %}Тапсырмалар жоқ{% else %}Задач нет{% endif %}</div>
+    <div style="font-size:0.82rem;color:#475569;margin-top:6px">{% if lang == 'kz' %}Тапсырмалар шарт қол қойылғаннан кейін пайда болады{% else %}Задачи появятся после подписания договора{% endif %}</div>
   </div>
   {% else %}
   {% for t in tasks %}
@@ -26,8 +40,9 @@
     {% if t.status == 'overdue' %}style="border-color:#f87171"
     {% elif t.status == 'soon' %}style="border-color:#fcd34d"
     {% elif t.status == 'approved' %}style="opacity:0.6"{% endif %}>
+
     <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
-      <div class="card-title">{{ t.title }}</div>
+      <div class="card-title" style="flex:1;padding-right:8px">{{ t.title }}</div>
       <span class="badge
         {% if t.status == 'upcoming' %}badge-blue
         {% elif t.status == 'soon' %}badge-yellow
@@ -35,36 +50,47 @@
         {% elif t.status == 'approved' %}badge-green
         {% elif t.status == 'overdue' %}badge-red
         {% else %}badge-gray{% endif %}">
-        {% if t.status == 'upcoming' %}Предстоит
-        {% elif t.status == 'soon' %}Скоро срок
-        {% elif t.status == 'in_progress' %}В работе
-        {% elif t.status == 'approved' %}Одобрена
-        {% elif t.status == 'overdue' %}Просрочена
+        {% if t.status == 'upcoming' %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}
+        {% elif t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро срок{% endif %}
+        {% elif t.status == 'in_progress' %}{% if lang == 'kz' %}Орындалуда{% else %}В работе{% endif %}
+        {% elif t.status == 'approved' %}{% if lang == 'kz' %}Бекітілді{% else %}Одобрена{% endif %}
+        {% elif t.status == 'overdue' %}{% if lang == 'kz' %}Мерзімі өтті{% else %}Просрочена{% endif %}
         {% else %}{{ t.status }}{% endif %}
       </span>
     </div>
-    <div style="font-size:0.82rem;color:#64748b;margin-bottom:8px">{{ t.plot_name }}</div>
+
+    <div style="font-size:0.8rem;color:#64748b;margin-bottom:8px">🌱 {{ t.plot_name }}</div>
+
     {% if t.description %}
-    <div style="font-size:0.85rem;color:#94a3b8;margin-bottom:10px">{{ t.description }}</div>
+    <div style="font-size:0.83rem;color:#94a3b8;margin-bottom:10px;line-height:1.5">{{ t.description }}</div>
     {% endif %}
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:0.82rem;color:#4ade80">🏆 +{{ t.bonus_amount }} бонусов</div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid #2d3748">
+      <div style="font-size:0.82rem;color:#4ade80;font-weight:600">🏆 +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
       {% if t.status not in ['approved'] %}
-      <button onclick="completeTask('{{ t.id }}', {{ t.bonus_amount }})" class="btn btn-primary" style="padding:6px 14px;font-size:0.8rem">Выполнить</button>
+      <button onclick="completeTask('{{ t.id }}', {{ t.bonus_amount }})" class="btn btn-primary" style="padding:7px 16px;font-size:0.8rem">
+        {% if lang == 'kz' %}✓ Орындалды{% else %}✓ Выполнить{% endif %}
+      </button>
       {% else %}
-      <span style="color:#4ade80;font-size:0.85rem">✅ Готово</span>
+      <span style="color:#4ade80;font-size:0.85rem">✅ {% if lang == 'kz' %}Орындалды{% else %}Готово{% endif %}</span>
       {% endif %}
     </div>
   </div>
   {% endfor %}
   {% endif %}
 </div>
+
+{% block extra_styles %}
+<style>.nav-item .icon{font-size:1.4rem}.nav-item span:last-child{font-size:0.65rem;margin-top:1px}</style>
+{% endblock %}
+
 <nav class="bottom-nav">
-  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
-  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
-  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
-  <a href="/tasks" class="nav-item active"><span class="icon">✅</span>План</a>
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
+  <a href="/tasks" class="nav-item active"><span class="icon">✅</span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
 </nav>
+
 {% block scripts %}
 <script>
 function completeTask(taskId, bonus) {
