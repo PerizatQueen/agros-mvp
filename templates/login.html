@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AgrOS — Вход</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f1117; color: #e2e8f0; max-width: 480px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; }
+.logo { font-size: 3rem; margin-bottom: 8px; }
+.app-name { font-size: 2rem; font-weight: 900; color: #4ade80; margin-bottom: 4px; }
+.app-sub { color: #64748b; font-size: 0.9rem; margin-bottom: 24px; }
+
+/* Ролевые кнопки */
+.role-tabs { display: flex; gap: 8px; margin-bottom: 24px; width: 100%; }
+.role-tab { flex: 1; padding: 10px 8px; border-radius: 10px; border: 1.5px solid #2d3748; color: #64748b; background: transparent; cursor: pointer; font-size: 0.8rem; font-weight: 600; text-align: center; transition: all 0.2s; }
+.role-tab.active { background: #4ade80; color: #0f1117; border-color: #4ade80; }
+.role-tab:hover:not(.active) { border-color: #4ade80; color: #4ade80; }
+
+.login-card { background: #111827; border-radius: 16px; padding: 28px; width: 100%; border: 1px solid #1e2433; }
+.step-title { font-size: 1.1rem; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+.step-sub { font-size: 0.85rem; color: #64748b; margin-bottom: 24px; }
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px; }
+.input-row { display: flex; gap: 8px; }
+.prefix { background: #1e2433; border: 1.5px solid #2d3748; border-radius: 10px; padding: 12px 14px; color: #4ade80; font-weight: 700; white-space: nowrap; }
+.input-group input { width: 100%; background: #1e2433; border: 1.5px solid #2d3748; border-radius: 10px; padding: 12px 14px; color: #e2e8f0; font-size: 0.95rem; outline: none; }
+.input-group input:focus { border-color: #4ade80; }
+.pin-inputs { display: flex; gap: 12px; justify-content: center; margin: 16px 0; }
+.pin-inputs input { width: 56px; height: 56px; text-align: center; font-size: 1.5rem; font-weight: 700; background: #1e2433; border: 2px solid #2d3748; border-radius: 12px; color: #4ade80; outline: none; }
+.pin-inputs input:focus { border-color: #4ade80; }
+.btn { width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; background: #4ade80; color: #0f1117; margin-top: 8px; }
+.btn:hover { opacity: 0.85; }
+.error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 8px; padding: 10px 14px; color: #f87171; font-size: 0.85rem; margin-bottom: 16px; }
+.hint { text-align: center; font-size: 0.8rem; color: #475569; margin-top: 16px; }
+.role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; margin-bottom: 16px; }
+.role-badge.farmer { background: rgba(74,222,128,0.15); color: #4ade80; }
+.role-badge.agronomist { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.role-badge.admin { background: rgba(251,191,36,0.15); color: #fcd34d; }
+</style>
+</head>
+<body>
+<div class="logo">🌾</div>
+<div class="app-name">AgrOS</div>
+<div class="app-sub">Цифровая платформа для фермеров</div>
+
+<!-- Ролевые кнопки -->
+<div class="role-tabs">
+  <button class="role-tab {% if role == 'farmer' or not role %}active{% endif %}" onclick="setRole('farmer', this)">👨‍🌾 Фермер</button>
+  <button class="role-tab {% if role == 'agronomist' %}active{% endif %}" onclick="setRole('agronomist', this)">👨‍💻 Агроном</button>
+  <button class="role-tab {% if role == 'admin' %}active{% endif %}" onclick="setRole('admin', this)">⚙️ Админ</button>
+</div>
+
+<div class="login-card">
+  {% if step == 'phone' %}
+  <div class="step-title">Вход в систему</div>
+  <div class="step-sub">Введите номер телефона</div>
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  <form method="POST">
+    <input type="hidden" name="step" value="phone">
+    <input type="hidden" name="role" value="{{ role or 'farmer' }}" id="roleInput">
+    <div class="input-group">
+      <label>Номер телефона</label>
+      <div class="input-row">
+        <div class="prefix">+7</div>
+        <input type="tel" name="phone" placeholder="771 234 5678" maxlength="10" required autofocus>
+      </div>
+    </div>
+    <div class="input-group">
+      <label>SMS-код (для MVP: <strong>1234</strong>)</label>
+      <input type="text" name="sms_code" placeholder="1234" maxlength="4" inputmode="numeric">
+    </div>
+    <button type="submit" class="btn">Продолжить</button>
+  </form>
+
+  {% elif step == 'pin' %}
+  <div class="step-title">Введите PIN-код</div>
+  <div class="step-sub">
+    {% if role == 'agronomist' %}<span class="role-badge agronomist">👨‍💻 Агроном</span>
+    {% elif role == 'admin' %}<span class="role-badge admin">⚙️ Администратор</span>
+    {% else %}<span class="role-badge farmer">👨‍🌾 Фермер</span>{% endif %}
+  </div>
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  <form method="POST" id="pinForm">
+    <input type="hidden" name="step" value="pin">
+    <input type="hidden" name="phone" value="{{ phone }}">
+    <input type="hidden" name="role" value="{{ role or 'farmer' }}">
+    <input type="hidden" name="pin" id="pinValue">
+    <div class="pin-inputs">
+      <input type="password" maxlength="1" inputmode="numeric" class="pin-digit" autofocus>
+      <input type="password" maxlength="1" inputmode="numeric" class="pin-digit">
+      <input type="password" maxlength="1" inputmode="numeric" class="pin-digit">
+      <input type="password" maxlength="1" inputmode="numeric" class="pin-digit">
+    </div>
+    <button type="submit" class="btn">Войти</button>
+  </form>
+  <div class="hint">
+    {% if role == 'agronomist' %}Тестовый PIN: <strong>1111</strong>
+    {% elif role == 'admin' %}Тестовый PIN: <strong>9999</strong>
+    {% else %}Тестовый PIN: <strong>1234</strong>{% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function setRole(role, btn) {
+  document.querySelectorAll('.role-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const input = document.getElementById('roleInput');
+  if (input) input.value = role;
+  localStorage.setItem('agros_role', role);
+}
+// Авто-переход по PIN
+const digits = document.querySelectorAll('.pin-digit');
+digits.forEach((d, i) => {
+  d.addEventListener('input', () => {
+    if (d.value && i < digits.length - 1) digits[i+1].focus();
+    if (i === digits.length - 1 && d.value) {
+      document.getElementById('pinValue').value = Array.from(digits).map(x=>x.value).join('');
+      document.getElementById('pinForm').submit();
+    }
+  });
+  d.addEventListener('keydown', e => {
+    if (e.key === 'Backspace' && !d.value && i > 0) digits[i-1].focus();
+  });
+});
+</script>
+</body>
+</html>
