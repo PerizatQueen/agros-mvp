@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}— Новый договор{% endblock %}
+{% block body %}
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/contracts" style="color:#94a3b8;text-decoration:none">←</a>
+    <div class="header-title">Новый договор</div>
+  </div>
+</div>
+<div class="content">
+  {% if error %}<div class="warn-box">⚠️ {{ error }}</div>{% endif %}
+  <form method="POST" id="contractForm">
+    <input type="hidden" name="items_json" id="items_json" value="[]">
+    <div class="input-group">
+      <label>Участок</label>
+      <select name="plot_id" id="plot_select" onchange="updateVarieties()">
+        {% for p in plots %}
+        <option value="{{ p.id }}" data-varieties='{{ p.varieties | tojson }}'>{{ p.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="section-title">🍎 Сорта и объёмы</div>
+    <div id="varieties_section"></div>
+    <div class="section-title">🔐 Подтверждение PIN</div>
+    <div class="input-group">
+      <label>PIN-код</label>
+      <input type="password" name="pin" maxlength="4" inputmode="numeric" placeholder="Введите 4-значный PIN">
+    </div>
+    <div class="info-box">📄 Договор будет отправлен на рассмотрение агроному</div>
+    <button type="submit" class="btn btn-primary btn-full" onclick="buildItems()">Отправить договор</button>
+  </form>
+</div>
+{% block scripts %}
+<script>
+const prices = {{ prices | tojson }};
+let items = [];
+function getPriceFor(name) {
+  const p = prices.find(x => x.variety_name === name);
+  return p ? p.price_commercial : 0;
+}
+function updateVarieties() {
+  const sel = document.getElementById('plot_select');
+  const opt = sel.options[sel.selectedIndex];
+  const varieties = JSON.parse(opt.dataset.varieties || '[]');
+  const sec = document.getElementById('varieties_section');
+  sec.innerHTML = varieties.map(v => `
+    <div class="card" style="margin-bottom:10px">
+      <div class="card-title">🍎 ${v.variety_name}</div>
+      <div class="input-group" style="margin-bottom:8px">
+        <label>Объём товарных (кг)</label>
+        <input type="number" id="vol_${v.variety_name}" placeholder="0" min="0">
+      </div>
+      <div style="font-size:0.82rem;color:#64748b">Цена: ${getPriceFor(v.variety_name)} ₸/кг</div>
+    </div>
+  `).join('');
+  items = varieties;
+}
+function buildItems() {
+  const result = [];
+  items.forEach(v => {
+    const vol = parseFloat(document.getElementById('vol_' + v.variety_name)?.value || 0);
+    if (vol > 0) {
+      result.push({variety_name: v.variety_name, volume_kg: vol, price_per_kg: getPriceFor(v.variety_name)});
+    }
+  });
+  document.getElementById('items_json').value = JSON.stringify(result);
+}
+window.onload = updateVarieties;
+</script>
+{% endblock %}
+{% endblock %}
