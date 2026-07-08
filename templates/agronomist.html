@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgrOS - Panel</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, sans-serif; background: #0f1117; color: #e2e8f0; }
+.sidebar { width: 220px; background: #111827; height: 100vh; position: fixed; left: 0; top: 0; padding: 20px 0; border-right: 1px solid #1e2433; }
+.sidebar h1 { padding: 0 20px 16px; font-size: 1.2rem; color: #4ade80; border-bottom: 1px solid #1e2433; margin-bottom: 8px; }
+.nav-link { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: #94a3b8; text-decoration: none; font-size: 0.88rem; transition: all 0.2s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
+.nav-link:hover, .nav-link.active { background: rgba(74,222,128,0.1); color: #4ade80; }
+.main { margin-left: 220px; padding: 24px; }
+.page { display: none; }
+.page.active { display: block; }
+.page-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.stat-card { background: #1e2433; border-radius: 12px; padding: 16px; border: 1px solid #2d3748; }
+.stat-card .val { font-size: 1.8rem; font-weight: 900; color: #4ade80; }
+.stat-card .lbl { font-size: 0.78rem; color: #64748b; margin-top: 4px; }
+.card { background: #1e2433; border-radius: 12px; padding: 20px; border: 1px solid #2d3748; margin-bottom: 16px; }
+.card-title { font-weight: 600; margin-bottom: 12px; }
+table { width: 100%; border-collapse: collapse; }
+th { background: #111827; color: #94a3b8; padding: 9px 12px; text-align: left; font-size: 0.75rem; text-transform: uppercase; }
+td { padding: 10px 12px; border-bottom: 1px solid #1e2433; font-size: 0.85rem; color: #cbd5e1; }
+.badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+.bg { background: rgba(74,222,128,0.15); color: #4ade80; }
+.by { background: rgba(251,191,36,0.15); color: #fcd34d; }
+.br { background: rgba(248,113,113,0.15); color: #f87171; }
+.bb { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.btn { padding: 6px 12px; border-radius: 7px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; }
+.btn-g { background: #4ade80; color: #0f1117; }
+.btn-r { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid #f87171; }
+.ig { margin-bottom: 10px; }
+.ig label { display: block; font-size: 0.78rem; color: #94a3b8; margin-bottom: 3px; }
+.ig input { width: 100%; background: #111827; border: 1.5px solid #2d3748; border-radius: 7px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85rem; outline: none; }
+.ftabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.ftab { padding: 5px 12px; border-radius: 7px; border: 1.5px solid #2d3748; color: #94a3b8; background: transparent; cursor: pointer; font-size: 0.8rem; }
+.ftab.active { background: #4ade80; color: #0f1117; border-color: #4ade80; }
+.ok { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); border-radius: 8px; padding: 10px 14px; color: #4ade80; margin-bottom: 14px; display: none; font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <h1>AgrOS Panel</h1>
+  <button class="nav-link active" onclick="showPage('dashboard',this)">Dashboard</button>
+  <button class="nav-link" onclick="showPage('farmers',this)">Fermery</button>
+  <button class="nav-link" onclick="showPage('contracts',this)">Dogovory</button>
+  <button class="nav-link" onclick="showPage('tasks',this)">Zadachi</button>
+  <button class="nav-link" onclick="showPage('prices',this)">Ceny</button>
+  <a href="/logout" class="nav-link" style="position:absolute;bottom:20px;color:#f87171">Vyjti</a>
+</div>
+<div class="main">
+
+<div id="page-dashboard" class="page active">
+  <div class="page-title">Obshij obzor</div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="val">{{ stats.farmers }}</div><div class="lbl">Fermerov</div></div>
+    <div class="stat-card"><div class="val">{{ stats.plots }}</div><div class="lbl">Uchastkov</div></div>
+    <div class="stat-card"><div class="val">{{ stats.active_contracts }}</div><div class="lbl">Aktivnyh dogovorov</div></div>
+    <div class="stat-card" style="border-color:#fcd34d"><div class="val" style="color:#fcd34d">{{ stats.pending_contracts }}</div><div class="lbl">Na rassmotrenii</div></div>
+    <div class="stat-card"><div class="val">{{ stats.pending_tasks }}</div><div class="lbl">Zadach vsego</div></div>
+  </div>
+  {% if pending_contracts %}
+  <div class="card">
+    <div class="card-title">Dogovory na rassmotrenii</div>
+    <table><thead><tr><th>Fermer</th><th>Uchastok</th><th>Summa</th><th>Dejstvie</th></tr></thead><tbody>
+    {% for c in pending_contracts %}
+    <tr>
+      <td>{{ c.farmer_name }}</td><td>{{ c.plot_name }}</td>
+      <td>{{ '{:,.0f}'.format(c.total_amount) }} T</td>
+      <td style="display:flex;gap:6px">
+        <button class="btn btn-g" onclick="approveContract('{{ c.id }}')">Odobrit</button>
+        <button class="btn btn-r" onclick="rejectContract('{{ c.id }}')">Otklonit</button>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody></table>
+  </div>
+  {% else %}
+  <div class="card" style="text-align:center;padding:30px;color:#64748b">Dogovorov na rassmotrenii net</div>
+  {% endif %}
+</div>
+
+<div id="page-farmers" class="page">
+  <div class="page-title">Fermery</div>
+  <div class="card"><table>
+    <thead><tr><th>Imya</th><th>Telefon</th><th>Bonusy</th><th>Uchastki</th><th>Dogovory</th></tr></thead>
+    <tbody>
+    {% for f in farmers %}
+    <tr><td>{{ f.name }}</td><td>+7{{ f.phone }}</td><td style="color:#4ade80">{{ f.bonus_balance }}</td><td>{{ f.plots_count }}</td><td>{{ f.contracts_count }}</td></tr>
+    {% else %}
+    <tr><td colspan="5" style="text-align:center;color:#475569">Net fermerov</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+
+<div id="page-contracts" class="page">
+  <div class="page-title">Dogovory</div>
+  <div class="ftabs">
+    <button class="ftab active" onclick="filterC('all',this)">Vse</button>
+    <button class="ftab" onclick="filterC('pending',this)">Na rassmotrenii</button>
+    <button class="ftab" onclick="filterC('active',this)">Aktivnye</button>
+  </div>
+  <div class="card"><table>
+    <thead><tr><th>Fermer</th><th>Uchastok</th><th>Summa</th><th>Data</th><th>Status</th><th>Dejstvie</th></tr></thead>
+    <tbody id="ctable">
+    {% for c in all_contracts %}
+    <tr data-status="{{ c.status }}">
+      <td>{{ c.farmer_name }}</td><td>{{ c.plot_name }}</td>
+      <td>{{ '{:,.0f}'.format(c.total_amount) }} T</td>
+      <td>{{ c.created_at[:10] if c.created_at else '' }}</td>
+      <td><span class="badge {% if c.status=='active' %}bg{% elif c.status=='pending' %}by{% elif c.status=='completed' %}bb{% else %}bb{% endif %}">
+        {% if c.status=='active' %}Aktiven{% elif c.status=='pending' %}Na rassmotrenii{% elif c.status=='completed' %}Zavershen{% else %}{{ c.status }}{% endif %}
+      </span></td>
+      <td>{% if c.status=='pending' %}<button class="btn btn-g" onclick="approveContract('{{ c.id }}')">Odobrit</button>{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" style="text-align:center;color:#475569">Net dogovorov</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+
+<div id="page-tasks" class="page">
+  <div class="page-title">Zadachi</div>
+  <div class="card"><table>
+    <thead><tr><th>Zadacha</th><th>Fermer</th><th>Uchastok</th><th>Bonus</th><th>Status</th><th>Dejstvie</th></tr></thead>
+    <tbody>
+    {% for t in all_tasks %}
+    <tr>
+      <td>{{ t.title }}</td><td>{{ t.farmer_name }}</td><td>{{ t.plot_name }}</td>
+      <td style="color:#4ade80">+{{ t.bonus_amount }}</td>
+      <td><span class="badge {% if t.status=='approved' %}bg{% elif t.status=='overdue' %}br{% elif t.status=='soon' %}by{% else %}bb{% endif %}">
+        {% if t.status=='upcoming' %}Predstoит{% elif t.status=='soon' %}Skoro{% elif t.status=='in_progress' %}V rabote{% elif t.status=='approved' %}Odobrena{% elif t.status=='overdue' %}Prosrochena{% else %}{{ t.status }}{% endif %}
+      </span></td>
+      <td>{% if t.status!='approved' %}<button class="btn btn-g" onclick="approveTask('{{ t.id }}')">Odobrit</button>{% else %}<span style="color:#4ade80">OK</span>{% endif %}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" style="text-align:center;color:#475569">Net zadach</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</div>
+
+<div id="page-prices" class="page">
+  <div class="page-title">Upravlenie cenami</div>
+  <div id="okMsg" class="ok">Ceny obnovleny!</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+  {% for p in prices %}
+  <div class="card">
+    <div class="card-title">{{ p.variety_name }}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <div class="ig"><label>Tovarnye (T/kg)</label><input type="number" id="pc_{{ p.id }}" value="{{ p.price_commercial }}"></div>
+      <div class="ig"><label>Padalica (T/kg)</label><input type="number" id="pf_{{ p.id }}" value="{{ p.price_fallen }}"></div>
+    </div>
+    <button class="btn btn-g" style="width:100%" onclick="updatePrice('{{ p.id }}')">Sohranit</button>
+  </div>
+  {% endfor %}
+  </div>
+</div>
+
+</div>
+<script>
+function showPage(n,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');btn.classList.add('active');}
+function approveContract(id){if(!confirm('Odobrit dogovor?'))return;fetch('/agronomist/contract/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
+function rejectContract(id){if(!confirm('Otklonit dogovor?'))return;fetch('/agronomist/contract/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
+function approveTask(id){fetch('/agronomist/task/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
+function updatePrice(id){const c=document.getElementById('pc_'+id).value;const f=document.getElementById('pf_'+id).value;fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({price_id:id,price_commercial:c,price_fallen:f})}).then(r=>r.json()).then(d=>{if(d.status==='success'){const m=document.getElementById('okMsg');m.style.display='block';setTimeout(()=>m.style.display='none',3000);}});}
+function filterC(s,btn){document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#ctable tr[data-status]').forEach(r=>{r.style.display=(s==='all'||r.dataset.status===s)?'':'none';});}
+</script>
+</body>
+</html>
