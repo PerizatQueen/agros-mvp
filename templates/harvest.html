@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}— Подача урожая{% endblock %}
+{% block body %}
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/dashboard" style="color:#94a3b8;text-decoration:none">←</a>
+    <div class="header-title">🚚 Подача урожая</div>
+  </div>
+</div>
+<div class="content">
+  {% if not contracts %}
+  <div class="card" style="text-align:center;padding:40px">
+    <div style="font-size:3rem">📄</div>
+    <div style="margin-top:12px;color:#64748b">Для подачи урожая нужен активный договор</div>
+    <a href="/contracts/create" class="btn btn-primary" style="margin-top:16px;display:inline-block">Создать договор</a>
+  </div>
+  {% else %}
+
+  <!-- Шаг 1: Объёмы -->
+  <div id="step1" class="step-block">
+    <div class="section-title">📦 Шаг 1: Декларация урожая</div>
+    {% for c in contracts %}
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-title">🍎 {{ c.plot_name }}</div>
+      {% for item in c.contract_items %}
+      <div style="margin-top:10px">
+        <div style="font-size:0.85rem;color:#94a3b8;margin-bottom:6px">{{ item.variety_name }}</div>
+        <div class="input-group">
+          <label>Товарные (кг)</label>
+          <input type="number" id="vol_{{ item.variety_name }}_commercial" placeholder="0" min="0" oninput="updateRoute()">
+        </div>
+        <div class="input-group">
+          <label>Падалица (кг)</label>
+          <input type="number" id="vol_{{ item.variety_name }}_fallen" placeholder="0" min="0" oninput="updateRoute()">
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    <!-- Маршрутизация -->
+    <div class="card" id="routeCard" style="border-color:#4ade80;display:none">
+      <div class="card-title">📍 Маршрут доставки</div>
+      <div id="routeText" style="margin-top:8px;font-size:0.9rem;color:#86efac"></div>
+    </div>
+
+    <button onclick="goStep(2)" class="btn btn-primary btn-full" style="margin-top:16px">Далее →</button>
+  </div>
+
+  <!-- Шаг 2: Транспорт -->
+  <div id="step2" class="step-block" style="display:none">
+    <div class="section-title">🚛 Шаг 2: Транспорт</div>
+    <div class="card">
+      <div class="input-group">
+        <label>Тип транспорта</label>
+        <select id="transport_type">
+          <option value="own">🚚 Собственный транспорт</option>
+          <option value="client">🚛 Транспорт компании</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Тип емкости</label>
+        <select id="container_type">
+          <option value="bins">📦 Бины (большие контейнеры)</option>
+          <option value="boxes">📫 Ящики</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="goStep(1)" class="btn btn-outline" style="flex:1">← Назад</button>
+      <button onclick="goStep(3)" class="btn btn-primary" style="flex:1">Далее →</button>
+    </div>
+  </div>
+
+  <!-- Шаг 3: Подтверждение -->
+  <div id="step3" class="step-block" style="display:none">
+    <div class="section-title">✅ Шаг 3: Подтверждение</div>
+    <div class="card">
+      <div class="card-title">Итоговый обзор</div>
+      <div id="summaryText" style="margin-top:12px;font-size:0.9rem;color:#94a3b8"></div>
+    </div>
+    <div class="info-box" style="margin-top:12px">🏆 За подачу урожая вам будет начислено <strong>+200 бонусов</strong>!</div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="goStep(2)" class="btn btn-outline" style="flex:1">← Назад</button>
+      <button onclick="submitHarvest()" class="btn btn-primary" style="flex:1">🚚 Подать рейс</button>
+    </div>
+  </div>
+
+  {% endif %}
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+</nav>
+{% block scripts %}
+<script>
+function goStep(n) {
+  document.querySelectorAll('.step-block').forEach(b => b.style.display = 'none');
+  document.getElementById('step' + n).style.display = 'block';
+  if (n === 3) buildSummary();
+}
+function updateRoute() {
+  let commercial = 0, fallen = 0;
+  document.querySelectorAll('[id$="_commercial"]').forEach(i => commercial += parseFloat(i.value || 0));
+  document.querySelectorAll('[id$="_fallen"]').forEach(i => fallen += parseFloat(i.value || 0));
+  const card = document.getElementById('routeCard');
+  const text = document.getElementById('routeText');
+  if (commercial > 0 || fallen > 0) {
+    card.style.display = 'block';
+    let routes = [];
+    if (commercial >= 15000) routes.push('🍎 Товарные яблоки (≥ 15т) → 🏠 Плодохранилище');
+    else if (commercial > 0) routes.push('🍎 Товарные (' + (commercial/1000).toFixed(1) + 'т) → 📦 Пункт приёма');
+    if (fallen >= 15000) routes.push('🍂 Падалица (≥ 15т) → 🏭 Завод');
+    else if (fallen > 0) routes.push('🍂 Падалица (' + (fallen/1000).toFixed(1) + 'т) → 📦 Пункт приёма');
+    text.innerHTML = routes.join('<br>');
+  } else {
+    card.style.display = 'none';
+  }
+}
+function buildSummary() {
+  const transport = document.getElementById('transport_type').options[document.getElementById('transport_type').selectedIndex].text;
+  const container = document.getElementById('container_type').options[document.getElementById('container_type').selectedIndex].text;
+  let commercial = 0, fallen = 0;
+  document.querySelectorAll('[id$="_commercial"]').forEach(i => commercial += parseFloat(i.value || 0));
+  document.querySelectorAll('[id$="_fallen"]').forEach(i => fallen += parseFloat(i.value || 0));
+  document.getElementById('summaryText').innerHTML =
+    `📦 Товарные: <strong>${(commercial/1000).toFixed(1)} т</strong><br>` +
+    `🍂 Падалица: <strong>${(fallen/1000).toFixed(1)} т</strong><br>` +
+    `🚚 Транспорт: <strong>${transport}</strong><br>` +
+    `📦 Емкость: <strong>${container}</strong>`;
+}
+function submitHarvest() {
+  fetch('/harvest/submit', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({})
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.status === 'success') {
+      showBonus(200);
+      setTimeout(() => window.location.href = '/dashboard', 3000);
+    }
+  });
+}
+</script>
+{% endblock %}
+{% endblock %}
