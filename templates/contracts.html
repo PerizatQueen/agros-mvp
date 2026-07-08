@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}— Договоры{% endblock %}
+{% block body %}
+<div class="header">
+  <div class="header-title">📄 Мои договоры</div>
+  <div class="header-icons"><a href="/chat">💬</a></div>
+</div>
+<div class="content">
+  <a href="/contracts/create" class="btn btn-primary btn-full" style="margin-bottom:20px">➕ Новый договор</a>
+  {% if not contracts %}
+  <div class="card" style="text-align:center;padding:40px">
+    <div style="font-size:3rem">📄</div>
+    <div style="margin-top:12px;color:#64748b">У вас пока нет договоров</div>
+  </div>
+  {% else %}
+  {% for c in contracts %}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
+      <div>
+        <div class="card-title">🍎 {{ c.plot_name }}</div>
+        <div style="font-size:0.8rem;color:#64748b">{{ c.created_at[:10] if c.created_at else '' }}</div>
+      </div>
+      <span class="badge
+        {% if c.status == 'active' %}badge-green
+        {% elif c.status == 'pending' %}badge-yellow
+        {% elif c.status == 'draft' %}badge-gray
+        {% elif c.status == 'completed' %}badge-blue
+        {% else %}badge-gray{% endif %}">
+        {% if c.status == 'active' %}Активен
+        {% elif c.status == 'pending' %}На рассмотрении
+        {% elif c.status == 'draft' %}Черновик
+        {% elif c.status == 'completed' %}Завершён
+        {% else %}{{ c.status }}{% endif %}
+      </span>
+    </div>
+    {% if c.contract_items %}
+    <div style="margin-bottom:10px">
+      {% for item in c.contract_items %}
+      <div style="display:flex;justify-content:space-between;font-size:0.85rem;padding:4px 0;border-bottom:1px solid #2d3748">
+        <span style="color:#94a3b8">{{ item.variety_name }}</span>
+        <span style="color:#e2e8f0">{{ '{:,.0f}'.format(item.volume_kg) }} кг · {{ item.price_per_kg }} ₸/кг</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="font-size:0.85rem;color:#64748b">Итого:</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#4ade80">{{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
+    </div>
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
+  <a href="/contracts" class="nav-item active"><span class="icon">📄</span>Договоры</a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+</nav>
+{% endblock %}
