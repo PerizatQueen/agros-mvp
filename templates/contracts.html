@@ -1,16 +1,25 @@
 {% extends 'base.html' %}
-{% block title %}— Договоры{% endblock %}
+{% block title %}- {% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}{% endblock %}
 {% block body %}
 <div class="header">
-  <div class="header-title">📄 Мои договоры</div>
-  <div class="header-icons"><a href="/chat">💬</a></div>
+  <div class="header-title">📄 {% if lang == 'kz' %}Менің шарттарым{% else %}Мои договоры{% endif %}</div>
+  <div class="header-icons">
+    <div class="lang-switcher">
+      <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
+      <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+    </div>
+    <a href="/chat">💬</a>
+    <a href="/logout" style="font-size:0.78rem;color:#f87171;font-weight:600;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 9px;border-radius:6px">{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}</a>
+  </div>
 </div>
 <div class="content">
-  <a href="/contracts/create" class="btn btn-primary btn-full" style="margin-bottom:20px">➕ Новый договор</a>
+  <a href="/contracts/create" class="btn btn-primary btn-full" style="margin-bottom:20px">➕ {% if lang == 'kz' %}Жаңа шарт{% else %}Новый договор{% endif %}</a>
+
   {% if not contracts %}
   <div class="card" style="text-align:center;padding:40px">
     <div style="font-size:3rem">📄</div>
-    <div style="margin-top:12px;color:#64748b">У вас пока нет договоров</div>
+    <div style="margin-top:12px;color:#64748b">{% if lang == 'kz' %}Сізде әлі шарт жоқ{% else %}У вас пока нет договоров{% endif %}</div>
+    <div style="font-size:0.82rem;color:#475569;margin-top:6px">{% if lang == 'kz' %}Учаске қосып, шарт жасаңыз{% else %}Добавьте участок и создайте договор{% endif %}</div>
   </div>
   {% else %}
   {% for c in contracts %}
@@ -18,7 +27,7 @@
     <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
       <div>
         <div class="card-title">🍎 {{ c.plot_name }}</div>
-        <div style="font-size:0.8rem;color:#64748b">{{ c.created_at[:10] if c.created_at else '' }}</div>
+        <div style="font-size:0.78rem;color:#64748b">{{ c.created_at[:10] if c.created_at else '' }}</div>
       </div>
       <span class="badge
         {% if c.status == 'active' %}badge-green
@@ -26,17 +35,29 @@
         {% elif c.status == 'draft' %}badge-gray
         {% elif c.status == 'completed' %}badge-blue
         {% else %}badge-gray{% endif %}">
-        {% if c.status == 'active' %}Активен
-        {% elif c.status == 'pending' %}На рассмотрении
-        {% elif c.status == 'draft' %}Черновик
-        {% elif c.status == 'completed' %}Завершён
+        {% if c.status == 'active' %}{% if lang == 'kz' %}Белсенді{% else %}Активен{% endif %}
+        {% elif c.status == 'pending' %}{% if lang == 'kz' %}Қарастырылуда{% else %}На рассмотрении{% endif %}
+        {% elif c.status == 'reviewing' %}{% if lang == 'kz' %}Тексерілуде{% else %}Рассматривается{% endif %}
+        {% elif c.status == 'awaiting_sign' %}{% if lang == 'kz' %}Қол күтуде{% else %}Ожидает подписи{% endif %}
+        {% elif c.status == 'draft' %}{% if lang == 'kz' %}Жоба{% else %}Черновик{% endif %}
+        {% elif c.status == 'completed' %}{% if lang == 'kz' %}Аяқталды{% else %}Завершён{% endif %}
         {% else %}{{ c.status }}{% endif %}
       </span>
     </div>
+
+    <!-- Прогресс статуса -->
+    <div style="display:flex;gap:4px;margin-bottom:12px">
+      {% set statuses = ['draft','pending','reviewing','awaiting_sign','active','completed'] %}
+      {% set current_idx = statuses.index(c.status) if c.status in statuses else 0 %}
+      {% for i in range(6) %}
+      <div style="flex:1;height:3px;border-radius:2px;background:{% if i <= current_idx %}#4ade80{% else %}#2d3748{% endif %}"></div>
+      {% endfor %}
+    </div>
+
     {% if c.contract_items %}
     <div style="margin-bottom:10px">
       {% for item in c.contract_items %}
-      <div style="display:flex;justify-content:space-between;font-size:0.85rem;padding:4px 0;border-bottom:1px solid #2d3748">
+      <div style="display:flex;justify-content:space-between;font-size:0.83rem;padding:5px 0;border-bottom:1px solid #2d3748">
         <span style="color:#94a3b8">{{ item.variety_name }}</span>
         <span style="color:#e2e8f0">{{ '{:,.0f}'.format(item.volume_kg) }} кг · {{ item.price_per_kg }} ₸/кг</span>
       </div>
@@ -44,17 +65,22 @@
     </div>
     {% endif %}
     <div style="display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:0.85rem;color:#64748b">Итого:</div>
+      <div style="font-size:0.82rem;color:#64748b">{% if lang == 'kz' %}Барлығы:{% else %}Итого:{% endif %}</div>
       <div style="font-size:1.1rem;font-weight:700;color:#4ade80">{{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
     </div>
   </div>
   {% endfor %}
   {% endif %}
 </div>
+
+{% block extra_styles %}
+<style>.nav-item .icon{font-size:1.4rem}.nav-item span:last-child{font-size:0.65rem;margin-top:1px}</style>
+{% endblock %}
+
 <nav class="bottom-nav">
-  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
-  <a href="/contracts" class="nav-item active"><span class="icon">📄</span>Договоры</a>
-  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
-  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/contracts" class="nav-item active"><span class="icon">📄</span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
 </nav>
 {% endblock %}
