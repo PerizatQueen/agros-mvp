@@ -1,242 +1,290 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="kk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgrOS — Админ</title>
+<title>AgrOS — Әкімші панелі</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0d0f14; color: #e2e8f0; }
-.sidebar { width: 230px; background: #0f1117; height: 100vh; position: fixed; left: 0; top: 0; padding: 20px 0; border-right: 1px solid #1e2433; display: flex; flex-direction: column; }
-.logo { padding: 0 20px 16px; border-bottom: 1px solid #1e2433; margin-bottom: 8px; }
-.logo h1 { font-size: 1.2rem; color: #fcd34d; }
-.logo p { font-size: 0.72rem; color: #64748b; margin-top: 3px; }
-.role-tag { display: inline-block; background: rgba(251,191,36,0.15); color: #fcd34d; border-radius: 20px; padding: 2px 8px; font-size: 0.7rem; font-weight: 600; margin-top: 4px; }
-.nav-link { display: flex; align-items: center; gap: 10px; padding: 11px 20px; color: #94a3b8; text-decoration: none; font-size: 0.88rem; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: all 0.2s; }
-.nav-link:hover, .nav-link.active { background: rgba(251,191,36,0.08); color: #fcd34d; border-right: 3px solid #fcd34d; }
-.nav-bottom { margin-top: auto; padding: 16px 0; border-top: 1px solid #1e2433; }
-.main { margin-left: 230px; padding: 24px; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0c14; color: #e2e8f0; }
+
+/* SIDEBAR — тёмно-синий с красным акцентом */
+.sidebar { width: 240px; background: #0f1320; height: 100vh; position: fixed; left: 0; top: 0; border-right: 1px solid #1a2040; display: flex; flex-direction: column; }
+.sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid #1a2040; }
+.sidebar-logo { font-size: 1.3rem; font-weight: 900; color: #f87171; letter-spacing: -0.5px; }
+.sidebar-role { font-size: 0.72rem; color: #475569; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+.sidebar-user { font-size: 0.8rem; color: #94a3b8; margin-top: 6px; padding-top: 6px; border-top: 1px solid #1a2040; }
+.nav-section { padding: 12px 12px 4px; font-size: 0.65rem; color: #475569; text-transform: uppercase; letter-spacing: 1px; }
+.nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; margin: 2px 8px; border-radius: 8px; color: #94a3b8; text-decoration: none; font-size: 0.875rem; cursor: pointer; border: none; background: none; width: calc(100% - 16px); text-align: left; transition: all 0.15s; }
+.nav-link .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+.nav-link:hover { background: rgba(248,113,113,0.08); color: #f87171; }
+.nav-link.active { background: rgba(248,113,113,0.12); color: #f87171; font-weight: 600; }
+.nav-link.danger { color: #64748b; }
+.nav-link.danger:hover { background: rgba(248,113,113,0.08); color: #f87171; }
+.sidebar-bottom { margin-top: auto; padding: 12px; border-top: 1px solid #1a2040; }
+
+/* MAIN */
+.main { margin-left: 240px; padding: 28px 32px; min-height: 100vh; }
 .page { display: none; }
 .page.active { display: block; }
-.page-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: #f1f5f9; }
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
-.stat-card { background: #111827; border-radius: 12px; padding: 16px; border: 1px solid #1e2d3d; }
-.stat-card .val { font-size: 2rem; font-weight: 900; color: #fcd34d; }
-.stat-card .lbl { font-size: 0.78rem; color: #64748b; margin-top: 4px; }
-.stat-card.alert { border-color: #f87171; }
-.stat-card.alert .val { color: #f87171; }
-.card { background: #111827; border-radius: 12px; padding: 20px; border: 1px solid #1e2d3d; margin-bottom: 16px; }
-.card-title { font-weight: 600; margin-bottom: 14px; color: #f1f5f9; font-size: 1rem; }
-.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-.info-card { background: #0f1117; border-radius: 10px; padding: 14px; border: 1px solid #1e2433; }
-.info-card .label { font-size: 0.75rem; color: #64748b; margin-bottom: 6px; }
-.info-card .value { font-size: 0.9rem; font-weight: 600; color: #e2e8f0; }
+
+/* TOP BAR */
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.page-title { font-size: 1.4rem; font-weight: 700; color: #f1f5f9; }
+.page-sub { font-size: 0.82rem; color: #64748b; margin-top: 2px; }
+.topbar-badge { background: rgba(248,113,113,0.15); color: #f87171; padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(248,113,113,0.3); }
+
+/* STATS */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.stat-card { background: #131929; border-radius: 14px; padding: 18px; border: 1px solid #1e2d45; position: relative; overflow: hidden; }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #f87171; }
+.stat-card.yellow::before { background: #fcd34d; }
+.stat-card.green::before { background: #4ade80; }
+.stat-card.blue::before { background: #60a5fa; }
+.stat-val { font-size: 2rem; font-weight: 900; color: #f1f5f9; line-height: 1; }
+.stat-val.yellow { color: #fcd34d; }
+.stat-val.green { color: #4ade80; }
+.stat-lbl { font-size: 0.75rem; color: #64748b; margin-top: 6px; }
+
+/* CARD */
+.card { background: #131929; border-radius: 14px; padding: 20px; border: 1px solid #1e2d45; margin-bottom: 16px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-weight: 700; color: #f1f5f9; font-size: 0.95rem; }
+.card-count { font-size: 0.75rem; color: #64748b; background: #1e2d45; padding: 3px 10px; border-radius: 20px; }
+
+/* TABLE */
 table { width: 100%; border-collapse: collapse; }
-th { background: #0d0f14; color: #64748b; padding: 10px 12px; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
-td { padding: 11px 12px; border-bottom: 1px solid #1a2030; font-size: 0.85rem; color: #cbd5e1; vertical-align: middle; }
+th { background: #0f1320; color: #64748b; padding: 10px 14px; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+th:first-child { border-radius: 8px 0 0 8px; }
+th:last-child { border-radius: 0 8px 8px 0; }
+td { padding: 12px 14px; border-bottom: 1px solid #1a2040; font-size: 0.85rem; color: #cbd5e1; vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
-.badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
-.bg { background: rgba(74,222,128,0.15); color: #4ade80; }
-.by { background: rgba(251,191,36,0.15); color: #fcd34d; }
-.br { background: rgba(248,113,113,0.15); color: #f87171; }
-.bb { background: rgba(96,165,250,0.15); color: #60a5fa; }
-.btn { padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; transition: opacity 0.2s; }
-.btn:hover { opacity: 0.8; }
-.btn-y { background: #fcd34d; color: #0d0f14; }
-.btn-g { background: #4ade80; color: #0d0f14; }
-.btn-r { background: rgba(248,113,113,0.1); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
-.ig { margin-bottom: 10px; }
-.ig label { display: block; font-size: 0.78rem; color: #64748b; margin-bottom: 4px; }
-.ig input { width: 100%; background: #0d0f14; border: 1.5px solid #1e2433; border-radius: 8px; padding: 8px 10px; color: #e2e8f0; font-size: 0.85rem; outline: none; }
-.ig input:focus { border-color: #fcd34d; }
-.ftabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.ftab { padding: 6px 14px; border-radius: 8px; border: 1.5px solid #1e2433; color: #94a3b8; background: transparent; cursor: pointer; font-size: 0.82rem; }
-.ftab.active { background: #fcd34d; color: #0d0f14; border-color: #fcd34d; }
-.ok { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); border-radius: 8px; padding: 10px 14px; color: #4ade80; margin-bottom: 14px; display: none; font-size: 0.85rem; }
-.access-table td:first-child { color: #94a3b8; font-size: 0.82rem; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* BADGES */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+.badge-green { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+.badge-yellow { background: rgba(252,211,77,0.12); color: #fcd34d; border: 1px solid rgba(252,211,77,0.2); }
+.badge-red { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+.badge-blue { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+
+/* BUTTONS */
+.btn { padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+.btn-approve { background: #4ade80; color: #0a0c14; }
+.btn-approve:hover { background: #22c55e; }
+.btn-reject { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.btn-reject:hover { background: rgba(248,113,113,0.2); }
+.btn-save { background: #f87171; color: #0a0c14; }
+.btn-save:hover { background: #ef4444; }
+
+/* PRICE INPUT */
+.ig label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 4px; }
+.ig input { width: 100%; background: #0f1320; border: 1.5px solid #1e2d45; border-radius: 8px; padding: 9px 12px; color: #e2e8f0; font-size: 0.9rem; outline: none; transition: border-color 0.15s; }
+.ig input:focus { border-color: #f87171; }
+
+/* FILTER TABS */
+.ftabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.ftab { padding: 6px 14px; border-radius: 8px; border: 1.5px solid #1e2d45; color: #64748b; background: transparent; cursor: pointer; font-size: 0.8rem; transition: all 0.15s; }
+.ftab.active { background: #f87171; color: #0a0c14; border-color: #f87171; font-weight: 600; }
+
+/* ALERT */
+.alert-success { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25); border-radius: 10px; padding: 12px 16px; color: #4ade80; margin-bottom: 16px; display: none; font-size: 0.85rem; }
+.empty-state { text-align: center; padding: 40px 20px; color: #475569; }
+.empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
 </style>
 </head>
 <body>
+
 <div class="sidebar">
-  <div class="logo">
-    <h1>⚙️ AgrOS</h1>
-    <p>Супер-администратор</p>
-    <span class="role-tag">⚙️ Админ</span>
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🔴 AgrOS</div>
+    <div class="sidebar-role">Әкімші панелі</div>
+    <div class="sidebar-user">👤 {{ user_name }}</div>
   </div>
-  <button class="nav-link active" onclick="showPage('dashboard',this)">📊 Дашборд</button>
-  <button class="nav-link" onclick="showPage('users',this)">👥 Пользователи</button>
-  <button class="nav-link" onclick="showPage('contracts',this)">📄 Договоры</button>
-  <button class="nav-link" onclick="showPage('prices',this)">💰 Цены</button>
-  <button class="nav-link" onclick="showPage('access',this)">🔐 Доступ</button>
-  <div class="nav-bottom">
-    <a href="/logout" class="nav-link" style="color:#f87171">🚪 Выйти</a>
+
+  <div class="nav-section">Басқару</div>
+  <button class="nav-link active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Басты бет</button>
+  <button class="nav-link" onclick="showPage('farmers',this)"><span class="nav-icon">👨‍🌾</span> Фермерлер</button>
+  <button class="nav-link" onclick="showPage('contracts',this)"><span class="nav-icon">📄</span> Шарттар</button>
+  <button class="nav-link" onclick="showPage('tasks',this)"><span class="nav-icon">✅</span> Тапсырмалар</button>
+
+  <div class="nav-section">Жүйе</div>
+  <button class="nav-link" onclick="showPage('prices',this)"><span class="nav-icon">💰</span> Бағалар</button>
+
+  <div class="sidebar-bottom">
+    <a href="/logout" class="nav-link danger"><span class="nav-icon">🚪</span> Шығу</a>
   </div>
 </div>
+
 <div class="main">
 
+<!-- DASHBOARD -->
 <div id="page-dashboard" class="page active">
-  <div class="page-title">⚙️ Панель администратора</div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="val">{{ stats.farmers }}</div><div class="lbl">👨‍🌾 Фермеров</div></div>
-    <div class="stat-card"><div class="val">{{ stats.plots }}</div><div class="lbl">🌱 Участков</div></div>
-    <div class="stat-card"><div class="val">{{ stats.active_contracts }}</div><div class="lbl">📄 Активных</div></div>
-    <div class="stat-card {% if stats.pending_contracts > 0 %}alert{% endif %}"><div class="val">{{ stats.pending_contracts }}</div><div class="lbl">⏳ Ожидают</div></div>
-    <div class="stat-card"><div class="val">{{ stats.pending_tasks }}</div><div class="lbl">✅ Задач</div></div>
+  <div class="topbar">
+    <div>
+      <div class="page-title">Жалпы шолу</div>
+      <div class="page-sub">Жүйенің ағымдағы жағдайы</div>
+    </div>
+    <div class="topbar-badge">🔴 Әкімші</div>
   </div>
-  <div class="info-grid">
-    <div class="card">
-      <div class="card-title">👨‍💻 Доступ агронома</div>
-      <div class="info-card" style="margin-bottom:8px">
-        <div class="label">Телефон</div>
-        <div class="value">agro</div>
-      </div>
-      <div class="info-card">
-        <div class="label">PIN-код</div>
-        <div class="value">1111</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">👨‍🌾 Тестовый фермер</div>
-      <div class="info-card" style="margin-bottom:8px">
-        <div class="label">Телефон</div>
-        <div class="value">7771234567</div>
-      </div>
-      <div class="info-card">
-        <div class="label">PIN-код</div>
-        <div class="value">1234</div>
-      </div>
-    </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val">{{ stats.farmers }}</div><div class="stat-lbl">👨‍🌾 Фермерлер</div></div>
+    <div class="stat-card green"><div class="stat-val green">{{ stats.plots }}</div><div class="stat-lbl">🌱 Учаскелер</div></div>
+    <div class="stat-card blue"><div class="stat-val" style="color:#60a5fa">{{ stats.active_contracts }}</div><div class="stat-lbl">📄 Белсенді шарттар</div></div>
+    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.pending_contracts }}</div><div class="stat-lbl">⏳ Күтуде</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.pending_tasks }}</div><div class="stat-lbl">✅ Тапсырмалар</div></div>
   </div>
   {% if pending_contracts %}
   <div class="card">
-    <div class="card-title">⚠️ Требуют одобрения ({{ pending_contracts|length }})</div>
-    <table><thead><tr><th>Фермер</th><th>Участок</th><th>Сумма</th><th>Действие</th></tr></thead><tbody>
+    <div class="card-header">
+      <div class="card-title">⏳ Қарастырудағы шарттар</div>
+      <div class="card-count">{{ pending_contracts|length }} дана</div>
+    </div>
+    <table><thead><tr><th>Фермер</th><th>Учаске</th><th>Сомасы</th><th>Іс-әрекет</th></tr></thead><tbody>
     {% for c in pending_contracts %}
     <tr>
       <td><strong>{{ c.farmer_name }}</strong></td>
       <td>{{ c.plot_name }}</td>
       <td><strong>{{ '{:,.0f}'.format(c.total_amount) }} ₸</strong></td>
-      <td style="display:flex;gap:6px">
-        <button class="btn btn-g" onclick="approveContract('{{ c.id }}')">✓ Одобрить</button>
-        <button class="btn btn-r" onclick="rejectContract('{{ c.id }}')">✗ Отклонить</button>
+      <td style="display:flex;gap:8px">
+        <button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">✓ Бекіту</button>
+        <button class="btn btn-reject" onclick="rejectContract('{{ c.id }}')">✕ Қабылдамау</button>
       </td>
     </tr>
     {% endfor %}
     </tbody></table>
   </div>
+  {% else %}
+  <div class="card"><div class="empty-state"><div class="empty-icon">📋</div>Күтудегі шарттар жоқ</div></div>
   {% endif %}
 </div>
 
-<div id="page-users" class="page">
-  <div class="page-title">👥 Все пользователи</div>
-  <div class="card"><table>
-    <thead><tr><th>Имя</th><th>Телефон</th><th>Бонусы</th><th>Участки</th><th>Договоры</th><th>Роль</th></tr></thead>
+<!-- FARMERS -->
+<div id="page-farmers" class="page">
+  <div class="topbar"><div><div class="page-title">Фермерлер</div><div class="page-sub">Тіркелген пайдаланушылар</div></div></div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">👨‍🌾 Барлық фермерлер</div><div class="card-count">{{ farmers|length }}</div></div>
+    <table><thead><tr><th>Аты-жөні</th><th>Телефон</th><th>Бонустар</th><th>Учаскелер</th><th>Шарттар</th></tr></thead>
     <tbody>
     {% for f in farmers %}
     <tr>
       <td><strong>{{ f.name }}</strong></td>
-      <td>+7{{ f.phone }}</td>
-      <td><span style="color:#4ade80;font-weight:700">{{ f.bonus_balance }} б</span></td>
+      <td style="color:#94a3b8">+7{{ f.phone }}</td>
+      <td><span style="color:#4ade80;font-weight:700">{{ f.bonus_balance }} ⭐</span></td>
       <td>{{ f.plots_count }}</td>
       <td>{{ f.contracts_count }}</td>
-      <td><span class="badge bg">Фермер</span></td>
     </tr>
-    {% else %}
-    <tr><td colspan="6" style="text-align:center;color:#475569;padding:30px">Нет пользователей</td></tr>
-    {% endfor %}
-    </tbody>
-  </table></div>
+    {% else %}<tr><td colspan="5"><div class="empty-state">Фермерлер жоқ</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
 </div>
 
+<!-- CONTRACTS -->
 <div id="page-contracts" class="page">
-  <div class="page-title">📄 Все договоры ({{ all_contracts|length }})</div>
+  <div class="topbar"><div><div class="page-title">Шарттар</div><div class="page-sub">Барлық сатып алу шарттары</div></div></div>
   <div class="ftabs">
-    <button class="ftab active" onclick="filterC('all',this)">Все</button>
-    <button class="ftab" onclick="filterC('pending',this)">⏳ Ожидают</button>
-    <button class="ftab" onclick="filterC('active',this)">✅ Активные</button>
-    <button class="ftab" onclick="filterC('rejected',this)">❌ Отклонённые</button>
+    <button class="ftab active" onclick="filterC('all',this)">Барлығы</button>
+    <button class="ftab" onclick="filterC('pending',this)">⏳ Күтуде</button>
+    <button class="ftab" onclick="filterC('active',this)">✅ Белсенді</button>
+    <button class="ftab" onclick="filterC('rejected',this)">❌ Қабылданбаған</button>
   </div>
-  <div class="card"><table>
-    <thead><tr><th>Фермер</th><th>Участок</th><th>Сумма</th><th>Дата</th><th>Статус</th><th>Действие</th></tr></thead>
+  <div class="card">
+    <table><thead><tr><th>Фермер</th><th>Учаске</th><th>Сомасы</th><th>Күні</th><th>Мәртебесі</th><th>Іс-әрекет</th></tr></thead>
     <tbody id="ctable">
     {% for c in all_contracts %}
     <tr data-status="{{ c.status }}">
       <td><strong>{{ c.farmer_name }}</strong></td>
       <td>{{ c.plot_name }}</td>
       <td>{{ '{:,.0f}'.format(c.total_amount) }} ₸</td>
-      <td>{{ c.created_at[:10] if c.created_at else '' }}</td>
-      <td><span class="badge {% if c.status=='active' %}bg{% elif c.status=='pending' %}by{% elif c.status=='rejected' %}br{% else %}bb{% endif %}">
-        {% if c.status=='active' %}Активен{% elif c.status=='pending' %}Ожидает{% elif c.status=='rejected' %}Отклонён{% elif c.status=='completed' %}Завершён{% else %}{{ c.status }}{% endif %}
+      <td style="color:#64748b">{{ c.created_at[:10] if c.created_at else '' }}</td>
+      <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% else %}badge-red{% endif %}">
+        {% if c.status=='active' %}✅ Белсенді{% elif c.status=='pending' %}⏳ Күтуде{% elif c.status=='rejected' %}❌ Қабылданбаған{% else %}{{ c.status }}{% endif %}
       </span></td>
-      <td>{% if c.status=='pending' %}<button class="btn btn-y" onclick="approveContract('{{ c.id }}')">Одобрить</button>{% endif %}</td>
+      <td>{% if c.status=='pending' %}<button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">✓ Бекіту</button>{% endif %}</td>
     </tr>
-    {% else %}
-    <tr><td colspan="6" style="text-align:center;color:#475569;padding:30px">Нет договоров</td></tr>
-    {% endfor %}
-    </tbody>
-  </table></div>
+    {% else %}<tr><td colspan="6"><div class="empty-state">Шарттар жоқ</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
 </div>
 
+<!-- TASKS -->
+<div id="page-tasks" class="page">
+  <div class="topbar"><div><div class="page-title">Тапсырмалар</div><div class="page-sub">Фермерлердің агротехникалық тапсырмалары</div></div></div>
+  <div class="card">
+    <table><thead><tr><th>Тапсырма</th><th>Фермер</th><th>Учаске</th><th>Бонус</th><th>Мәртебесі</th><th>Іс-әрекет</th></tr></thead>
+    <tbody>
+    {% for t in all_tasks %}
+    <tr>
+      <td><strong>{{ t.title }}</strong></td>
+      <td>{{ t.farmer_name }}</td>
+      <td>{{ t.plot_name }}</td>
+      <td style="color:#4ade80;font-weight:700">+{{ t.bonus_amount }} ⭐</td>
+      <td><span class="badge {% if t.status=='approved' %}badge-green{% elif t.status=='overdue' %}badge-red{% elif t.status=='soon' %}badge-yellow{% else %}badge-blue{% endif %}">
+        {% if t.status=='approved' %}✅ Бекітілді{% elif t.status=='overdue' %}❌ Мерзімі өтті{% elif t.status=='soon' %}⚡ Жақында{% elif t.status=='upcoming' %}📅 Алдағы{% else %}{{ t.status }}{% endif %}
+      </span></td>
+      <td>{% if t.status!='approved' %}<button class="btn btn-approve" onclick="approveTask('{{ t.id }}')">✓ Бекіту</button>{% else %}<span style="color:#4ade80">✓ Орындалды</span>{% endif %}</td>
+    </tr>
+    {% else %}<tr><td colspan="6"><div class="empty-state">Тапсырмалар жоқ</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+</div>
+
+<!-- PRICES -->
 <div id="page-prices" class="page">
-  <div class="page-title">💰 Цены на сорта</div>
-  <div id="okMsg" class="ok">✅ Цены обновлены!</div>
+  <div class="topbar"><div><div class="page-title">Бағаларды басқару</div><div class="page-sub">Алма сорттарының сатып алу бағалары</div></div></div>
+  <div id="okMsg" class="alert-success">✅ Бағалар сәтті жаңартылды!</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
   {% for p in prices %}
   <div class="card">
-    <div class="card-title">🍎 {{ p.variety_name }}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
-      <div class="ig"><label>Товарные (₸/кг)</label><input type="number" id="pc_{{ p.id }}" value="{{ p.price_commercial }}"></div>
-      <div class="ig"><label>Падалица (₸/кг)</label><input type="number" id="pf_{{ p.id }}" value="{{ p.price_fallen }}"></div>
+    <div class="card-header"><div class="card-title">🍎 {{ p.variety_name }}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="ig"><label>Тауарлы (₸/кг)</label><input type="number" id="pc_{{ p.id }}" value="{{ p.price_commercial }}"></div>
+      <div class="ig"><label>Жерге түскен (₸/кг)</label><input type="number" id="pf_{{ p.id }}" value="{{ p.price_fallen }}"></div>
     </div>
-    <button class="btn btn-y" style="width:100%;margin-top:4px" onclick="updatePrice('{{ p.id }}')">Сохранить</button>
+    <button class="btn btn-save" style="width:100%" onclick="updatePrice('{{ p.id }}')">💾 Сақтау</button>
   </div>
   {% endfor %}
   </div>
 </div>
 
-<div id="page-access" class="page">
-  <div class="page-title">🔐 Управление доступом</div>
-  <div class="card">
-    <div class="card-title">📋 Роли и доступы</div>
-    <table class="access-table">
-      <thead><tr><th>Роль</th><th>Вход</th><th>Фермеры</th><th>Договоры</th><th>Цены</th><th>Задачи</th></tr></thead>
-      <tbody>
-        <tr>
-          <td><span class="badge bg">👨‍🌾 Фермер</span></td>
-          <td>Тел. + PIN</td>
-          <td>Только свои</td>
-          <td>Создание</td>
-          <td>Чтение</td>
-          <td>Выполнение</td>
-        </tr>
-        <tr>
-          <td><span class="badge bb">👨‍💻 Агроном</span></td>
-          <td>agro / 1111</td>
-          <td>Все фермеры</td>
-          <td>Одобрение</td>
-          <td>Управление</td>
-          <td>Одобрение</td>
-        </tr>
-        <tr>
-          <td><span class="badge by">⚙️ Админ</span></td>
-          <td>admin / 9999</td>
-          <td>Все</td>
-          <td>Все</td>
-          <td>Все</td>
-          <td>Все</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
 </div>
 
-</div>
 <script>
-function showPage(n,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));document.getElementById('page-'+n).classList.add('active');btn.classList.add('active');}
-function approveContract(id){if(!confirm('Одобрить договор?'))return;fetch('/agronomist/contract/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
-function rejectContract(id){if(!confirm('Отклонить?'))return;fetch('/agronomist/contract/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
-function updatePrice(id){const c=document.getElementById('pc_'+id).value;const f=document.getElementById('pf_'+id).value;fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({price_id:id,price_commercial:c,price_fallen:f})}).then(r=>r.json()).then(d=>{if(d.status==='success'){const m=document.getElementById('okMsg');m.style.display='block';setTimeout(()=>m.style.display='none',3000);}});}
-function filterC(s,btn){document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#ctable tr[data-status]').forEach(r=>{r.style.display=(s==='all'||r.dataset.status===s)?'':'none';});}
+function showPage(n,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
+  btn.classList.add('active');
+}
+function approveContract(id){
+  if(!confirm('Шартты бекітесіз бе?'))return;
+  fetch('/agronomist/contract/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+function rejectContract(id){
+  if(!confirm('Шартты қабылдамайсыз ба?'))return;
+  fetch('/agronomist/contract/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+function approveTask(id){
+  fetch('/agronomist/task/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+function updatePrice(id){
+  const c=document.getElementById('pc_'+id).value;
+  const f=document.getElementById('pf_'+id).value;
+  fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({price_id:id,price_commercial:c,price_fallen:f})})
+  .then(r=>r.json()).then(d=>{
+    if(d.status==='success'){const m=document.getElementById('okMsg');m.style.display='block';setTimeout(()=>m.style.display='none',3000);}
+  });
+}
+function filterC(s,btn){
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#ctable tr[data-status]').forEach(r=>{
+    r.style.display=(s==='all'||r.dataset.status===s)?'':'none';
+  });
+}
 </script>
 </body>
 </html>
