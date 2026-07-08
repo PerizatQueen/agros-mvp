@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}— Магазин бонусов{% endblock %}
+{% block body %}
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/dashboard" style="color:#94a3b8;text-decoration:none">←</a>
+    <div class="header-title">🎪 Магазин бонусов</div>
+  </div>
+</div>
+<div class="content">
+  <!-- Баланс -->
+  <div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:#4ade80;margin-bottom:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:0.8rem;color:#86efac">Ваш баланс</div>
+        <div style="font-size:2rem;font-weight:900;color:#fff">{{ user.bonus_balance }} <span style="font-size:1rem">бонусов</span></div>
+        <div style="font-size:0.75rem;color:#86efac">1 бонус = 1 ₸</div>
+      </div>
+      <div style="font-size:2.5rem">🏆</div>
+    </div>
+  </div>
+
+  <div class="section-title">🛍️ Каталог товаров</div>
+
+  {% for item in shop_items %}
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
+      <div style="flex:1">
+        <div class="card-title">{{ item.icon }} {{ item.name }}</div>
+        <div style="font-size:0.82rem;color:#64748b;margin-top:4px">{{ item.description }}</div>
+        <div style="font-size:0.78rem;color:#475569;margin-top:4px">📍 Пункт приёма</div>
+      </div>
+      <div style="text-align:right;margin-left:12px">
+        <div style="font-size:1.2rem;font-weight:800;color:#4ade80">{{ item.price }}</div>
+        <div style="font-size:0.72rem;color:#64748b">бонусов</div>
+      </div>
+    </div>
+    {% if user.bonus_balance >= item.price %}
+    <button onclick="buyItem('{{ item.id }}', '{{ item.name }}', {{ item.price }})" class="btn btn-primary btn-full" style="font-size:0.85rem">🛒 Купить за {{ item.price }} бонусов</button>
+    {% else %}
+    <div style="text-align:center;padding:10px;background:#1e2433;border-radius:8px;font-size:0.82rem;color:#475569">
+      Не хватает {{ item.price - user.bonus_balance }} бонусов
+    </div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <!-- Как накопить бонусы -->
+  <div class="section-title">⭐ Как накопить бонусы</div>
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d3748">
+      <span style="font-size:1.2rem">🌱</span>
+      <div><div style="font-weight:600">Добавить участок</div><div style="font-size:0.8rem;color:#64748b">+100 бонусов</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d3748">
+      <span style="font-size:1.2rem">✅</span>
+      <div><div style="font-weight:600">Выполнить задачу</div><div style="font-size:0.8rem;color:#64748b">+20–50 бонусов</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d3748">
+      <span style="font-size:1.2rem">📄</span>
+      <div><div style="font-weight:600">Создать договор</div><div style="font-size:0.8rem;color:#64748b">+50 бонусов</div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
+      <span style="font-size:1.2rem">🚚</span>
+      <div><div style="font-weight:600">Сдать урожай</div><div style="font-size:0.8rem;color:#64748b">+200 бонусов</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Модал подтверждения -->
+<div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#1e2433;border-radius:16px;padding:28px;width:100%;max-width:360px;border:1px solid #4ade80">
+    <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">🛒 Подтвердите покупку</div>
+    <div id="confirmText" style="color:#94a3b8;margin-bottom:20px;font-size:0.9rem"></div>
+    <div style="display:flex;gap:10px">
+      <button onclick="closeModal()" class="btn btn-outline" style="flex:1">Отмена</button>
+      <button onclick="confirmBuy()" class="btn btn-primary" style="flex:1">Купить</button>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+</nav>
+
+{% block scripts %}
+<script>
+let currentItem = null;
+function buyItem(id, name, price) {
+  currentItem = {id, name, price};
+  document.getElementById('confirmText').innerHTML = `Товар: <strong>${name}</strong><br>Стоимость: <strong style="color:#4ade80">${price} бонусов</strong><br><br>Товар будет готов к выдаче в пункте приёма.`;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+function closeModal() {
+  document.getElementById('confirmModal').style.display = 'none';
+  currentItem = null;
+}
+function confirmBuy() {
+  if (!currentItem) return;
+  fetch('/bonus-shop/buy', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(currentItem)
+  })
+  .then(r => r.json())
+  .then(data => {
+    closeModal();
+    if (data.status === 'success') {
+      showBonus(-currentItem.price);
+      setTimeout(() => location.reload(), 3000);
+    } else {
+      alert(data.message || 'Ошибка');
+    }
+  });
+}
+</script>
+{% endblock %}
+{% endblock %}
