@@ -2,64 +2,67 @@
 {% block title %}- {% if lang == 'kz' %}Басты бет{% else %}Главная{% endif %}{% endblock %}
 {% block body %}
 <div class="header">
-  <div class="header-title">AgrOS</div>
+  <div class="header-title">🌾 AgrOS</div>
   <div class="header-icons">
     <div class="lang-switcher">
       <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
-      <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">KAZ</a>
+      <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
     </div>
-    <a href="/chat">chat</a>
-    <a href="/logout" style="font-size:0.8rem;color:#64748b">{{ user.name.split()[0] }}</a>
+    <a href="/chat" title="Чат">💬</a>
+    <a href="/logout" style="font-size:0.78rem;color:#f87171;font-weight:600;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 9px;border-radius:6px">{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}</a>
   </div>
 </div>
 <div class="content">
-  <div class="card" style="background: linear-gradient(135deg,#14532d,#166534); border-color:#4ade80;">
+
+  <!-- Бонусный виджет -->
+  <div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:#4ade80;margin-bottom:16px">
     <div style="display:flex;justify-content:space-between;align-items:center">
       <div>
-        <div style="font-size:0.8rem;color:#86efac">{% if lang == 'kz' %}Бонус балансы{% else %}Бонусный баланс{% endif %}</div>
-        <div style="font-size:2rem;font-weight:900;color:#fff">{{ user.bonus_balance }} <span style="font-size:1rem">{% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</span></div>
-        <div style="font-size:0.75rem;color:#86efac">1 бонус = 1 тенге</div>
+        <div style="font-size:0.78rem;color:#86efac">{% if lang == 'kz' %}Бонус балансы{% else %}Бонусный баланс{% endif %}</div>
+        <div style="font-size:2.2rem;font-weight:900;color:#fff;line-height:1.1">{{ user.bonus_balance }} <span style="font-size:1rem;font-weight:400">{% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</span></div>
+        <div style="font-size:0.72rem;color:#86efac;margin-top:2px">1 {% if lang == 'kz' %}бонус{% else %}бонус{% endif %} = 1 ₸</div>
       </div>
-      <div style="font-size:2.5rem">trophy</div>
+      <div style="font-size:2.8rem">🏆</div>
     </div>
   </div>
 
   {% if not has_plots %}
-  <div class="section-title">{% if lang == 'kz' %}Жумысты бастаныз{% else %}Начните работу{% endif %}</div>
+  <!-- Онбординг -->
+  <div class="section-title">{% if lang == 'kz' %}🚀 Жұмысты бастаңыз{% else %}🚀 Начните работу{% endif %}</div>
   <div class="card">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-      <div style="width:28px;height:28px;background:#4ade80;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0f1117;font-weight:700">1</div>
-      <div>
-        <div style="font-weight:600">{% if lang == 'kz' %}Учаске косу{% else %}Добавить участок{% endif %}</div>
-        <div style="font-size:0.8rem;color:#64748b">{% if lang == 'kz' %}Бакшаныз тіркеніз{% else %}Зарегистрируйте свой сад{% endif %}</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div style="min-width:32px;height:32px;background:#4ade80;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0f1117;font-weight:700;font-size:0.9rem">1</div>
+      <div style="flex:1">
+        <div style="font-weight:600">{% if lang == 'kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</div>
+        <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Бақшаңызды тіркеңіз{% else %}Зарегистрируйте свой сад{% endif %}</div>
       </div>
-      <a href="/plots/create" style="margin-left:auto;background:#4ade80;color:#0f1117;padding:6px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;text-decoration:none">{% if lang == 'kz' %}Косу{% else %}Добавить{% endif %}</a>
+      <a href="/plots/create" style="background:#4ade80;color:#0f1117;padding:7px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;text-decoration:none;white-space:nowrap">{% if lang == 'kz' %}Қосу{% else %}Добавить{% endif %}</a>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;opacity:0.5">
-      <div style="width:28px;height:28px;background:#2d3748;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700">2</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;opacity:0.45">
+      <div style="min-width:32px;height:32px;background:#2d3748;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700;font-size:0.9rem">2</div>
       <div>
         <div style="font-weight:600">{% if lang == 'kz' %}Шарт жасасу{% else %}Создать договор{% endif %}</div>
-        <div style="font-size:0.8rem;color:#64748b">{% if lang == 'kz' %}Сатып алу шартын жасасыныз{% else %}Заключите договор закупки{% endif %}</div>
+        <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Сатып алу шартын жасасыңыз{% else %}Заключите договор закупки{% endif %}</div>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;opacity:0.5">
-      <div style="width:28px;height:28px;background:#2d3748;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700">3</div>
+    <div style="display:flex;align-items:center;gap:12px;opacity:0.45">
+      <div style="min-width:32px;height:32px;background:#2d3748;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700;font-size:0.9rem">3</div>
       <div>
-        <div style="font-weight:600">{% if lang == 'kz' %}Кутім жоспарын алыныз{% else %}Получите план ухода{% endif %}</div>
-        <div style="font-size:0.8rem;color:#64748b">{% if lang == 'kz' %}Шартка кол коюыныз{% else %}Подпишите договор{% endif %}</div>
+        <div style="font-weight:600">{% if lang == 'kz' %}Күтім жоспарын алыңыз{% else %}Получите план ухода{% endif %}</div>
+        <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Шартқа қол қойыңыз{% else %}Подпишите договор{% endif %}</div>
       </div>
     </div>
   </div>
   {% else %}
 
   {% if contracts %}
-  <div class="section-title">{% if lang == 'kz' %}Белсенді шарттар{% else %}Активные договоры{% endif %}</div>
+  <div class="section-title">📄 {% if lang == 'kz' %}Белсенді шарттар{% else %}Активные договоры{% endif %}</div>
   {% for c in contracts %}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:start">
       <div>
-        <div class="card-title">{{ c.plot_name }}</div>
-        <div style="font-size:0.85rem;color:#64748b">{{ c.contract_items|length }} {% if lang == 'kz' %}сорт{% else %}сорта{% endif %} - {{ '{:,.0f}'.format(c.total_amount) }} тенге</div>
+        <div class="card-title">🍎 {{ c.plot_name }}</div>
+        <div style="font-size:0.82rem;color:#64748b">{{ c.contract_items|length }} {% if lang == 'kz' %}сорт{% else %}сорта{% endif %} · {{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
       </div>
       <span class="badge badge-green">{% if lang == 'kz' %}Белсенді{% else %}Активен{% endif %}</span>
     </div>
@@ -68,7 +71,7 @@
   {% endif %}
 
   {% if tasks or overdue_tasks %}
-  <div class="section-title">{% if lang == 'kz' %}Жакындагы тапсырмалар{% else %}Ближайшие задачи{% endif %}</div>
+  <div class="section-title">📅 {% if lang == 'kz' %}Жақындағы тапсырмалар{% else %}Ближайшие задачи{% endif %}</div>
   {% for t in overdue_tasks %}
   <div class="card" style="border-color:#f87171">
     <div style="display:flex;justify-content:space-between">
@@ -83,35 +86,59 @@
     <div style="display:flex;justify-content:space-between">
       <div class="card-title">{{ t.title }}</div>
       <span class="badge {% if t.status == 'soon' %}badge-yellow{% else %}badge-blue{% endif %}">
-        {% if t.status == 'soon' %}{% if lang == 'kz' %}Жакында{% else %}Скоро срок{% endif %}{% else %}{% if lang == 'kz' %}Алдагы{% else %}Предстоит{% endif %}{% endif %}
+        {% if t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро срок{% endif %}{% else %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}{% endif %}
       </span>
     </div>
-    <div style="font-size:0.8rem;color:#64748b">{{ t.plot_name }} - +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
+    <div style="font-size:0.8rem;color:#64748b">{{ t.plot_name }} · +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
   </div>
   {% endfor %}
   {% endif %}
 
   {% endif %}
 
-  <div class="section-title">{% if lang == 'kz' %}Агымдагы бағалар{% else %}Актуальные цены{% endif %}</div>
+  <!-- Цены -->
+  <div class="section-title">💰 {% if lang == 'kz' %}Ағымдағы бағалар{% else %}Актуальные цены{% endif %}</div>
   {% for p in prices %}
   <div class="card" style="display:flex;justify-content:space-between;align-items:center">
     <div>
-      <div class="card-title">{{ p.variety_name }}</div>
-      <div style="font-size:0.8rem;color:#64748b">{% if lang == 'kz' %}Жерге түскен: {{ p.price_fallen }} тенге/кг{% else %}Падалица: {{ p.price_fallen }} тенге/кг{% endif %}</div>
+      <div class="card-title">🍎 {{ p.variety_name }}</div>
+      <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Жерге түскен: {{ p.price_fallen }} ₸/кг{% else %}Падалица: {{ p.price_fallen }} ₸/кг{% endif %}</div>
     </div>
     <div style="text-align:right">
-      <div style="font-size:1.3rem;font-weight:700;color:#4ade80">{{ p.price_commercial }} тенге</div>
-      <div style="font-size:0.75rem;color:#64748b">{% if lang == 'kz' %}кг үшін{% else %}за кг{% endif %}</div>
+      <div style="font-size:1.3rem;font-weight:700;color:#4ade80">{{ p.price_commercial }} ₸</div>
+      <div style="font-size:0.72rem;color:#64748b">{% if lang == 'kz' %}кг үшін{% else %}за кг{% endif %}</div>
     </div>
   </div>
   {% endfor %}
 </div>
 
+{% block extra_styles %}
+<style>
+.bottom-nav { background: #111827; border-top: 1px solid #1e2433; }
+.nav-item { color: #475569; }
+.nav-item.active { color: #4ade80; }
+.nav-item:hover { color: #4ade80; }
+.nav-item .icon { font-size: 1.4rem; }
+.nav-item span:last-child { font-size: 0.65rem; margin-top: 1px; }
+</style>
+{% endblock %}
+
 <nav class="bottom-nav">
-  <a href="/dashboard" class="nav-item active"><span class="icon">home</span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</a>
-  <a href="/contracts" class="nav-item"><span class="icon">doc</span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</a>
-  <a href="/plots" class="nav-item"><span class="icon">plant</span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</a>
-  <a href="/tasks" class="nav-item"><span class="icon">check</span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</a>
+  <a href="/dashboard" class="nav-item active">
+    <span class="icon">🏠</span>
+    <span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span>
+  </a>
+  <a href="/contracts" class="nav-item">
+    <span class="icon">📄</span>
+    <span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span>
+  </a>
+  <a href="/plots" class="nav-item">
+    <span class="icon">🌱</span>
+    <span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span>
+  </a>
+  <a href="/tasks" class="nav-item">
+    <span class="icon">✅</span>
+    <span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span>
+  </a>
 </nav>
 {% endblock %}
