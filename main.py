@@ -631,6 +631,30 @@ def approve_contract():
     return jsonify({'status': 'success'})
 
 
+def _auto_create_care_plan(user_id, plot_id):
+    # ТЗ 3.6: система создаёт план ухода автоматически при подписании договора
+    try:
+        if db.db_get('tasks', {'user_id': f'eq.{user_id}'}):
+            return
+    except Exception:
+        return
+    plan = [
+        ('Весенняя обрезка', 'Санитарная и формирующая обрезка деревьев', '2026-07-15', 30),
+        ('Обработка от вредителей', 'Опрыскивание от яблонной плодожорки', '2026-07-25', 40),
+        ('Внесение удобрений', 'Азотные удобрения под корень', '2026-08-05', 25),
+        ('Мониторинг болезней', 'Осмотр листьев на признаки парши', '2026-08-20', 20),
+        ('Подготовка к сбору', 'Проверка готовности плодов к сбору', '2026-09-10', 35),
+    ]
+    for title, desc, due, bonus in plan:
+        try:
+            db.db_insert('tasks', {
+                'user_id': user_id, 'plot_id': plot_id, 'title': title,
+                'description': desc, 'due_date': due, 'status': 'upcoming', 'bonus_amount': bonus
+            })
+        except Exception:
+            pass
+
+
 @app.route('/contracts/<contract_id>/sign', methods=['POST'])
 @farmer_required
 def sign_contract(contract_id):
@@ -640,6 +664,7 @@ def sign_contract(contract_id):
     if c[0].get('status') != 'awaiting_sign':
         return jsonify({'status': 'error', 'message': 'Договор не ожидает подписи'})
     db.db_update('contracts', {'status': 'active'}, {'id': f'eq.{contract_id}'})
+    _auto_create_care_plan(session['user_id'], c[0].get('plot_id'))
     return jsonify({'status': 'success'})
 
 
