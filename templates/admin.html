@@ -254,10 +254,26 @@ tr:hover td{background:rgba(255,255,255,0.02)}
 
 <!-- BONUSES -->
 <div id="page-bonuses" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">🎁 {% if lang=='kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Бонустарға айырбастауға болатын тауарлар{% else %}Товары доступные за бонусы{% endif %}</div>
-  </div></div>
+  <div class="topbar">
+    <div>
+      <div class="page-title">🎁 {% if lang=='kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</div>
+      <div class="page-sub">{% if lang=='kz' %}Бонустарға айырбастауға болатын тауарлар{% else %}Товары доступные за бонусы{% endif %}</div>
+    </div>
+    <button class="btn btn-primary" onclick="document.getElementById('addBonusForm').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  </div>
+  <div id="addBonusForm" class="card" style="display:none;border-color:#f87171">
+    <div class="card-title" style="margin-bottom:16px">{% if lang=='kz' %}Жаңа тауар{% else %}Новый товар{% endif %}</div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="ig"><label>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</label><input id="b_name"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Сипаттама{% else %}Описание{% endif %}</label><input id="b_desc"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Бағасы (⭐ бонус){% else %}Цена (⭐ бонусов){% endif %}</label><input id="b_cost" type="number" placeholder="0"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Қалдық (шт){% else %}Остаток (шт){% endif %}</label><input id="b_stock" type="number" placeholder="0"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="addBonus()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+      <button class="btn btn-danger" onclick="document.getElementById('addBonusForm').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+    </div>
+  </div>
   <div class="grid2">
     <div class="card">
       <div class="card-header"><div class="card-title">{% if lang=='kz' %}Бонус тауарлары{% else %}Товары за бонусы{% endif %}</div></div>
@@ -343,12 +359,17 @@ function toggleUser(id){
 function addUser(){
   const data={name:document.getElementById('u_name').value,phone:document.getElementById('u_phone').value,role:document.getElementById('u_role').value,region:document.getElementById('u_region').value};
   fetch('/admin/user/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
-    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
 }
 function addCatalog(){
   const data={name:document.getElementById('cat_name').value,type:document.getElementById('cat_type').value,price:document.getElementById('cat_price').value,description:document.getElementById('cat_desc').value};
   fetch('/admin/catalog/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
-    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+function addBonus(){
+  const data={name:document.getElementById('b_name').value,description:document.getElementById('b_desc').value,cost:document.getElementById('b_cost').value,stock:document.getElementById('b_stock').value};
+  fetch('/admin/bonus/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
 }
 function savePrice(id){
   const data={price_commercial:document.getElementById('pc_'+id).value,price_fallen:document.getElementById('pf_'+id).value};

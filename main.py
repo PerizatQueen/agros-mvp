@@ -280,13 +280,23 @@ def complete_task(task_id):
 def bonus_shop():
     user = db.get_user_by_id(session['user_id'])
     lg = lang()
-    shop_items = [
-        {'id': '1', 'icon': '🌿', 'name': 'Удобрение 25кг' if lg == 'ru' else 'Тыңайтқыш 25кг', 'description': 'Минеральное удобрение', 'price': 150},
-        {'id': '2', 'icon': '💚', 'name': 'Инсектицид 1л' if lg == 'ru' else 'Инсектицид 1л', 'description': 'От яблонной плодожорки', 'price': 200},
-        {'id': '3', 'icon': '✂️', 'name': 'Садовые ножницы' if lg == 'ru' else 'Бақша қайшы', 'description': 'Для обрезки', 'price': 300},
-        {'id': '4', 'icon': '🧤', 'name': 'Перчатки' if lg == 'ru' else 'Қолғап', 'description': 'Рабочие перчатки', 'price': 100},
-        {'id': '5', 'icon': '📊', 'name': 'Консультация агронома' if lg == 'ru' else 'Агроном кеңесі', 'description': 'Выезд агронома', 'price': 500},
-    ]
+    try:
+        db_items = db.db_get('bonus_items', {'is_active': 'eq.true'}) or []
+    except Exception:
+        db_items = []
+    if db_items:
+        shop_items = [{
+            'id': it['id'], 'icon': '🎁', 'name': it.get('name', ''),
+            'description': it.get('description', ''), 'price': it.get('cost', 0) or 0,
+        } for it in db_items]
+    else:
+        shop_items = [
+            {'id': '1', 'icon': '🌿', 'name': 'Удобрение 25кг' if lg == 'ru' else 'Тыңайтқыш 25кг', 'description': 'Минеральное удобрение', 'price': 150},
+            {'id': '2', 'icon': '💚', 'name': 'Инсектицид 1л' if lg == 'ru' else 'Инсектицид 1л', 'description': 'От яблонной плодожорки', 'price': 200},
+            {'id': '3', 'icon': '✂️', 'name': 'Садовые ножницы' if lg == 'ru' else 'Бақша қайшы', 'description': 'Для обрезки', 'price': 300},
+            {'id': '4', 'icon': '🧤', 'name': 'Перчатки' if lg == 'ru' else 'Қолғап', 'description': 'Рабочие перчатки', 'price': 100},
+            {'id': '5', 'icon': '📊', 'name': 'Консультация агронома' if lg == 'ru' else 'Агроном кеңесі', 'description': 'Выезд агронома', 'price': 500},
+        ]
     return render_template('bonus_shop.html', user=user, shop_items=shop_items, lang=lg)
 
 
@@ -294,11 +304,27 @@ def bonus_shop():
 @farmer_required
 def buy_bonus_item():
     data = request.get_json() or {}
-    price = int(data.get('price', 0))
+    try:
+        price = int(float(data.get('price', 0)))
+    except Exception:
+        price = 0
+    item_id = data.get('id')
+    item_name = data.get('name', '')
     user = db.get_user_by_id(session['user_id'])
     if user['bonus_balance'] < price:
         return jsonify({'status': 'error', 'message': 'Недостаточно бонусов'})
     db.update_bonus_balance(session['user_id'], -price)
+    try:
+        db.db_insert('bonus_redemptions', {
+            'user_id': session['user_id'], 'farmer_name': user.get('name', ''),
+            'item_name': item_name, 'cost': price
+        })
+        if item_id:
+            it = db.db_get('bonus_items', {'id': f'eq.{item_id}'})
+            if it and it[0].get('stock') is not None:
+                db.db_update('bonus_items', {'stock': max(0, (it[0]['stock'] or 0) - 1)}, {'id': f'eq.{item_id}'})
+    except Exception:
+        pass
     return jsonify({'status': 'success'})
 
 
@@ -582,6 +608,27 @@ def admin_add_catalog():
     })
     if not res:
         return jsonify({'status': 'error', 'message': 'Не удалось. Создана ли таблица catalog_items (SQL-миграция)?'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/admin/bonus/add', methods=['POST'])
+@agronomist_required
+def admin_add_bonus():
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    if not name:
+        return jsonify({'status': 'error', 'message': 'Укажите название'})
+    try:
+        cost = int(float(data.get('cost') or 0))
+        stock = int(float(data.get('stock') or 0))
+    except Exception:
+        cost, stock = 0, 0
+    res = db.db_insert('bonus_items', {
+        'name': name, 'description': (data.get('description') or '').strip(),
+        'cost': cost, 'stock': stock, 'is_active': True
+    })
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось. Создана ли таблица bonus_items (SQL-миграция)?'})
     return jsonify({'status': 'success'})
 
 
