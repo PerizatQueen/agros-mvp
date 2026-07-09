@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="kk">
 <head>
@@ -287,4 +288,317 @@ function filterC(s,btn){
 }
 </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgrOS — Админ</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0c14;color:#e2e8f0}
+.sidebar{width:240px;background:#0f1320;height:100vh;position:fixed;left:0;top:0;border-right:1px solid #1a2040;display:flex;flex-direction:column}
+.sidebar-header{padding:20px 20px 16px;border-bottom:1px solid #1a2040}
+.sidebar-logo{font-size:1.3rem;font-weight:900;color:#f87171}
+.sidebar-role{font-size:0.7rem;color:#475569;margin-top:2px;text-transform:uppercase;letter-spacing:1px}
+.sidebar-user{font-size:0.8rem;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #1a2040}
+.lang-bar{padding:8px 12px;border-bottom:1px solid #1a2040;display:flex;gap:6px;align-items:center}
+.lang-btn{padding:3px 10px;border-radius:6px;font-size:0.72rem;font-weight:700;border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:all 0.15s}
+.lang-btn.active{background:#f87171;color:#0a0c14;border-color:#f87171}
+.lang-btn:not(.active){background:transparent;color:#475569;border-color:#1a2040}
+.logout-link{margin-left:auto;font-size:0.72rem;color:#f87171;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 8px;border-radius:6px}
+.nav-section{padding:12px 12px 4px;font-size:0.65rem;color:#475569;text-transform:uppercase;letter-spacing:1px}
+.nav-link{display:flex;align-items:center;gap:10px;padding:10px 16px;margin:2px 8px;border-radius:8px;color:#94a3b8;text-decoration:none;font-size:0.875rem;cursor:pointer;border:none;background:none;width:calc(100% - 16px);text-align:left;transition:all 0.15s}
+.nav-link:hover{background:rgba(248,113,113,0.08);color:#f87171}
+.nav-link.active{background:rgba(248,113,113,0.12);color:#f87171;font-weight:600;border-left:3px solid #f87171}
+.sidebar-bottom{margin-top:auto;padding:12px;border-top:1px solid #1a2040}
+.main{margin-left:240px;padding:28px 32px;min-height:100vh}
+.page{display:none}.page.active{display:block}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.page-title{font-size:1.4rem;font-weight:700;color:#f1f5f9}
+.page-sub{font-size:0.82rem;color:#475569;margin-top:2px}
+.topbar-badge{background:rgba(248,113,113,0.15);color:#f87171;padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;border:1px solid rgba(248,113,113,0.3)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
+.stat-card{background:#131929;border-radius:14px;padding:18px;border:1px solid #1e2d45;position:relative;overflow:hidden}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#f87171}
+.stat-card.green::before{background:#4ade80}.stat-card.blue::before{background:#60a5fa}.stat-card.yellow::before{background:#fcd34d}
+.stat-val{font-size:2rem;font-weight:900;color:#f1f5f9;line-height:1}
+.stat-val.green{color:#4ade80}.stat-val.blue{color:#60a5fa}.stat-val.yellow{color:#fcd34d}.stat-val.red{color:#f87171}
+.stat-lbl{font-size:0.75rem;color:#475569;margin-top:6px}
+.card{background:#131929;border-radius:14px;padding:20px;border:1px solid #1e2d45;margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-weight:700;color:#f1f5f9;font-size:0.95rem}
+.card-count{font-size:0.75rem;color:#475569;background:#1e2d45;padding:3px 10px;border-radius:20px}
+table{width:100%;border-collapse:collapse}
+th{background:#0f1320;color:#475569;padding:10px 14px;text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
+td{padding:12px 14px;border-bottom:1px solid #1a2040;font-size:0.85rem;color:#cbd5e1;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,0.02)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
+.badge-green{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
+.badge-yellow{background:rgba(252,211,77,0.12);color:#fcd34d;border:1px solid rgba(252,211,77,0.2)}
+.badge-red{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.2)}
+.badge-blue{background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.2)}
+.btn{padding:7px 14px;border-radius:8px;font-weight:600;font-size:0.8rem;border:none;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:#f87171;color:#0a0c14}.btn-primary:hover{background:#ef4444}
+.btn-green{background:#4ade80;color:#0a0c14}.btn-green:hover{background:#22c55e}
+.btn-danger{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.3)}
+.ig label{display:block;font-size:0.75rem;color:#475569;margin-bottom:4px}
+.ig input,.ig select{width:100%;background:#0f1320;border:1.5px solid #1e2d45;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem;outline:none}
+.ig input:focus,.ig select:focus{border-color:#f87171}
+.ftabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.ftab{padding:6px 14px;border-radius:8px;border:1.5px solid #1e2d45;color:#475569;background:transparent;cursor:pointer;font-size:0.8rem}
+.ftab.active{background:#f87171;color:#0a0c14;border-color:#f87171;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.empty-state{text-align:center;padding:40px 20px;color:#475569}
+.bonus-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #1a2040}
+.bonus-item:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🔴 AgrOS</div>
+    <div class="sidebar-role">{% if lang=='kz' %}Әкімші панелі{% else %}Панель администратора{% endif %}</div>
+    <div class="sidebar-user">👤 {{ user_name }}</div>
+  </div>
+  <div class="lang-bar">
+    <a href="/set-lang/ru" class="lang-btn {% if lang!='kz' %}active{% endif %}">RU</a>
+    <a href="/set-lang/kz" class="lang-btn {% if lang=='kz' %}active{% endif %}">ҚАЗ</a>
+    <a href="/logout" class="logout-link">{% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
+  </div>
+  <div class="nav-section">{% if lang=='kz' %}Басқару{% else %}Управление{% endif %}</div>
+  <button class="nav-link active" onclick="showPage('dashboard',this)">✅ {% if lang=='kz' %}Шолу{% else %}Обзор{% endif %}</button>
+  <button class="nav-link" onclick="showPage('users',this)">👥 {% if lang=='kz' %}Пайдаланушылар{% else %}Пользователи{% endif %}</button>
+  <button class="nav-link" onclick="showPage('farmers',this)">👨‍🌾 {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
+  <button class="nav-link" onclick="showPage('contracts',this)">📄 {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</button>
+  <div class="nav-section">{% if lang=='kz' %}Жүйе{% else %}Система{% endif %}</div>
+  <button class="nav-link" onclick="showPage('catalog',this)">📦 {% if lang=='kz' %}Каталог{% else %}Каталог{% endif %}</button>
+  <button class="nav-link" onclick="showPage('bonuses',this)">🎁 {% if lang=='kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</button>
+  <button class="nav-link" onclick="showPage('prices',this)">💰 {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
+  <button class="nav-link" onclick="showPage('monitor',this)">🖥️ {% if lang=='kz' %}Мониторинг{% else %}Мониторинг{% endif %}</button>
+  <div class="sidebar-bottom">
+    <a href="/logout" class="nav-link" style="color:#f87171">🚶 {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- DASHBOARD -->
+<div id="page-dashboard" class="page active">
+  <div class="topbar">
+    <div><div class="page-title">{% if lang=='kz' %}Жалпы шолу{% else %}Общий обзор{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Жүйенің жағдайы{% else %}Состояние системы{% endif %}</div></div>
+    <div class="topbar-badge">🔴 Admin</div>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-val red">{{ stats.farmers }}</div><div class="stat-lbl">👨‍🌾 {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div></div>
+    <div class="stat-card green"><div class="stat-val green">{{ stats.agronomists|default(0) }}</div><div class="stat-lbl">🌿 {% if lang=='kz' %}Агрономдар{% else %}Агрономы{% endif %}</div></div>
+    <div class="stat-card blue"><div class="stat-val blue">{{ stats.active_contracts }}</div><div class="stat-lbl">📄 {% if lang=='kz' %}Белсенді шарттар{% else %}Активных договоров{% endif %}</div></div>
+    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.pending_contracts }}</div><div class="stat-lbl">⏳ {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.plots }}</div><div class="stat-lbl">🌱 {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</div></div>
+    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.total_bonuses|default(0) }}</div><div class="stat-lbl">⭐ {% if lang=='kz' %}Бонустар{% else %}Бонусов выдано{% endif %}</div></div>
+  </div>
+</div>
+
+<!-- USERS -->
+<div id="page-users" class="page">
+  <div class="topbar">
+    <div><div class="page-title">👥 {% if lang=='kz' %}Пайдаланушылар{% else %}Пользователи{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Жүйе пайдаланушыларын басқару{% else %}Управление пользователями{% endif %}</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('addUserForm').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  </div>
+  <div id="addUserForm" class="card" style="display:none;border-color:#f87171">
+    <div class="card-title" style="margin-bottom:16px">{% if lang=='kz' %}Жаңа пайдаланушы{% else %}Новый пользователь{% endif %}</div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="ig"><label>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</label><input id="u_name"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</label><input id="u_phone" placeholder="7001234567"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Рөл{% else %}Роль{% endif %}</label>
+        <select id="u_role">
+          <option value="farmer">{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</option>
+          <option value="agronomist">{% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+      <div class="ig"><label>{% if lang=='kz' %}Аудан{% else %}Район{% endif %}</label><input id="u_region"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="addUser()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+      <button class="btn btn-danger" onclick="document.getElementById('addUserForm').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+    </div>
+  </div>
+  <div class="ftabs">
+    <button class="ftab active" onclick="filterU('all',this)">{% if lang=='kz' %}Барлығы{% else %}Все{% endif %}</button>
+    <button class="ftab" onclick="filterU('farmer',this)">👨‍🌾</button>
+    <button class="ftab" onclick="filterU('agronomist',this)">🌿</button>
+    <button class="ftab" onclick="filterU('admin',this)">🔴 Admin</button>
+  </div>
+  <div class="card"><table><thead><tr>
+    <th>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</th>
+    <th>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</th>
+    <th>{% if lang=='kz' %}Рөл{% else %}Роль{% endif %}</th>
+    <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
+    <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
+  </tr></thead><tbody id="usersTable">
+  {% for u in all_users %}
+  <tr data-role="{{ u.role }}">
+    <td><strong>{{ u.name }}</strong></td>
+    <td>+7{{ u.phone }}</td>
+    <td><span class="badge {% if u.role=='admin' %}badge-red{% elif u.role=='agronomist' %}badge-green{% else %}badge-blue{% endif %}">{{ u.role }}</span></td>
+    <td><span class="badge {% if u.is_active %}badge-green{% else %}badge-red{% endif %}">{% if u.is_active %}✓{% else %}✗{% endif %}</span></td>
+    <td><button class="btn btn-danger" onclick="toggleUser('{{ u.id }}')">{% if u.is_active %}{% if lang=='kz' %}Бұғат{% else %}Блок{% endif %}{% else %}{% if lang=='kz' %}Ашу{% else %}Разблок{% endif %}{% endif %}</button></td>
+  </tr>
+  {% else %}<tr><td colspan="5"><div class="empty-state">{% if lang=='kz' %}Пайдаланушылар жоқ{% else %}Пользователей нет{% endif %}</div></td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+<!-- CATALOG -->
+<div id="page-catalog" class="page">
+  <div class="topbar">
+    <div><div class="page-title">📦 {% if lang=='kz' %}Каталог{% else %}Каталог агросервиса{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Қызметтер мен тауарлар{% else %}Услуги и товары{% endif %}</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('addCatForm').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  </div>
+  <div id="addCatForm" class="card" style="display:none;border-color:#f87171">
+    <div class="card-title" style="margin-bottom:16px">{% if lang=='kz' %}Жаңа позиция{% else %}Новая позиция{% endif %}</div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="ig"><label>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</label><input id="cat_name"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Санаты{% else %}Категория{% endif %}</label>
+        <select id="cat_type">
+          <option value="service">{% if lang=='kz' %}Қызмет{% else %}Услуга{% endif %}</option>
+          <option value="product">{% if lang=='kz' %}Тауар{% else %}Товар{% endif %}</option>
+          <option value="equipment">{% if lang=='kz' %}Жабдық{% else %}Оборудование{% endif %}</option>
+        </select>
+      </div>
+      <div class="ig"><label>{% if lang=='kz' %}Бағасы (₸){% else %}Цена (₸){% endif %}</label><input id="cat_price" type="number" placeholder="0"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Сипаттама{% else %}Описание{% endif %}</label><input id="cat_desc"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="addCatalog()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+      <button class="btn btn-danger" onclick="document.getElementById('addCatForm').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+    </div>
+  </div>
+  <div class="card"><table><thead><tr>
+    <th>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</th>
+    <th>{% if lang=='kz' %}Санаты{% else %}Категория{% endif %}</th>
+    <th>{% if lang=='kz' %}Бағасы{% else %}Цена{% endif %}</th>
+    <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
+  </tr></thead><tbody>
+  {% for item in catalog_items|default([]) %}
+  <tr>
+    <td><strong>{{ item.name }}</strong><br><small style="color:#475569">{{ item.description }}</small></td>
+    <td><span class="badge badge-blue">{{ item.type }}</span></td>
+    <td>{{ '{:,.0f}'.format(item.price) }} ₸</td>
+    <td><span class="badge {% if item.is_active %}badge-green{% else %}badge-red{% endif %}">{% if item.is_active %}✓{% else %}✗{% endif %}</span></td>
+  </tr>
+  {% else %}<tr><td colspan="4"><div class="empty-state">{% if lang=='kz' %}Каталог бос{% else %}Каталог пуст{% endif %}</div></td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+
+<!-- BONUSES -->
+<div id="page-bonuses" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">🎁 {% if lang=='kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Бонустарға айырбастауға болатын тауарлар{% else %}Товары доступные за бонусы{% endif %}</div>
+  </div></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-header"><div class="card-title">{% if lang=='kz' %}Бонус тауарлары{% else %}Товары за бонусы{% endif %}</div></div>
+      {% for item in bonus_items|default([]) %}
+      <div class="bonus-item">
+        <div><strong>{{ item.name }}</strong><br><small style="color:#475569">{{ item.description }}</small></div>
+        <div style="text-align:right"><div style="color:#fcd34d;font-weight:700">{{ item.cost }} ⭐</div><div style="font-size:0.75rem;color:#475569">{{ item.stock }} шт.</div></div>
+      </div>
+      {% else %}<div class="empty-state">{% if lang=='kz' %}Тауарлар жоқ{% else %}Товаров нет{% endif %}</div>{% endfor %}
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">{% if lang=='kz' %}Соңғы айырбастаулар{% else %}Последние обмены{% endif %}</div></div>
+      <table><thead><tr>
+        <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
+        <th>{% if lang=='kz' %}Тауар{% else %}Товар{% endif %}</th>
+        <th>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</th>
+      </tr></thead><tbody>
+      {% for r in bonus_redemptions|default([]) %}
+      <tr><td>{{ r.farmer_name }}</td><td>{{ r.item_name }}</td><td style="color:#fcd34d">-{{ r.cost }} ⭐</td></tr>
+      {% else %}<tr><td colspan="3"><div class="empty-state">{% if lang=='kz' %}Айырбастаулар жоқ{% else %}Обменов нет{% endif %}</div></td></tr>{% endfor %}
+      </tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- PRICES -->
+<div id="page-prices" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">💰 {% if lang=='kz' %}Бағалар{% else %}Цены на сорта{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Сатып алу бағалары{% else %}Закупочные цены{% endif %}</div>
+  </div></div>
+  <div class="card"><table><thead><tr>
+    <th>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</th>
+    <th>{% if lang=='kz' %}Тауарлы (₸/кг){% else %}Товарные (₸/кг){% endif %}</th>
+    <th>{% if lang=='kz' %}Жерге түскен (₸/кг){% else %}Падалые (₸/кг){% endif %}</th>
+    <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
+  </tr></thead><tbody>
+  {% for p in prices %}
+  <tr>
+    <td><strong>{{ p.variety_name }}</strong></td>
+    <td><input type="number" value="{{ p.price_commercial }}" id="pc_{{ p.id }}" style="width:100px;background:#0f1320;border:1px solid #1e2d45;border-radius:6px;padding:4px 8px;color:#e2e8f0"></td>
+    <td><input type="number" value="{{ p.price_fallen }}" id="pf_{{ p.id }}" style="width:100px;background:#0f1320;border:1px solid #1e2d45;border-radius:6px;padding:4px 8px;color:#e2e8f0"></td>
+    <td><button class="btn btn-primary" onclick="savePrice('{{ p.id }}')">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button></td>
+  </tr>
+  {% endfor %}
+  </tbody></table></div>
+</div>
+
+<!-- MONITOR -->
+<div id="page-monitor" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">🖥️ {% if lang=='kz' %}Жүйе мониторингі{% else %}Мониторинг системы{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Нақты жағдай{% else %}Текущее состояние{% endif %}</div>
+  </div></div>
+  <div class="grid2" style="margin-bottom:16px">
+    <div class="card"><div style="font-size:0.75rem;color:#475569;margin-bottom:8px">👥 {% if lang=='kz' %}Жалпы пайдаланушылар{% else %}Всего пользователей{% endif %}</div><div style="font-size:2.5rem;font-weight:900;color:#f1f5f9">{{ stats.farmers|int + stats.agronomists|default(0)|int }}</div></div>
+    <div class="card"><div style="font-size:0.75rem;color:#475569;margin-bottom:8px">📄 {% if lang=='kz' %}Жалпы шарттар{% else %}Всего договоров{% endif %}</div><div style="font-size:2.5rem;font-weight:900;color:#60a5fa">{{ stats.active_contracts|int + stats.pending_contracts|int }}</div></div>
+    <div class="card"><div style="font-size:0.75rem;color:#475569;margin-bottom:8px">⭐ {% if lang=='kz' %}Берілген бонустар{% else %}Выдано бонусов{% endif %}</div><div style="font-size:2.5rem;font-weight:900;color:#fcd34d">{{ stats.total_bonuses|default(0) }}</div></div>
+    <div class="card"><div style="font-size:0.75rem;color:#475569;margin-bottom:8px">🌱 {% if lang=='kz' %}Жалпы учаскелер{% else %}Всего участков{% endif %}</div><div style="font-size:2.5rem;font-weight:900;color:#4ade80">{{ stats.plots }}</div></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+function showPage(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+function filterU(role,btn){
+  document.querySelectorAll('#usersTable tr').forEach(r=>{
+    r.style.display=(role==='all'||r.dataset.role===role)?'':'none';
+  });
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleUser(id){
+  fetch('/admin/user/toggle/'+id,{method:'POST',headers:{'Content-Type':'application/json'}})
+    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+function addUser(){
+  const data={name:document.getElementById('u_name').value,phone:document.getElementById('u_phone').value,role:document.getElementById('u_role').value,region:document.getElementById('u_region').value};
+  fetch('/admin/user/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+function addCatalog(){
+  const data={name:document.getElementById('cat_name').value,type:document.getElementById('cat_type').value,price:document.getElementById('cat_price').value,description:document.getElementById('cat_desc').value};
+  fetch('/admin/catalog/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+function savePrice(id){
+  const data={price_commercial:document.getElementById('pc_'+id).value,price_fallen:document.getElementById('pf_'+id).value};
+  fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({variety_id:id,...data})})
+    .then(r=>r.json()).then(d=>{if(d.status==='success')alert('Сохранено!');});
+}
+</script>
+</body>
+>>>>>>> 413da07 (feat: agronomist calculator+photos+RU/KAZ, admin users+catalog+bonuses)
 </html>
