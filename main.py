@@ -340,8 +340,40 @@ def harvest():
 @app.route('/harvest/submit', methods=['POST'])
 @farmer_required
 def submit_harvest():
+    data = request.get_json() or {}
+    try:
+        commercial = float(data.get('commercial_kg', 0) or 0)
+        fallen = float(data.get('fallen_kg', 0) or 0)
+    except Exception:
+        commercial, fallen = 0, 0
+    contracts = [c for c in db.get_contracts(session['user_id']) if c['status'] == 'active']
+    contract_id = contracts[0]['id'] if contracts else None
+    created = 0
+    if commercial > 0:
+        dest = 'warehouse' if commercial >= 15000 else 'reception'
+        if db.db_insert('trips', {'user_id': session['user_id'], 'contract_id': contract_id,
+                'cargo_type': 'commercial', 'volume_kg': commercial, 'destination': dest, 'status': 'planned'}):
+            created += 1
+    if fallen > 0:
+        dest = 'factory' if fallen >= 15000 else 'reception'
+        if db.db_insert('trips', {'user_id': session['user_id'], 'contract_id': contract_id,
+                'cargo_type': 'fallen', 'volume_kg': fallen, 'destination': dest, 'status': 'planned'}):
+            created += 1
+    if created == 0:
+        return jsonify({'status': 'error', 'message': 'Укажите объёмы (или не создана таблица trips — миграция №2)'})
     db.update_bonus_balance(session['user_id'], 200)
-    return jsonify({'status': 'success', 'bonus': 200})
+    return jsonify({'status': 'success', 'bonus': 200, 'trips': created})
+
+
+@app.route('/trips')
+@farmer_required
+def trips():
+    user = db.get_user_by_id(session['user_id'])
+    try:
+        user_trips = db.db_get('trips', {'user_id': f'eq.{session["user_id"]}'}, order='created_at.desc') or []
+    except Exception:
+        user_trips = []
+    return render_template('my_trips.html', user=user, trips=user_trips, lang=lang())
 
 
 # ===== CHAT =====
@@ -463,6 +495,19 @@ def _get_panel_data(template):
         all_tasks.append(t)
 
     try:
+        all_trips_raw = db.db_get('trips', order='created_at.desc') or []
+    except Exception:
+        all_trips_raw = []
+    all_trips = []
+    for tr in all_trips_raw:
+        try:
+            u = db.get_user_by_id(tr['user_id'])
+            tr['farmer_name'] = u['name'] if u else ''
+        except Exception:
+            tr.setdefault('farmer_name', '')
+        all_trips.append(tr)
+
+    try:
         prices = db.get_demand_prices() or []
     except Exception:
         prices = []
@@ -493,6 +538,7 @@ def _get_panel_data(template):
     return render_template(template,
         all_users=all_users,
         farmers=farmers,
+        all_trips=all_trips,
         all_contracts=all_contracts,
         pending_contracts=pending_contracts,
         all_tasks=all_tasks,
@@ -551,6 +597,20 @@ def update_price():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
     return jsonify({'status': 'success'})
+
+
+@app.route('/agronomist/trip/advance', methods=['POST'])
+@agronomist_required
+def advance_trip():
+    data = request.get_json() or {}
+    trip_id = data.get('trip_id')
+    flow = {'planned': 'confirmed', 'confirmed': 'received', 'received': 'paid', 'paid': 'completed'}
+    t = db.db_get('trips', {'id': f'eq.{trip_id}'})
+    if not t:
+        return jsonify({'status': 'error', 'message': 'Рейс не найден'})
+    nxt = flow.get(t[0].get('status', 'planned'), 'completed')
+    db.db_update('trips', {'status': nxt}, {'id': f'eq.{trip_id}'})
+    return jsonify({'status': 'success', 'new_status': nxt})
 
 
 # ===== ADMIN: пользователи и каталог =====

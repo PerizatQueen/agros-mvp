@@ -6,6 +6,7 @@
     <a href="/dashboard" style="color:#94a3b8;text-decoration:none">←</a>
     <div class="header-title">🚚 Подача урожая</div>
   </div>
+  <a href="/trips" style="font-size:0.8rem;color:#4ade80;text-decoration:none;font-weight:600">Мои рейсы →</a>
 </div>
 <div class="content">
   {% if not contracts %}
@@ -132,17 +133,20 @@ function buildSummary() {
     `📦 Емкость: <strong>${container}</strong>`;
 }
 function submitHarvest() {
+  let commercial = 0, fallen = 0;
+  document.querySelectorAll('[id$="_commercial"]').forEach(i => commercial += parseFloat(i.value || 0));
+  document.querySelectorAll('[id$="_fallen"]').forEach(i => fallen += parseFloat(i.value || 0));
   fetch('/harvest/submit', {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({})
+    body: JSON.stringify({commercial_kg: commercial, fallen_kg: fallen})
   })
   .then(r => r.json())
   .then(data => {
     if (data.status === 'success') {
       showBonus(200);
-      setTimeout(() => window.location.href = '/dashboard', 3000);
-    }
+      setTimeout(() => window.location.href = '/trips', 2500);
+    } else { alert(data.message || 'Ошибка'); }
   });
 }
 </script>

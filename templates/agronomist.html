@@ -82,6 +82,7 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   <button class="nav-link" onclick="showPage('contracts',this)"><span>📄</span> {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</button>
   <button class="nav-link" onclick="showPage('tasks',this)"><span>✅</span> {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</button>
   <button class="nav-link" onclick="showPage('farmers',this)"><span>👨‍🌾</span> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
+  <button class="nav-link" onclick="showPage('trips',this)"><span>🚚</span> {% if lang=='kz' %}Рейстер{% else %}Рейсы{% endif %}</button>
 
   <div class="nav-section">{% if lang=='kz' %}Баға{% else %}Цены{% endif %}</div>
   <button class="nav-link" onclick="showPage('prices',this)"><span>💰</span> {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
@@ -249,6 +250,48 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   </div>
 </div>
 
+<!-- TRIPS -->
+<div id="page-trips" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">🚚 {% if lang=='kz' %}Рейстер / қабылдау{% else %}Рейсы / приёмка{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Егін тапсыруды бақылау{% else %}Контроль сдачи урожая{% endif %}</div>
+  </div></div>
+  <div class="card">
+    <table><thead><tr>
+      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
+      <th>{% if lang=='kz' %}Жүк{% else %}Груз{% endif %}</th>
+      <th>{% if lang=='kz' %}Көлемі{% else %}Объём{% endif %}</th>
+      <th>{% if lang=='kz' %}Бағыт{% else %}Назначение{% endif %}</th>
+      <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
+      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
+    </tr></thead><tbody>
+    {% for t in all_trips %}
+    <tr>
+      <td><strong>{{ t.farmer_name }}</strong></td>
+      <td>{% if t.cargo_type == 'commercial' %}🍎 {% if lang=='kz' %}Тауарлы{% else %}Товарные{% endif %}{% else %}🍂 {% if lang=='kz' %}Жерге түскен{% else %}Падалица{% endif %}{% endif %}</td>
+      <td>{{ '{:,.0f}'.format((t.volume_kg or 0)|float) }} кг</td>
+      <td>{% if t.destination=='warehouse' %}🏠 {% if lang=='kz' %}Қойма{% else %}Плодохран.{% endif %}{% elif t.destination=='factory' %}🏭 {% if lang=='kz' %}Зауыт{% else %}Завод{% endif %}{% else %}📦 {% if lang=='kz' %}Пункт{% else %}Пункт приёма{% endif %}{% endif %}</td>
+      <td><span class="badge {% if t.status in ['paid','completed'] %}badge-green{% elif t.status=='received' %}badge-yellow{% elif t.status=='cancelled' %}badge-red{% else %}badge-blue{% endif %}">
+        {% if t.status=='planned' %}{% if lang=='kz' %}Жоспарланды{% else %}Запланирован{% endif %}
+        {% elif t.status=='confirmed' %}{% if lang=='kz' %}Расталды{% else %}Подтверждён{% endif %}
+        {% elif t.status=='received' %}{% if lang=='kz' %}Қабылданды{% else %}Приёмка завершена{% endif %}
+        {% elif t.status=='paid' %}{% if lang=='kz' %}Төлем{% else %}Оплата отправлена{% endif %}
+        {% elif t.status=='completed' %}{% if lang=='kz' %}Аяқталды{% else %}Завершён{% endif %}
+        {% else %}{{ t.status }}{% endif %}
+      </span></td>
+      <td>
+        {% if t.status == 'planned' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">✓ {% if lang=='kz' %}Растау{% else %}Подтвердить{% endif %}</button>
+        {% elif t.status == 'confirmed' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">📦 {% if lang=='kz' %}Қабылдау{% else %}Приёмка{% endif %}</button>
+        {% elif t.status == 'received' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">💰 {% if lang=='kz' %}Төлем{% else %}Оплата{% endif %}</button>
+        {% elif t.status == 'paid' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">✓ {% if lang=='kz' %}Жабу{% else %}Завершить{% endif %}</button>
+        {% else %}<span style="color:#4ade80">✓</span>{% endif %}
+      </td>
+    </tr>
+    {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Рейстер жоқ{% else %}Нет рейсов{% endif %}</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+</div>
+
 <!-- PRICES -->
 <div id="page-prices" class="page">
   <div class="topbar"><div>
@@ -333,6 +376,10 @@ function rejectContract(id){
 function approveTask(id){
   fetch('/agronomist/task/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})})
   .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+function advanceTrip(id){
+  fetch('/agronomist/trip/advance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip_id:id})})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
 }
 function updatePrice(id){
   const c=document.getElementById('pc_'+id).value;

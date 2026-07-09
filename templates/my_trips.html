@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}— {% if lang == 'kz' %}Рейстер{% else %}Мои рейсы{% endif %}{% endblock %}
+{% block body %}
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/harvest" style="color:#94a3b8;text-decoration:none">←</a>
+    <div class="header-title">🚚 {% if lang == 'kz' %}Рейстер{% else %}Мои рейсы{% endif %}</div>
+  </div>
+  <div class="lang-switcher">
+    <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
+    <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+  </div>
+</div>
+<div class="content">
+  {% if not trips %}
+  <div class="card" style="text-align:center;padding:40px">
+    <div style="font-size:3rem">🚚</div>
+    <div style="margin-top:12px;color:#64748b">{% if lang == 'kz' %}Рейстер жоқ{% else %}Рейсов пока нет{% endif %}</div>
+    <a href="/harvest" class="btn btn-primary" style="margin-top:16px;display:inline-block">{% if lang == 'kz' %}Егін тапсыру{% else %}Сдать урожай{% endif %}</a>
+  </div>
+  {% else %}
+  {% for t in trips %}
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:8px">
+      <div class="card-title">
+        {% if t.cargo_type == 'commercial' %}🍎 {% if lang == 'kz' %}Тауарлы алма{% else %}Товарные яблоки{% endif %}
+        {% else %}🍂 {% if lang == 'kz' %}Жерге түскен{% else %}Падалица{% endif %}{% endif %}
+      </div>
+      <span class="badge
+        {% if t.status == 'completed' or t.status == 'paid' %}badge-green
+        {% elif t.status == 'received' %}badge-yellow
+        {% elif t.status == 'cancelled' %}badge-red
+        {% else %}badge-blue{% endif %}">
+        {% if t.status == 'planned' %}{% if lang == 'kz' %}Жоспарланды{% else %}Запланирован{% endif %}
+        {% elif t.status == 'confirmed' %}{% if lang == 'kz' %}Расталды{% else %}Подтверждён{% endif %}
+        {% elif t.status == 'received' %}{% if lang == 'kz' %}Қабылданды{% else %}Приёмка завершена{% endif %}
+        {% elif t.status == 'paid' %}{% if lang == 'kz' %}Төлем жіберілді{% else %}Оплата отправлена{% endif %}
+        {% elif t.status == 'completed' %}{% if lang == 'kz' %}Аяқталды{% else %}Завершён{% endif %}
+        {% elif t.status == 'cancelled' %}{% if lang == 'kz' %}Бас тартылды{% else %}Отменён{% endif %}
+        {% else %}{{ t.status }}{% endif %}
+      </span>
+    </div>
+    <div style="font-size:0.9rem;color:#e2e8f0;margin-bottom:4px">⚖️ {{ '{:,.0f}'.format((t.volume_kg or 0)|float) }} {% if lang == 'kz' %}кг{% else %}кг{% endif %}</div>
+    <div style="font-size:0.82rem;color:#64748b">📍
+      {% if t.destination == 'warehouse' %}{% if lang == 'kz' %}Жеміс қоймасы{% else %}Плодохранилище{% endif %}
+      {% elif t.destination == 'factory' %}{% if lang == 'kz' %}Зауыт{% else %}Завод{% endif %}
+      {% else %}{% if lang == 'kz' %}Қабылдау пункті{% else %}Пункт приёма{% endif %}{% endif %}
+    </div>
+    {% if t.created_at %}<div style="font-size:0.75rem;color:#475569;margin-top:6px">{{ t.created_at[:10] }}</div>{% endif %}
+  </div>
+  {% endfor %}
+  {% endif %}
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
+</nav>
+{% endblock %}
