@@ -269,7 +269,7 @@ def tasks():
 @farmer_required
 def complete_task(task_id):
     # Фермер отправляет фотоотчёт → «на проверке». Бонус начисляет агроном при одобрении.
-    data = request.get_json() or {}
+    data = request.get_json(silent=True) or {}
     note = (data.get('note') or '').strip()
     photo = data.get('photo') or ''
     if len(photo) > 400000:
@@ -625,8 +625,21 @@ def _get_panel_data(template):
 @app.route('/agronomist/contract/approve', methods=['POST'])
 @agronomist_required
 def approve_contract():
+    # Агроном одобряет → договор уходит фермеру на подпись (FLOW-002), не активируется сразу
     data = request.get_json() or {}
-    db.db_update('contracts', {'status': 'active'}, {'id': f'eq.{data["contract_id"]}'})
+    db.db_update('contracts', {'status': 'awaiting_sign'}, {'id': f'eq.{data["contract_id"]}'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/contracts/<contract_id>/sign', methods=['POST'])
+@farmer_required
+def sign_contract(contract_id):
+    c = db.db_get('contracts', {'id': f'eq.{contract_id}', 'user_id': f'eq.{session["user_id"]}'})
+    if not c:
+        return jsonify({'status': 'error', 'message': 'Договор не найден'})
+    if c[0].get('status') != 'awaiting_sign':
+        return jsonify({'status': 'error', 'message': 'Договор не ожидает подписи'})
+    db.db_update('contracts', {'status': 'active'}, {'id': f'eq.{contract_id}'})
     return jsonify({'status': 'success'})
 
 

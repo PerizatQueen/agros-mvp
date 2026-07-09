@@ -173,9 +173,10 @@ tr:hover td{background:rgba(74,222,128,0.03)}
       <td>{{ c.plot_name }}</td>
       <td>{{ '{:,.0f}'.format(c.total_amount) }} ₸</td>
       <td style="color:#2d6a4f">{{ c.created_at[:10] if c.created_at else '' }}</td>
-      <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% else %}badge-red{% endif %}">
+      <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% elif c.status=='awaiting_sign' %}badge-blue{% else %}badge-red{% endif %}">
         {% if c.status=='active' %}✅ {% if lang=='kz' %}Белсенді{% else %}Активный{% endif %}
         {% elif c.status=='pending' %}⏳ {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}
+        {% elif c.status=='awaiting_sign' %}✍️ {% if lang=='kz' %}Қол күтуде{% else %}Ожидает подписи{% endif %}
         {% elif c.status=='rejected' %}❌ {% if lang=='kz' %}Қабылданбаған{% else %}Отклонён{% endif %}
         {% else %}{{ c.status }}{% endif %}
       </span></td>

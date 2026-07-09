@@ -68,6 +68,9 @@
       <div style="font-size:0.82rem;color:#64748b">{% if lang == 'kz' %}Барлығы:{% else %}Итого:{% endif %}</div>
       <div style="font-size:1.1rem;font-weight:700;color:#4ade80">{{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
     </div>
+    {% if c.status == 'awaiting_sign' %}
+    <button onclick="signContract('{{ c.id }}')" class="btn btn-primary btn-full" style="margin-top:12px">✍️ {% if lang == 'kz' %}Электронды қол қою{% else %}Подписать (э-подпись){% endif %}</button>
+    {% endif %}
   </div>
   {% endfor %}
   {% endif %}
@@ -83,4 +86,13 @@
   <a href="/plots" class="nav-item"><span class="icon">🌱</span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
   <a href="/tasks" class="nav-item"><span class="icon">✅</span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
 </nav>
+{% block scripts %}
+<script>
+function signContract(id){
+  if(!confirm('{% if lang=="kz" %}Шартқа қол қоясыз ба?{% else %}Подписать договор электронной подписью?{% endif %}'))return;
+  fetch('/contracts/'+id+'/sign',{method:'POST',headers:{'Content-Type':'application/json'}})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+</script>
+{% endblock %}
 {% endblock %}
