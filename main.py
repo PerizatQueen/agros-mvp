@@ -122,15 +122,7 @@ def dashboard():
 def plots():
     user = db.get_user_by_id(session['user_id'])
     plots = db.get_plots(session['user_id'])
-    import json as _json
-    plots_json = _json.dumps([{
-            'name': pl.get('name',''),
-            'area_ha': pl.get('area_ha', 0),
-            'address': pl.get('address',''),
-            'lat': pl.get('lat') or pl.get('latitude'),
-            'lng': pl.get('lng') or pl.get('longitude')
-        } for pl in plots])
-    return render_template('plots.html', user=user, plots=plots, plots_json=plots_json, yandex_key=YANDEX_MAPS_KEY, lang=session.get('lang','ru'))
+    return render_template('plots.html', user=user, plots=plots, yandex_key=YANDEX_MAPS_KEY, lang=session.get('lang','ru'))
 
 @app.route('/plots/create', methods=['GET', 'POST'])
 @farmer_required
@@ -209,13 +201,13 @@ def complete_task(task_id):
     return jsonify({'status': 'success', 'bonus': bonus, 'new_balance': new_balance})
 
 @app.route('/chat')
-@farmer_required
+@login_required
 def chat():
     user = db.get_user_by_id(session['user_id'])
     return render_template('chat.html', user=user, lang=session.get('lang','ru'))
 
 @app.route('/chat/message', methods=['POST'])
-@farmer_required
+@login_required
 def chat_message():
     data = request.get_json()
     message = data.get('message', '')
