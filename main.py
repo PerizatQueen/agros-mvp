@@ -431,6 +431,50 @@ def agro_support_order():
     return jsonify({'status': 'success'})
 
 
+# ===== ПРОФИЛЬ И ТРАНСПОРТ =====
+
+@app.route('/profile')
+@farmer_required
+def profile():
+    user = db.get_user_by_id(session['user_id'])
+    try:
+        transport = db.db_get('transport', {'user_id': f'eq.{session["user_id"]}', 'is_archived': 'eq.false'}) or []
+    except Exception:
+        transport = []
+    plots = db.get_plots(session['user_id'])
+    contracts = db.get_contracts(session['user_id'])
+    return render_template('profile.html', user=user, transport=transport,
+                           plots_count=len(plots), contracts_count=len(contracts), lang=lang())
+
+
+@app.route('/transport/add', methods=['POST'])
+@farmer_required
+def transport_add():
+    data = request.get_json(silent=True) or {}
+    brand = (data.get('brand') or '').strip()
+    if not brand:
+        return jsonify({'status': 'error', 'message': 'Укажите марку'})
+    try:
+        cap = float(data.get('capacity_kg') or 0)
+    except Exception:
+        cap = 0
+    res = db.db_insert('transport', {
+        'user_id': session['user_id'], 'brand': brand,
+        'vehicle_type': data.get('vehicle_type') or '', 'body_type': data.get('body_type') or '',
+        'capacity_kg': cap, 'is_archived': False
+    })
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось (таблица transport — миграция №2?)'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/transport/<t_id>/archive', methods=['POST'])
+@farmer_required
+def transport_archive(t_id):
+    db.db_update('transport', {'is_archived': True}, {'id': f'eq.{t_id}', 'user_id': f'eq.{session["user_id"]}'})
+    return jsonify({'status': 'success'})
+
+
 # ===== CHAT =====
 
 @app.route('/chat')

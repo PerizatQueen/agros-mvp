@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %}— {% if lang == 'kz' %}Профиль{% else %}Профиль{% endif %}{% endblock %}
+{% block body %}
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/dashboard" style="color:#94a3b8;text-decoration:none">←</a>
+    <div class="header-title">👤 {% if lang == 'kz' %}Профиль{% else %}Профиль{% endif %}</div>
+  </div>
+  <div class="lang-switcher">
+    <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
+    <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+  </div>
+</div>
+<div class="content">
+
+  <!-- Личные данные -->
+  <div class="card" style="margin-bottom:16px">
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="width:56px;height:56px;border-radius:50%;background:#14532d;display:flex;align-items:center;justify-content:center;font-size:1.6rem">👨‍🌾</div>
+      <div>
+        <div style="font-size:1.15rem;font-weight:700">{{ user.name }}</div>
+        <div style="font-size:0.82rem;color:#64748b">+7{{ user.phone }}</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px;text-align:center">
+      <div style="flex:1;background:#1e2433;border-radius:10px;padding:10px"><div style="font-size:1.3rem;font-weight:800;color:#4ade80">{{ user.bonus_balance }}</div><div style="font-size:0.68rem;color:#64748b">{% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div></div>
+      <div style="flex:1;background:#1e2433;border-radius:10px;padding:10px"><div style="font-size:1.3rem;font-weight:800">{{ plots_count }}</div><div style="font-size:0.68rem;color:#64748b">{% if lang == 'kz' %}учаске{% else %}участков{% endif %}</div></div>
+      <div style="flex:1;background:#1e2433;border-radius:10px;padding:10px"><div style="font-size:1.3rem;font-weight:800">{{ contracts_count }}</div><div style="font-size:0.68rem;color:#64748b">{% if lang == 'kz' %}шарт{% else %}договоров{% endif %}</div></div>
+    </div>
+  </div>
+
+  <!-- Транспорт -->
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <div class="section-title" style="margin:0">🚛 {% if lang == 'kz' %}Көлік{% else %}Транспорт{% endif %}</div>
+    <button onclick="document.getElementById('addTr').style.display='block'" class="btn btn-primary" style="padding:5px 12px;font-size:0.78rem">+ {% if lang == 'kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  </div>
+  <div id="addTr" class="card" style="display:none;margin-bottom:12px;border-color:#4ade80">
+    <div class="input-group"><label>{% if lang == 'kz' %}Маркасы{% else %}Марка{% endif %}</label><input id="t_brand" placeholder="КамАЗ 5511"></div>
+    <div class="input-group"><label>{% if lang == 'kz' %}Түрі{% else %}Тип кузова{% endif %}</label><input id="t_body" placeholder="{% if lang == 'kz' %}Самосвал{% else %}Самосвал{% endif %}"></div>
+    <div class="input-group"><label>{% if lang == 'kz' %}Жүк көтерімі (кг){% else %}Грузоподъёмность (кг){% endif %}</label><input id="t_cap" type="number" placeholder="10000"></div>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button onclick="document.getElementById('addTr').style.display='none'" class="btn btn-outline" style="flex:1">{% if lang == 'kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+      <button onclick="addTransport()" class="btn btn-primary" style="flex:1">{% if lang == 'kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+    </div>
+  </div>
+  {% if not transport %}
+  <div class="card" style="text-align:center;padding:20px;color:#64748b;font-size:0.85rem">{% if lang == 'kz' %}Көлік қосылмаған{% else %}Транспорт не добавлен{% endif %}</div>
+  {% endif %}
+  {% for tr in transport %}
+  <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <div>
+      <div style="font-weight:600">🚛 {{ tr.brand }}</div>
+      <div style="font-size:0.78rem;color:#64748b">{{ tr.body_type }}{% if tr.capacity_kg %} · {{ '{:,.0f}'.format(tr.capacity_kg|float) }} кг{% endif %}</div>
+    </div>
+    <button onclick="archiveTransport('{{ tr.id }}')" class="btn btn-outline" style="padding:5px 10px;font-size:0.75rem;color:#f87171;border-color:rgba(248,113,113,0.3)">{% if lang == 'kz' %}Мұрағат{% else %}В архив{% endif %}</button>
+  </div>
+  {% endfor %}
+
+  <!-- Быстрые ссылки -->
+  <div class="section-title" style="margin-top:20px">📂 {% if lang == 'kz' %}Бөлімдер{% else %}Разделы{% endif %}</div>
+  <a href="/contracts" class="card" style="display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:inherit;margin-bottom:8px"><span>📄 {% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span><span style="color:#64748b">›</span></a>
+  <a href="/agro-support" class="card" style="display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:inherit;margin-bottom:8px"><span>🌿 {% if lang == 'kz' %}Агросүйемелдеу{% else %}Агросопровождение{% endif %}</span><span style="color:#64748b">›</span></a>
+  <a href="/trips" class="card" style="display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:inherit;margin-bottom:8px"><span>🚚 {% if lang == 'kz' %}Рейстер{% else %}Мои рейсы{% endif %}</span><span style="color:#64748b">›</span></a>
+  <a href="/bonus-shop" class="card" style="display:flex;justify-content:space-between;align-items:center;text-decoration:none;color:inherit;margin-bottom:8px"><span>🎁 {% if lang == 'kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</span><span style="color:#64748b">›</span></a>
+
+  <a href="/logout" class="btn btn-outline btn-full" style="margin-top:16px;color:#f87171;border-color:rgba(248,113,113,0.3)">🚪 {% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}</a>
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
+</nav>
+{% block scripts %}
+<script>
+function addTransport(){
+  const data={brand:document.getElementById('t_brand').value,body_type:document.getElementById('t_body').value,capacity_kg:document.getElementById('t_cap').value};
+  fetch('/transport/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+function archiveTransport(id){
+  if(!confirm('{% if lang=="kz" %}Мұрағатқа жіберу?{% else %}Отправить в архив?{% endif %}'))return;
+  fetch('/transport/'+id+'/archive',{method:'POST',headers:{'Content-Type':'application/json'}})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+}
+</script>
+{% endblock %}
+{% endblock %}
