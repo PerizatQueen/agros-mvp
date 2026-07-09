@@ -160,6 +160,55 @@ tr:hover td{background:rgba(255,255,255,0.02)}
   {% else %}<tr><td colspan="5"><div class="empty-state">{% if lang=='kz' %}Пайдаланушылар жоқ{% else %}Пользователей нет{% endif %}</div></td></tr>{% endfor %}
   </tbody></table></div>
 </div>
+
+<!-- FARMERS -->
+<div id="page-farmers" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">👨‍🌾 {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Платформаның барлық фермерлері{% else %}Все фермеры платформы{% endif %}</div>
+  </div></div>
+  <div class="card"><table><thead><tr>
+    <th>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</th>
+    <th>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</th>
+    <th>🌱 {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</th>
+    <th>📄 {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</th>
+    <th>⭐ {% if lang=='kz' %}Бонустар{% else %}Бонусы{% endif %}</th>
+  </tr></thead><tbody>
+  {% for f in farmers %}
+  <tr>
+    <td><strong>{{ f.name }}</strong></td>
+    <td>+7{{ f.phone }}</td>
+    <td>{{ f.plots_count }}</td>
+    <td>{{ f.contracts_count }}</td>
+    <td style="color:#fcd34d">{{ f.bonus_balance }}</td>
+  </tr>
+  {% else %}<tr><td colspan="5"><div class="empty-state">{% if lang=='kz' %}Фермерлер жоқ{% else %}Фермеров нет{% endif %}</div></td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+
+<!-- CONTRACTS -->
+<div id="page-contracts" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">📄 {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Платформаның барлық шарттары{% else %}Все договоры платформы{% endif %}</div>
+  </div></div>
+  <div class="card"><table><thead><tr>
+    <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
+    <th>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</th>
+    <th>{% if lang=='kz' %}Сомасы{% else %}Сумма{% endif %}</th>
+    <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
+  </tr></thead><tbody>
+  {% for c in all_contracts %}
+  <tr>
+    <td><strong>{{ c.farmer_name }}</strong></td>
+    <td>{{ c.plot_name }}</td>
+    <td>{{ '{:,.0f}'.format((c.total_amount or 0)|float) }} ₸</td>
+    <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% elif c.status=='rejected' %}badge-red{% else %}badge-blue{% endif %}">{{ c.status }}</span></td>
+  </tr>
+  {% else %}<tr><td colspan="4"><div class="empty-state">{% if lang=='kz' %}Шарттар жоқ{% else %}Договоров нет{% endif %}</div></td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+
 <!-- CATALOG -->
 <div id="page-catalog" class="page">
   <div class="topbar">
@@ -303,7 +352,7 @@ function addCatalog(){
 }
 function savePrice(id){
   const data={price_commercial:document.getElementById('pc_'+id).value,price_fallen:document.getElementById('pf_'+id).value};
-  fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({variety_id:id,...data})})
+  fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({price_id:id,...data})})
     .then(r=>r.json()).then(d=>{if(d.status==='success')alert('Сохранено!');});
 }
 </script>

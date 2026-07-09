@@ -395,6 +395,11 @@ def _get_panel_data(template):
             plots, user_contracts = [], []
         farmers.append({**u, 'plots_count': len(plots), 'contracts_count': len(user_contracts)})
 
+    # Роль/активность могут отсутствовать в схеме до миграции — показываем разумные дефолты
+    for u in all_users:
+        u.setdefault('role', 'farmer')
+        u.setdefault('is_active', True)
+
     try:
         all_contracts_raw = db.db_get('contracts', order='created_at.desc') or []
     except Exception:
@@ -460,6 +465,7 @@ def _get_panel_data(template):
     }
 
     return render_template(template,
+        all_users=all_users,
         farmers=farmers,
         all_contracts=all_contracts,
         pending_contracts=pending_contracts,

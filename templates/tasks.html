@@ -19,12 +19,8 @@
     <a href="/tasks" class="badge {% if not current_month %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap;font-size:0.78rem">
       {% if lang == 'kz' %}Барлығы{% else %}Все{% endif %}
     </a>
-    {% if lang == 'kz' %}
-      {% for m in [('7','Шіл'),('8','Там'),('9','Қыр'),('10','Қаз'),('11','Қар'),('12','Жел')] %}
-    {% else %}
-      {% for m in [('7','Июл'),('8','Авг'),('9','Сен'),('10','Окт'),('11','Ноя'),('12','Дек')] %}
-    {% endif %}
-    <a href="/tasks?month={{ m[0] }}" class="badge {% if current_month == m[0]|int %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap;font-size:0.78rem">{{ m[1] }}</a>
+    {% for m in [('7','Шіл','Июл'),('8','Там','Авг'),('9','Қыр','Сен'),('10','Қаз','Окт'),('11','Қар','Ноя'),('12','Жел','Дек')] %}
+    <a href="/tasks?month={{ m[0] }}" class="badge {% if current_month == m[0]|int %}badge-green{% else %}badge-gray{% endif %}" style="padding:6px 14px;text-decoration:none;white-space:nowrap;font-size:0.78rem">{{ m[1] if lang == 'kz' else m[2] }}</a>
     {% endfor %}
   </div>
 
