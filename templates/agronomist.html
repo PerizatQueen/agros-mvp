@@ -1,95 +1,102 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="kk">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgrOS — Агроном</title>
+<title>AgrOS — Агроном панелі</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#061210;color:#e2e8f0}
-.sidebar{width:240px;background:#071a16;height:100vh;position:fixed;left:0;top:0;border-right:1px solid #0d2e26;display:flex;flex-direction:column}
-.sidebar-header{padding:20px 20px 16px;border-bottom:1px solid #0d2e26}
-.sidebar-logo{font-size:1.3rem;font-weight:900;color:#4ade80}
-.sidebar-role{font-size:0.7rem;color:#2d6a4f;margin-top:2px;text-transform:uppercase;letter-spacing:1px}
-.sidebar-user{font-size:0.8rem;color:#6ee7b7;margin-top:6px;padding-top:6px;border-top:1px solid #0d2e26}
-.lang-bar{padding:8px 12px;border-bottom:1px solid #0d2e26;display:flex;gap:6px;align-items:center}
-.lang-btn{padding:3px 10px;border-radius:6px;font-size:0.72rem;font-weight:700;border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:all 0.15s}
-.lang-btn.active{background:#4ade80;color:#061210;border-color:#4ade80}
-.lang-btn:not(.active){background:transparent;color:#2d6a4f;border-color:#0d2e26}
-.logout-link{margin-left:auto;font-size:0.72rem;color:#f87171;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 8px;border-radius:6px}
-.nav-section{padding:12px 12px 4px;font-size:0.65rem;color:#2d6a4f;text-transform:uppercase;letter-spacing:1px}
-.nav-link{display:flex;align-items:center;gap:10px;padding:10px 16px;margin:2px 8px;border-radius:8px;color:#6ee7b7;text-decoration:none;font-size:0.875rem;cursor:pointer;border:none;background:none;width:calc(100% - 16px);text-align:left;transition:all 0.15s}
-.nav-link:hover{background:rgba(74,222,128,0.1);color:#4ade80}
-.nav-link.active{background:rgba(74,222,128,0.15);color:#4ade80;font-weight:600;border-left:3px solid #4ade80}
-.sidebar-bottom{margin-top:auto;padding:12px;border-top:1px solid #0d2e26}
-.main{margin-left:240px;padding:28px 32px;min-height:100vh}
-.page{display:none}.page.active{display:block}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.page-title{font-size:1.4rem;font-weight:700;color:#f1f5f9}
-.page-sub{font-size:0.82rem;color:#2d6a4f;margin-top:2px}
-.topbar-badge{background:rgba(74,222,128,0.12);color:#4ade80;padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;border:1px solid rgba(74,222,128,0.3)}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
-.stat-card{background:#0b1f1a;border-radius:14px;padding:18px;border:1px solid #0d2e26;position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#4ade80}
-.stat-card.yellow::before{background:#fcd34d}.stat-card.blue::before{background:#60a5fa}.stat-card.red::before{background:#f87171}
-.stat-val{font-size:2rem;font-weight:900;color:#4ade80;line-height:1}
-.stat-val.yellow{color:#fcd34d}.stat-val.blue{color:#60a5fa}.stat-val.red{color:#f87171}
-.stat-lbl{font-size:0.75rem;color:#2d6a4f;margin-top:6px}
-.card{background:#0b1f1a;border-radius:14px;padding:20px;border:1px solid #0d2e26;margin-bottom:16px}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.card-title{font-weight:700;color:#f1f5f9;font-size:0.95rem}
-.card-count{font-size:0.75rem;color:#2d6a4f;background:#0d2e26;padding:3px 10px;border-radius:20px}
-table{width:100%;border-collapse:collapse}
-th{background:#071a16;color:#2d6a4f;padding:10px 14px;text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
-td{padding:12px 14px;border-bottom:1px solid #0d2e26;font-size:0.85rem;color:#cbd5e1;vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(74,222,128,0.03)}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
-.badge-green{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
-.badge-yellow{background:rgba(252,211,77,0.12);color:#fcd34d;border:1px solid rgba(252,211,77,0.2)}
-.badge-red{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.2)}
-.badge-blue{background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.2)}
-.btn{padding:7px 14px;border-radius:8px;font-weight:600;font-size:0.8rem;border:none;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px}
-.btn-approve{background:#4ade80;color:#061210}.btn-approve:hover{background:#22c55e}
-.btn-reject{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.3)}
-.btn-save{background:#059669;color:#fff}
-.ig label{display:block;font-size:0.75rem;color:#2d6a4f;margin-bottom:4px}
-.ig input,.ig select{width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem;outline:none;transition:border-color 0.15s}
-.ig input:focus,.ig select:focus{border-color:#4ade80}
-.ftabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.ftab{padding:6px 14px;border-radius:8px;border:1.5px solid #0d2e26;color:#2d6a4f;background:transparent;cursor:pointer;font-size:0.8rem;transition:all 0.15s}
-.ftab.active{background:#4ade80;color:#061210;border-color:#4ade80;font-weight:600}
-.empty-state{text-align:center;padding:40px 20px;color:#2d6a4f}
-.calc-result{background:linear-gradient(135deg,#14532d,#166534);border-radius:12px;padding:20px;margin-top:16px;display:none;text-align:center}
-.calc-result-val{font-size:2.5rem;font-weight:900;color:#fff}
-.calc-result-lbl{font-size:0.85rem;color:#86efac;margin-top:4px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.photo-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #0d2e26}
-.photo-row:last-child{border-bottom:none}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #061210; color: #e2e8f0; }
+
+.sidebar { width: 240px; background: #071a16; height: 100vh; position: fixed; left: 0; top: 0; border-right: 1px solid #0d2e26; display: flex; flex-direction: column; }
+.sidebar-header { padding: 20px 20px 16px; border-bottom: 1px solid #0d2e26; }
+.sidebar-logo { font-size: 1.3rem; font-weight: 900; color: #4ade80; letter-spacing: -0.5px; }
+.sidebar-role { font-size: 0.72rem; color: #2d6a4f; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+.sidebar-user { font-size: 0.8rem; color: #6ee7b7; margin-top: 6px; padding-top: 6px; border-top: 1px solid #0d2e26; }
+.nav-section { padding: 12px 12px 4px; font-size: 0.65rem; color: #2d6a4f; text-transform: uppercase; letter-spacing: 1px; }
+.nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 16px; margin: 2px 8px; border-radius: 8px; color: #6ee7b7; text-decoration: none; font-size: 0.875rem; cursor: pointer; border: none; background: none; width: calc(100% - 16px); text-align: left; transition: all 0.15s; }
+.nav-link .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+.nav-link:hover { background: rgba(74,222,128,0.1); color: #4ade80; }
+.nav-link.active { background: rgba(74,222,128,0.15); color: #4ade80; font-weight: 600; border-left: 3px solid #4ade80; }
+.nav-link.danger:hover { background: rgba(248,113,113,0.08); color: #f87171; }
+.sidebar-bottom { margin-top: auto; padding: 12px; border-top: 1px solid #0d2e26; }
+
+.main { margin-left: 240px; padding: 28px 32px; min-height: 100vh; }
+.page { display: none; }
+.page.active { display: block; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.page-title { font-size: 1.4rem; font-weight: 700; color: #f1f5f9; }
+.page-sub { font-size: 0.82rem; color: #2d6a4f; margin-top: 2px; }
+.topbar-badge { background: rgba(74,222,128,0.12); color: #4ade80; padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 600; border: 1px solid rgba(74,222,128,0.3); }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
+.stat-card { background: #0b1f1a; border-radius: 14px; padding: 18px; border: 1px solid #0d2e26; position: relative; overflow: hidden; }
+.stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #4ade80; }
+.stat-card.yellow::before { background: #fcd34d; }
+.stat-card.blue::before { background: #60a5fa; }
+.stat-val { font-size: 2rem; font-weight: 900; color: #4ade80; line-height: 1; }
+.stat-val.yellow { color: #fcd34d; }
+.stat-val.blue { color: #60a5fa; }
+.stat-lbl { font-size: 0.75rem; color: #2d6a4f; margin-top: 6px; }
+
+.card { background: #0b1f1a; border-radius: 14px; padding: 20px; border: 1px solid #0d2e26; margin-bottom: 16px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-weight: 700; color: #f1f5f9; font-size: 0.95rem; }
+.card-count { font-size: 0.75rem; color: #2d6a4f; background: #0d2e26; padding: 3px 10px; border-radius: 20px; }
+
+table { width: 100%; border-collapse: collapse; }
+th { background: #071a16; color: #2d6a4f; padding: 10px 14px; text-align: left; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+td { padding: 12px 14px; border-bottom: 1px solid #0d2e26; font-size: 0.85rem; color: #cbd5e1; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(74,222,128,0.03); }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 600; }
+.badge-green { background: rgba(74,222,128,0.12); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+.badge-yellow { background: rgba(252,211,77,0.12); color: #fcd34d; border: 1px solid rgba(252,211,77,0.2); }
+.badge-red { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+.badge-blue { background: rgba(96,165,250,0.12); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+
+.btn { padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+.btn-approve { background: #4ade80; color: #061210; }
+.btn-approve:hover { background: #22c55e; }
+.btn-reject { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+.btn-save { background: #059669; color: #fff; }
+.btn-save:hover { background: #047857; }
+
+.ig label { display: block; font-size: 0.75rem; color: #2d6a4f; margin-bottom: 4px; }
+.ig input { width: 100%; background: #071a16; border: 1.5px solid #0d2e26; border-radius: 8px; padding: 9px 12px; color: #e2e8f0; font-size: 0.9rem; outline: none; transition: border-color 0.15s; }
+.ig input:focus { border-color: #4ade80; }
+
+.ftabs { display: flex; gap: 6px; margin-bottom: 16px; }
+.ftab { padding: 6px 14px; border-radius: 8px; border: 1.5px solid #0d2e26; color: #2d6a4f; background: transparent; cursor: pointer; font-size: 0.8rem; transition: all 0.15s; }
+.ftab.active { background: #4ade80; color: #061210; border-color: #4ade80; font-weight: 600; }
+
+.alert-success { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25); border-radius: 10px; padding: 12px 16px; color: #4ade80; margin-bottom: 16px; display: none; font-size: 0.85rem; }
+.empty-state { text-align: center; padding: 40px 20px; color: #2d6a4f; }
+.empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
 </style>
 </head>
 <body>
+
 <div class="sidebar">
   <div class="sidebar-header">
     <div class="sidebar-logo">🌿 AgrOS</div>
-    <div class="sidebar-role">{% if lang=='kz' %}Агроном панелі{% else %}Панель агронома{% endif %}</div>
+    <div class="sidebar-role">Агроном панелі</div>
     <div class="sidebar-user">🧑‍🌾 {{ user_name }}</div>
   </div>
-  <div class="lang-bar">
-    <a href="/set-lang/ru" class="lang-btn {% if lang!='kz' %}active{% endif %}">RU</a>
-    <a href="/set-lang/kz" class="lang-btn {% if lang=='kz' %}active{% endif %}">ҚАЗ</a>
-    <a href="/logout" class="logout-link">{% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
-  </div>
-  <div class="nav-section">{% if lang=='kz' %}Басқару{% else %}Управление{% endif %}</div>
-  <button class="nav-link active" onclick="showPage('dashboard',this)">📊 {% if lang=='kz' %}Шолу{% else %}Обзор{% endif %}</button>
-  <button class="nav-link" onclick="showPage('farmers',this)">👨‍🌾 {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
-  <button class="nav-link" onclick="showPage('contracts',this)">📄 {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</button>
-  <div class="nav-section">{% if lang=='kz' %}Жұмыс{% else %}Работа{% endif %}</div>
-  <button class="nav-link" onclick="showPage('photos',this)">📸 {% if lang=='kz' %}Фотоесептер{% else %}Фотоотчёты{% endif %}</button>
-  <button class="nav-link" onclick="showPage('calculator',this)">🧭 {% if lang=='kz' %}Калькулятор{% else %}Калькулятор{% endif %}</button>
-  <button class="nav-link" onclick="showPage('prices',this)">💰 {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
+
+  <div class="nav-section">Жұмыс</div>
+  <button class="nav-link active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Шолу</button>
+  <button class="nav-link" onclick="showPage('contracts',this)"><span class="nav-icon">📄</span> Шарттар</button>
+  <button class="nav-link" onclick="showPage('tasks',this)"><span class="nav-icon">✅</span> Тапсырмалар</button>
+  <button class="nav-link" onclick="showPage('farmers',this)"><span class="nav-icon">👨‍🌾</span> Фермерлер</button>
+
+  <div class="nav-section">Баға</div>
+  <button class="nav-link" onclick="showPage('prices',this)"><span class="nav-icon">💰</span> Бағалар</button>
+
   <div class="sidebar-bottom">
-    <a href="/logout" class="nav-link" style="color:#f87171">🚪 {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
+    <a href="/logout" class="nav-link danger"><span class="nav-icon">🚪</span> Шығу</a>
   </div>
 </div>
 
@@ -98,230 +105,171 @@ tr:hover td{background:rgba(74,222,128,0.03)}
 <!-- DASHBOARD -->
 <div id="page-dashboard" class="page active">
   <div class="topbar">
-    <div><div class="page-title">{% if lang=='kz' %}Жалпы шолу{% else %}Общий обзор{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Барлық фермерлердің жағдайы{% else %}Состояние всех фермеров{% endif %}</div></div>
-    <div class="topbar-badge">🌿 {% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</div>
+    <div>
+      <div class="page-title">Жалпы шолу</div>
+      <div class="page-sub">Фермерлердің ағымдағы жағдайы</div>
+    </div>
+    <div class="topbar-badge">🌿 Агроном</div>
   </div>
   <div class="stats-grid">
-    <div class="stat-card"><div class="stat-val">{{ stats.farmers }}</div><div class="stat-lbl">👨‍🌾 {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div></div>
-    <div class="stat-card"><div class="stat-val">{{ stats.plots }}</div><div class="stat-lbl">🌱 {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</div></div>
-    <div class="stat-card blue"><div class="stat-val blue">{{ stats.active_contracts }}</div><div class="stat-lbl">📄 {% if lang=='kz' %}Белсенді шарттар{% else %}Активных договоров{% endif %}</div></div>
-    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.pending_contracts }}</div><div class="stat-lbl">⏳ {% if lang=='kz' %}Бекітуді күтуде{% else %}Ожидают одобрения{% endif %}</div></div>
-    <div class="stat-card red"><div class="stat-val red">{{ stats.pending_tasks|default(0) }}</div><div class="stat-lbl">📸 {% if lang=='kz' %}Фотоесептер{% else %}Фотоотчётов{% endif %}</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.farmers }}</div><div class="stat-lbl">👨‍🌾 Фермерлер</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.plots }}</div><div class="stat-lbl">🌱 Учаскелер</div></div>
+    <div class="stat-card blue"><div class="stat-val blue">{{ stats.active_contracts }}</div><div class="stat-lbl">📄 Белсенді шарттар</div></div>
+    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.pending_contracts }}</div><div class="stat-lbl">⏳ Бекітуді күтуде</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.pending_tasks }}</div><div class="stat-lbl">✅ Тапсырмалар</div></div>
   </div>
+
   {% if pending_contracts %}
   <div class="card">
-    <div class="card-header"><div class="card-title">⏳ {% if lang=='kz' %}Бекітуді күтетін шарттар{% else %}Договоры на одобрение{% endif %}</div><div class="card-count">{{ pending_contracts|length }}</div></div>
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-      <th>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</th>
-      <th>{% if lang=='kz' %}Сомасы{% else %}Сумма{% endif %}</th>
-      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-    </tr></thead><tbody>
+    <div class="card-header">
+      <div class="card-title">⏳ Бекітуді күтетін шарттар</div>
+      <div class="card-count">{{ pending_contracts|length }} дана</div>
+    </div>
+    <table><thead><tr><th>Фермер</th><th>Учаске</th><th>Сомасы</th><th>Іс-әрекет</th></tr></thead><tbody>
     {% for c in pending_contracts %}
     <tr>
       <td><strong>{{ c.farmer_name }}</strong></td>
       <td>{{ c.plot_name }}</td>
       <td><strong>{{ '{:,.0f}'.format(c.total_amount) }} ₸</strong></td>
       <td style="display:flex;gap:8px">
-        <button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">&#10003; {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>
-        <button class="btn btn-reject" onclick="rejectContract('{{ c.id }}')">&#10005; {% if lang=='kz' %}Қабылдамау{% else %}Отклонить{% endif %}</button>
+        <button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">✓ Бекіту</button>
+        <button class="btn btn-reject" onclick="rejectContract('{{ c.id }}')">✕ Қабылдамау</button>
       </td>
     </tr>
     {% endfor %}
     </tbody></table>
   </div>
+  {% else %}
+  <div class="card"><div class="empty-state"><div class="empty-icon">📋</div>Күтудегі шарттар жоқ</div></div>
   {% endif %}
-</div>
-
-<!-- FARMERS -->
-<div id="page-farmers" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">{% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Тіркелген фермерлер{% else %}Зарегистрированные фермеры{% endif %}</div>
-  </div></div>
-  <div class="card"><table><thead><tr>
-    <th>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</th>
-    <th>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</th>
-    <th>{% if lang=='kz' %}Бонустар{% else %}Бонусы{% endif %}</th>
-    <th>{% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</th>
-  </tr></thead><tbody>
-  {% for f in farmers %}
-  <tr>
-    <td><strong>{{ f.name }}</strong></td>
-    <td style="color:#6ee7b7">+7{{ f.phone }}</td>
-    <td><span style="color:#4ade80;font-weight:700">{{ f.bonus_balance }} ⭐</span></td>
-    <td>{{ f.plots_count }}</td>
-  </tr>
-  {% else %}<tr><td colspan="4"><div class="empty-state">{% if lang=='kz' %}Фермерлер жоқ{% else %}Фермеров нет{% endif %}</div></td></tr>{% endfor %}
-  </tbody></table></div>
 </div>
 
 <!-- CONTRACTS -->
 <div id="page-contracts" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">{% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Барлық сатып алу шарттары{% else %}Все договоры закупки{% endif %}</div>
-  </div></div>
+  <div class="topbar"><div><div class="page-title">Шарттар</div><div class="page-sub">Барлық сатып алу шарттары</div></div></div>
   <div class="ftabs">
-    <button class="ftab active" onclick="filterC('all',this)">{% if lang=='kz' %}Барлығы{% else %}Все{% endif %}</button>
-    <button class="ftab" onclick="filterC('pending',this)">⏳ {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}</button>
-    <button class="ftab" onclick="filterC('active',this)">✅ {% if lang=='kz' %}Белсенді{% else %}Активные{% endif %}</button>
-    <button class="ftab" onclick="filterC('rejected',this)">❌ {% if lang=='kz' %}Қабылданбаған{% else %}Отклонённые{% endif %}</button>
+    <button class="ftab active" onclick="filterC('all',this)">Барлығы</button>
+    <button class="ftab" onclick="filterC('pending',this)">⏳ Күтуде</button>
+    <button class="ftab" onclick="filterC('active',this)">✅ Белсенді</button>
+    <button class="ftab" onclick="filterC('rejected',this)">❌ Қабылданбаған</button>
   </div>
-  <div class="card"><table><thead><tr>
-    <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-    <th>{% if lang=='kz' %}Сомасы{% else %}Сумма{% endif %}</th>
-    <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
-    <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-  </tr></thead><tbody id="ctable">
-  {% for c in all_contracts %}
-  <tr data-status="{{ c.status }}">
-    <td><strong>{{ c.farmer_name }}</strong></td>
-    <td>{{ '{:,.0f}'.format(c.total_amount) }} ₸</td>
-    <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% else %}badge-red{% endif %}">
-      {% if c.status=='active' %}{% if lang=='kz' %}Белсенді{% else %}Активен{% endif %}
-      {% elif c.status=='pending' %}{% if lang=='kz' %}Күтуде{% else %}На рассм.{% endif %}
-      {% else %}{% if lang=='kz' %}Қабылданбаған{% else %}Отклонён{% endif %}{% endif %}
-    </span></td>
-    <td>{% if c.status=='pending' %}<button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">&#10003;</button>{% endif %}</td>
-  </tr>
-  {% else %}<tr><td colspan="4"><div class="empty-state">{% if lang=='kz' %}Шарттар жоқ{% else %}Договоров нет{% endif %}</div></td></tr>{% endfor %}
-  </tbody></table></div>
-</div>
-<!-- PHOTOS -->
-<div id="page-photos" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">📸 {% if lang=='kz' %}Фотоесептер{% else %}Фотоотчёты{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Агротехникалық тапсырмаларды тексеру{% else %}Проверка агротехнических задач{% endif %}</div>
-  </div></div>
-  <div class="card"><table><thead><tr>
-    <th>{% if lang=='kz' %}Тапсырма{% else %}Задача{% endif %}</th>
-    <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-    <th>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</th>
-    <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
-    <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-  </tr></thead><tbody>
-  {% for t in all_tasks %}
-  <tr>
-    <td><strong>{{ t.title }}</strong></td>
-    <td>{{ t.farmer_name }}</td>
-    <td style="color:#4ade80;font-weight:700">+{{ t.bonus_amount }} ⭐</td>
-    <td><span class="badge {% if t.status=='approved' %}badge-green{% elif t.status=='overdue' %}badge-red{% else %}badge-yellow{% endif %}">
-      {% if t.status=='approved' %}{% if lang=='kz' %}Бекітілді{% else %}Одобрено{% endif %}
-      {% elif t.status=='overdue' %}{% if lang=='kz' %}Мерзімі өтті{% else %}Просрочено{% endif %}
-      {% else %}{% if lang=='kz' %}Күтуде{% else %}Ожидает{% endif %}{% endif %}
-    </span></td>
-    <td>{% if t.status!='approved' %}<button class="btn btn-approve" onclick="approveTask('{{ t.id }}')">✓ {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>{% else %}<span style="color:#4ade80">✓</span>{% endif %}</td>
-  </tr>
-  {% else %}<tr><td colspan="5"><div class="empty-state">{% if lang=='kz' %}Тапсырмалар жоқ{% else %}Задач нет{% endif %}</div></td></tr>{% endfor %}
-  </tbody></table></div>
+  <div class="card">
+    <table><thead><tr><th>Фермер</th><th>Учаске</th><th>Сомасы</th><th>Күні</th><th>Мәртебесі</th><th>Іс-әрекет</th></tr></thead>
+    <tbody id="ctable">
+    {% for c in all_contracts %}
+    <tr data-status="{{ c.status }}">
+      <td><strong>{{ c.farmer_name }}</strong></td>
+      <td>{{ c.plot_name }}</td>
+      <td>{{ '{:,.0f}'.format(c.total_amount) }} ₸</td>
+      <td style="color:#2d6a4f">{{ c.created_at[:10] if c.created_at else '' }}</td>
+      <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% else %}badge-red{% endif %}">
+        {% if c.status=='active' %}✅ Белсенді{% elif c.status=='pending' %}⏳ Күтуде{% elif c.status=='rejected' %}❌ Қабылданбаған{% else %}{{ c.status }}{% endif %}
+      </span></td>
+      <td>{% if c.status=='pending' %}<button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">✓ Бекіту</button>{% endif %}</td>
+    </tr>
+    {% else %}<tr><td colspan="6"><div class="empty-state">Шарттар жоқ</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
 </div>
 
-<!-- CALCULATOR -->
-<div id="page-calculator" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">🧮 {% if lang=='kz' %}Агроном калькуляторы{% else %}Калькулятор агронома{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Күтілетін төлем{% else %}Ожидаемая выплата{% endif %}</div>
-  </div></div>
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title" style="margin-bottom:16px">{% if lang=='kz' %}Параметрлер{% else %}Параметры{% endif %}</div>
-      <div style="display:grid;gap:12px">
-        <div class="ig">
-          <label>{% if lang=='kz' %}Сорт{% else %}Сорт яблок{% endif %}</label>
-          <select id="calc_variety" onchange="updateCalcPrices()">
-            {% for p in prices %}
-            <option value="{{ p.price_commercial }}" data-fallen="{{ p.price_fallen }}">{{ p.variety_name }}</option>
-            {% endfor %}
-          </select>
-        </div>
-        <div class="ig"><label>{% if lang=='kz' %}Тауарлы (кг){% else %}Товарных (кг){% endif %}</label><input type="number" id="calc_commercial" placeholder="0" min="0" oninput="calcResult()"></div>
-        <div class="ig"><label>{% if lang=='kz' %}Жерге түскен (кг){% else %}Падалых (кг){% endif %}</label><input type="number" id="calc_fallen" placeholder="0" min="0" oninput="calcResult()"></div>
-        <div id="calc_prices" style="font-size:0.8rem;color:#2d6a4f;padding:8px;background:#071a16;border-radius:8px"></div>
-      </div>
-    </div>
-    <div>
-      <div id="calc_result" class="calc-result">
-        <div class="calc-result-lbl">{% if lang=='kz' %}Жалпы сома{% else %}Итоговая сумма{% endif %}</div>
-        <div class="calc-result-val" id="calc_total">0 ₸</div>
-        <div id="calc_breakdown" style="font-size:0.82rem;color:#86efac;margin-top:8px"></div>
-      </div>
-    </div>
+<!-- TASKS -->
+<div id="page-tasks" class="page">
+  <div class="topbar"><div><div class="page-title">Тапсырмалар</div><div class="page-sub">Агротехникалық тапсырмаларды бекіту</div></div></div>
+  <div class="card">
+    <table><thead><tr><th>Тапсырма</th><th>Фермер</th><th>Учаске</th><th>Бонус</th><th>Мәртебесі</th><th>Іс-әрекет</th></tr></thead>
+    <tbody>
+    {% for t in all_tasks %}
+    <tr>
+      <td><strong>{{ t.title }}</strong></td>
+      <td>{{ t.farmer_name }}</td>
+      <td>{{ t.plot_name }}</td>
+      <td style="color:#4ade80;font-weight:700">+{{ t.bonus_amount }} ⭐</td>
+      <td><span class="badge {% if t.status=='approved' %}badge-green{% elif t.status=='overdue' %}badge-red{% elif t.status=='soon' %}badge-yellow{% else %}badge-blue{% endif %}">
+        {% if t.status=='approved' %}✅ Бекітілді{% elif t.status=='overdue' %}❌ Мерзімі өтті{% elif t.status=='soon' %}⚡ Жақында{% elif t.status=='upcoming' %}📅 Алдағы{% else %}{{ t.status }}{% endif %}
+      </span></td>
+      <td>{% if t.status!='approved' %}<button class="btn btn-approve" onclick="approveTask('{{ t.id }}')">✓ Бекіту</button>{% else %}<span style="color:#4ade80">✓ Орындалды</span>{% endif %}</td>
+    </tr>
+    {% else %}<tr><td colspan="6"><div class="empty-state">Тапсырмалар жоқ</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+</div>
+
+<!-- FARMERS -->
+<div id="page-farmers" class="page">
+  <div class="topbar"><div><div class="page-title">Фермерлер</div><div class="page-sub">Тіркелген пайдаланушылар</div></div></div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">👨‍🌾 Барлық фермерлер</div><div class="card-count">{{ farmers|length }}</div></div>
+    <table><thead><tr><th>Аты-жөні</th><th>Телефон</th><th>Бонустар</th><th>Учаскелер</th><th>Шарттар</th></tr></thead>
+    <tbody>
+    {% for f in farmers %}
+    <tr>
+      <td><strong>{{ f.name }}</strong></td>
+      <td style="color:#6ee7b7">+7{{ f.phone }}</td>
+      <td><span style="color:#4ade80;font-weight:700">{{ f.bonus_balance }} ⭐</span></td>
+      <td>{{ f.plots_count }}</td>
+      <td>{{ f.contracts_count }}</td>
+    </tr>
+    {% else %}<tr><td colspan="5"><div class="empty-state">Фермерлер жоқ</div></td></tr>{% endfor %}
+    </tbody></table>
   </div>
 </div>
 
 <!-- PRICES -->
 <div id="page-prices" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">💰 {% if lang=='kz' %}Бағалар{% else %}Цены на сорта{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Сатып алу бағалары{% else %}Закупочные цены{% endif %}</div>
-  </div></div>
-  <div class="card"><table><thead><tr>
-    <th>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</th>
-    <th>{% if lang=='kz' %}Тауарлы (₸/кг){% else %}Товарные (₸/кг){% endif %}</th>
-    <th>{% if lang=='kz' %}Жерге түскен (₸/кг){% else %}Падалые (₸/кг){% endif %}</th>
-  </tr></thead><tbody>
+  <div class="topbar"><div><div class="page-title">Бағаларды басқару</div><div class="page-sub">Алма сорттарының сатып алу бағалары</div></div></div>
+  <div id="okMsg" class="alert-success">✅ Бағалар сәтті жаңартылды!</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
   {% for p in prices %}
-  <tr>
-    <td><strong>{{ p.variety_name }}</strong></td>
-    <td style="color:#4ade80;font-weight:700">{{ p.price_commercial }} ₸</td>
-    <td style="color:#fcd34d">{{ p.price_fallen }} ₸</td>
-  </tr>
-  {% else %}<tr><td colspan="3"><div class="empty-state">{% if lang=='kz' %}Бағалар жоқ{% else %}Цен нет{% endif %}</div></td></tr>{% endfor %}
-  </tbody></table></div>
+  <div class="card">
+    <div class="card-header"><div class="card-title">🍎 {{ p.variety_name }}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <div class="ig"><label>Тауарлы (₸/кг)</label><input type="number" id="pc_{{ p.id }}" value="{{ p.price_commercial }}"></div>
+      <div class="ig"><label>Жерге түскен (₸/кг)</label><input type="number" id="pf_{{ p.id }}" value="{{ p.price_fallen }}"></div>
+    </div>
+    <button class="btn btn-save" style="width:100%" onclick="updatePrice('{{ p.id }}')">💾 Сақтау</button>
+  </div>
+  {% endfor %}
+  </div>
 </div>
 
-</div><!-- /main -->
+</div>
 
 <script>
-function showPage(id,btn){
+function showPage(n,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  btn.classList.add('active');
-}
-function filterC(status,btn){
-  document.querySelectorAll('#ctable tr').forEach(r=>{
-    r.style.display=(status==='all'||r.dataset.status===status)?'':'none';
-  });
-  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+n).classList.add('active');
   btn.classList.add('active');
 }
 function approveContract(id){
+  if(!confirm('Шартты бекітесіз бе?'))return;
   fetch('/agronomist/contract/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})})
-    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
 }
 function rejectContract(id){
+  if(!confirm('Шартты қабылдамайсыз ба?'))return;
   fetch('/agronomist/contract/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})})
-    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
 }
 function approveTask(id){
   fetch('/agronomist/task/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})})
-    .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
 }
-function updateCalcPrices(){
-  const sel=document.getElementById('calc_variety');
-  const opt=sel.options[sel.selectedIndex];
-  document.getElementById('calc_prices').innerHTML=
-    'Товарные: <strong style="color:#4ade80">'+opt.value+' ₸/кг</strong> &nbsp; Падалые: <strong style="color:#fcd34d">'+opt.dataset.fallen+' ₸/кг</strong>';
-  calcResult();
+function updatePrice(id){
+  const c=document.getElementById('pc_'+id).value;
+  const f=document.getElementById('pf_'+id).value;
+  fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({price_id:id,price_commercial:c,price_fallen:f})})
+  .then(r=>r.json()).then(d=>{
+    if(d.status==='success'){const m=document.getElementById('okMsg');m.style.display='block';setTimeout(()=>m.style.display='none',3000);}
+  });
 }
-function calcResult(){
-  const sel=document.getElementById('calc_variety');
-  const opt=sel.options[sel.selectedIndex];
-  const pc=parseFloat(opt.value)||0;
-  const pf=parseFloat(opt.dataset.fallen)||0;
-  const qc=parseFloat(document.getElementById('calc_commercial').value)||0;
-  const qf=parseFloat(document.getElementById('calc_fallen').value)||0;
-  const total=qc*pc+qf*pf;
-  const res=document.getElementById('calc_result');
-  res.style.display='block';
-  document.getElementById('calc_total').textContent=total.toLocaleString('ru-RU')+' ₸';
-  document.getElementById('calc_breakdown').innerHTML=
-    'Товарные: '+qc+'кг × '+pc+'₸ = '+(qc*pc).toLocaleString('ru-RU')+'₸<br>Падалые: '+qf+'кг × '+pf+'₸ = '+(qf*pf).toLocaleString('ru-RU')+'₸';
+function filterC(s,btn){
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#ctable tr[data-status]').forEach(r=>{
+    r.style.display=(s==='all'||r.dataset.status===s)?'':'none';
+  });
 }
-document.addEventListener('DOMContentLoaded',updateCalcPrices);
 </script>
 </body>
 </html>
