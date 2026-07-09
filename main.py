@@ -481,9 +481,14 @@ def transport_archive(t_id):
 @login_required
 def chat():
     user = None
+    agro_messages = []
     if session.get('role') == 'farmer':
         user = db.get_user_by_id(session['user_id'])
-    return render_template('chat.html', user=user, lang=lang())
+        try:
+            agro_messages = db.db_get('messages', {'user_id': f'eq.{session["user_id"]}'}, order='created_at') or []
+        except Exception:
+            agro_messages = []
+    return render_template('chat.html', user=user, agro_messages=agro_messages, lang=lang())
 
 
 @app.route('/chat/message', methods=['POST'])
@@ -520,6 +525,67 @@ def chat_message():
         return jsonify({'reply': reply, 'type': 'ai'})
     except Exception as e:
         return jsonify({'reply': f'Ошибка AI: {str(e)}', 'type': 'ai'})
+
+
+@app.route('/chat/agronomist/send', methods=['POST'])
+@farmer_required
+def chat_agro_send():
+    data = request.get_json(silent=True) or {}
+    body = (data.get('message') or '').strip()
+    if not body:
+        return jsonify({'status': 'error'})
+    db.db_insert('messages', {'user_id': session['user_id'], 'sender': 'farmer', 'body': body})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/chat/agronomist/messages')
+@farmer_required
+def chat_agro_messages():
+    try:
+        msgs = db.db_get('messages', {'user_id': f'eq.{session["user_id"]}'}, order='created_at') or []
+    except Exception:
+        msgs = []
+    return jsonify({'messages': [{'sender': m.get('sender'), 'body': m.get('body')} for m in msgs]})
+
+
+@app.route('/agronomist/chat')
+@agronomist_required
+def agro_chat():
+    try:
+        all_msgs = db.db_get('messages', order='created_at.desc') or []
+    except Exception:
+        all_msgs = []
+    threads = {}
+    for m in all_msgs:
+        uid = m.get('user_id')
+        if uid and uid not in threads:
+            u = db.get_user_by_id(uid)
+            threads[uid] = {'user_id': uid, 'name': u['name'] if u else '—',
+                            'last': m.get('body'), 'when': m.get('created_at'),
+                            'unread': m.get('sender') == 'farmer'}
+    return render_template('agro_chat.html', threads=list(threads.values()), lang=lang())
+
+
+@app.route('/agronomist/chat/<user_id>')
+@agronomist_required
+def agro_chat_thread(user_id):
+    u = db.get_user_by_id(user_id)
+    try:
+        msgs = db.db_get('messages', {'user_id': f'eq.{user_id}'}, order='created_at') or []
+    except Exception:
+        msgs = []
+    return render_template('agro_chat_thread.html', farmer=u, messages=msgs, user_id=user_id, lang=lang())
+
+
+@app.route('/agronomist/chat/<user_id>/send', methods=['POST'])
+@agronomist_required
+def agro_chat_send(user_id):
+    data = request.get_json(silent=True) or {}
+    body = (data.get('message') or '').strip()
+    if not body:
+        return jsonify({'status': 'error'})
+    db.db_insert('messages', {'user_id': user_id, 'sender': 'agronomist', 'body': body})
+    return jsonify({'status': 'success'})
 
 
 # ===== AGRONOMIST / ADMIN PANELS =====

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgrOS — {{ farmer.name if farmer else 'Чат' }}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#061210;color:#e2e8f0;max-width:720px;margin:0 auto;padding:24px;min-height:100vh;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.top h1{font-size:1.15rem;color:#4ade80;font-weight:800}
+.messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;margin-bottom:16px;min-height:300px}
+.msg{max-width:80%;padding:10px 14px;border-radius:14px;font-size:0.9rem;line-height:1.5}
+.msg-me{background:#1a3a2a;color:#86efac;align-self:flex-end;border-bottom-right-radius:4px}
+.msg-them{background:#0b1f1a;border:1px solid #0d2e26;color:#e2e8f0;align-self:flex-start;border-bottom-left-radius:4px}
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1;background:#0b1f1a;border:1.5px solid #0d2e26;border-radius:10px;padding:12px 14px;color:#e2e8f0;font-size:0.9rem;outline:none}
+.input-row input:focus{border-color:#4ade80}
+.input-row button{background:#4ade80;color:#061210;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;font-size:1.1rem}
+</style></head>
+<body>
+<div class="top"><a href="/agronomist/chat" style="color:#6ee7b7;font-size:1.3rem">←</a><h1>👨‍🌾 {{ farmer.name if farmer else '—' }}</h1></div>
+<div class="messages" id="msgs">
+  {% for m in messages %}
+  <div class="msg {% if m.sender=='agronomist' %}msg-me{% else %}msg-them{% endif %}">{{ m.body }}</div>
+  {% else %}<div style="text-align:center;color:#2d6a4f;padding:30px">{% if lang=='kz' %}Хабарлама жоқ{% else %}Нет сообщений{% endif %}</div>{% endfor %}
+</div>
+<div class="input-row">
+  <input id="inp" placeholder="{% if lang=='kz' %}Фермерге жауап...{% else %}Ответить фермеру...{% endif %}" onkeydown="if(event.key==='Enter')send()" autofocus>
+  <button onclick="send()">→</button>
+</div>
+<script>
+var m=document.getElementById('msgs'); m.scrollTop=m.scrollHeight;
+function send(){
+  var i=document.getElementById('inp'); var t=i.value.trim(); if(!t)return;
+  var d=document.createElement('div'); d.className='msg msg-me'; d.textContent=t; m.appendChild(d); m.scrollTop=m.scrollHeight; i.value='';
+  fetch('/agronomist/chat/{{ user_id }}/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:t})})
+  .then(r=>r.json()).then(d=>{if(d.status!=='success')alert('Ошибка');});
+}
+</script>
+</body></html>

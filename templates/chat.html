@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}— {% if lang=='kz' %}AI-көмекші{% else %}AI-ассистент{% endif %}{% endblock %}
+{% block title %}— {% if lang=='kz' %}Чат{% else %}Чат{% endif %}{% endblock %}
 {% block extra_styles %}
-.messages{min-height:300px;max-height:52vh;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;padding:4px 0}
+.chat-tabs{display:flex;gap:8px;margin-bottom:14px}
+.chat-tab{flex:1;padding:9px;border-radius:10px;border:1.5px solid #2d3748;background:transparent;color:#64748b;font-weight:600;font-size:0.85rem;cursor:pointer;text-align:center}
+.chat-tab.active{background:#4ade80;color:#0f1117;border-color:#4ade80}
+.pane{display:none}.pane.active{display:block}
+.messages{min-height:280px;max-height:50vh;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;padding:4px 0}
 .msg{max-width:88%;padding:10px 14px;border-radius:14px;font-size:0.9rem;line-height:1.5}
 .msg-user{background:#1a3a2a;color:#86efac;align-self:flex-end;border-bottom-right-radius:4px}
 .msg-bot{background:#1e2433;color:#e2e8f0;align-self:flex-start;border-bottom-left-radius:4px}
@@ -16,37 +20,60 @@
 <div class="header">
   <div style="display:flex;align-items:center;gap:12px">
     <a href="/dashboard" style="color:#94a3b8;text-decoration:none">←</a>
-    <div class="header-title">{% if lang=='kz' %}🤖 AI-көмекші{% else %}🤖 AI-агроном{% endif %}</div>
+    <div class="header-title">💬 {% if lang=='kz' %}Чат{% else %}Чат{% endif %}</div>
   </div>
 </div>
 <div class="content">
-  <div class="messages" id="messages">
-    <div class="msg msg-bot">
-      {% if lang=='kz' %}
-      🌾 Сәлеметсіз бе! Мен — AgrOS AI-агрономыныңыз. Қазақстандағы бақшашылық, агротехника және AgrOS бағдарламасы туралы сұрақтарға жауап беремін. Қалай сұрақ қоюыңыз?
-      {% else %}
-      🌾 Здравствуйте! Я — AI-агроном AgrOS. Отвечаю на вопросы по яблоноводству, агротехнике и работе с AgrOS. Чем могу помочь?
-      {% endif %}
+  <div class="chat-tabs">
+    <button class="chat-tab active" id="tab-ai" onclick="switchTab('ai')">🤖 {% if lang=='kz' %}AI-көмекші{% else %}AI-ассистент{% endif %}</button>
+    <button class="chat-tab" id="tab-agro" onclick="switchTab('agro')">🌿 {% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</button>
+  </div>
+
+  <!-- AI -->
+  <div class="pane active" id="pane-ai">
+    <div class="messages" id="messages">
+      <div class="msg msg-bot">
+        {% if lang=='kz' %}🌾 Сәлеметсіз бе! Мен — AgrOS AI-агрономыңыз. Қалай көмектесе аламын?
+        {% else %}🌾 Здравствуйте! Я — AI-агроном AgrOS. Чем могу помочь?{% endif %}
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chatInput" placeholder="{% if lang=='kz' %}Сұрақ қоюыңыз...{% else %}Напишите вопрос...{% endif %}" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button onclick="sendMsg()" id="sendBtn">→</button>
+    </div>
+    <div style="font-size:0.75rem;color:#475569;margin-top:8px;text-align:center">
+      {% if lang=='kz' %}Жауаптар білім қорына негізделген.{% else %}Ответы основаны на базе знаний. Конкретные решения — с агрономом.{% endif %}
     </div>
   </div>
-  <div class="chat-input-row">
-    <input type="text" id="chatInput"
-      placeholder="{% if lang=='kz' %}Сұрақ қоюыңыз...{% else %}Напишите вопрос...{% endif %}"
-      onkeydown="if(event.key==='Enter')sendMsg()">
-    <button onclick="sendMsg()" id="sendBtn">→</button>
-  </div>
-  <div style="font-size:0.75rem;color:#475569;margin-top:8px;text-align:center">
-    {% if lang=='kz' %}
-    Жауаптар білім қорына негізделген. Нақты шешім— агрономмен кеңесіңіз.
-    {% else %}
-    Ответы основаны на базе знаний. Конкретные решения — с агрономом.
-    {% endif %}
+
+  <!-- АГРОНОМ -->
+  <div class="pane" id="pane-agro">
+    <div class="messages" id="agroMessages">
+      {% for m in agro_messages %}
+      <div class="msg {% if m.sender == 'farmer' %}msg-user{% else %}msg-bot{% endif %}">{{ m.body }}</div>
+      {% else %}
+      <div class="msg msg-bot">{% if lang=='kz' %}🌿 Агрономға тікелей жазыңыз — ол жауап береді.{% else %}🌿 Напишите агроному напрямую — он ответит.{% endif %}</div>
+      {% endfor %}
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="agroInput" placeholder="{% if lang=='kz' %}Агрономға хабарлама...{% else %}Сообщение агроному...{% endif %}" onkeydown="if(event.key==='Enter')sendAgro()">
+      <button onclick="sendAgro()" id="agroBtn">→</button>
+    </div>
+    <div style="font-size:0.75rem;color:#475569;margin-top:8px;text-align:center">
+      {% if lang=='kz' %}Агроном жауабы бетті жаңартқанда көрінеді.{% else %}Ответ агронома появится при обновлении страницы.{% endif %}
+    </div>
   </div>
 </div>
 {% block scripts %}
 <script>
-function addMsg(text, cls) {
-  const msgs = document.getElementById('messages');
+function switchTab(t){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.chat-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+t).classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+}
+function addMsg(text, cls, containerId) {
+  const msgs = document.getElementById(containerId || 'messages');
   const div = document.createElement('div');
   div.className = 'msg ' + cls;
   div.textContent = text;
@@ -63,22 +90,19 @@ function sendMsg() {
   input.value = '';
   btn.disabled = true;
   const typing = addMsg('{% if lang=="kz" %}Жазылуда...{% else %}Печатает...{% endif %}', 'msg-typing');
-  fetch('/chat/message', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({message: text, type: 'ai'})
-  })
+  fetch('/chat/message', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: text, type: 'ai'})})
   .then(r => r.json())
-  .then(data => {
-    typing.remove();
-    addMsg(data.reply || '{% if lang=="kz" %}Қате жоқ. Қайталаңыз.{% else %}Ошибка. Попробуйте ещё раз.{% endif %}', 'msg-bot');
-    btn.disabled = false;
-  })
-  .catch(() => {
-    typing.remove();
-    addMsg('{% if lang=="kz" %}Торап қатесі. Қайталаңыз.{% else %}Ошибка сети. Попробуйте ещё раз.{% endif %}', 'msg-bot');
-    btn.disabled = false;
-  });
+  .then(data => { typing.remove(); addMsg(data.reply || 'Ошибка', 'msg-bot'); btn.disabled = false; })
+  .catch(() => { typing.remove(); addMsg('{% if lang=="kz" %}Торап қатесі.{% else %}Ошибка сети.{% endif %}', 'msg-bot'); btn.disabled = false; });
+}
+function sendAgro() {
+  const input = document.getElementById('agroInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg(text, 'msg-user', 'agroMessages');
+  input.value = '';
+  fetch('/chat/agronomist/send', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: text})})
+  .then(r => r.json()).then(d => { if(d.status!=='success') alert('Ошибка отправки'); });
 }
 </script>
 {% endblock %}
