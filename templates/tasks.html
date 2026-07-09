@@ -43,12 +43,14 @@
         {% if t.status == 'upcoming' %}badge-blue
         {% elif t.status == 'soon' %}badge-yellow
         {% elif t.status == 'in_progress' %}badge-blue
+        {% elif t.status == 'review' %}badge-yellow
         {% elif t.status == 'approved' %}badge-green
         {% elif t.status == 'overdue' %}badge-red
         {% else %}badge-gray{% endif %}">
         {% if t.status == 'upcoming' %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}
         {% elif t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро срок{% endif %}
         {% elif t.status == 'in_progress' %}{% if lang == 'kz' %}Орындалуда{% else %}В работе{% endif %}
+        {% elif t.status == 'review' %}{% if lang == 'kz' %}Тексеруде{% else %}На проверке{% endif %}
         {% elif t.status == 'approved' %}{% if lang == 'kz' %}Бекітілді{% else %}Одобрена{% endif %}
         {% elif t.status == 'overdue' %}{% if lang == 'kz' %}Мерзімі өтті{% else %}Просрочена{% endif %}
         {% else %}{{ t.status }}{% endif %}
@@ -63,9 +65,11 @@
 
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid #2d3748">
       <div style="font-size:0.82rem;color:#4ade80;font-weight:600">🏆 +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
-      {% if t.status not in ['approved'] %}
+      {% if t.status == 'review' %}
+      <span style="color:#fcd34d;font-size:0.85rem">🕓 {% if lang == 'kz' %}Тексеруде{% else %}На проверке{% endif %}</span>
+      {% elif t.status != 'approved' %}
       <button onclick="completeTask('{{ t.id }}', {{ t.bonus_amount }})" class="btn btn-primary" style="padding:7px 16px;font-size:0.8rem">
-        {% if lang == 'kz' %}✓ Орындалды{% else %}✓ Выполнить{% endif %}
+        {% if lang == 'kz' %}📷 Есеп беру{% else %}📷 Отчёт{% endif %}
       </button>
       {% else %}
       <span style="color:#4ade80;font-size:0.85rem">✅ {% if lang == 'kz' %}Орындалды{% else %}Готово{% endif %}</span>
@@ -88,17 +92,44 @@
 </nav>
 
 {% block scripts %}
+<div id="reportModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#111827;border-radius:16px;padding:24px;width:100%;max-width:400px;border:1px solid #4ade80">
+    <div style="font-size:1.05rem;font-weight:700;margin-bottom:12px">📋 {% if lang == 'kz' %}Тапсырма бойынша есеп{% else %}Отчёт по задаче{% endif %}</div>
+    <textarea id="rep_note" placeholder="{% if lang == 'kz' %}Не істелді...{% else %}Что сделано...{% endif %}" style="width:100%;min-height:80px;background:#1e2433;border:1.5px solid #2d3748;border-radius:8px;padding:10px;color:#e2e8f0;margin-bottom:12px;font-family:inherit"></textarea>
+    <label style="font-size:0.82rem;color:#94a3b8">📷 {% if lang == 'kz' %}Фото (міндетті емес){% else %}Фото (необязательно){% endif %}</label>
+    <input type="file" id="rep_photo" accept="image/*" style="width:100%;margin:6px 0 14px;color:#94a3b8;font-size:0.8rem">
+    <div style="display:flex;gap:10px">
+      <button onclick="closeReport()" class="btn btn-outline" style="flex:1">{% if lang == 'kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+      <button onclick="submitReport()" class="btn btn-primary" style="flex:1">{% if lang == 'kz' %}Тексеруге жіберу{% else %}На проверку{% endif %}</button>
+    </div>
+  </div>
+</div>
 <script>
-function completeTask(taskId, bonus) {
-  fetch(`/tasks/${taskId}/complete`, {method:'POST', headers:{'Content-Type':'application/json'}})
+let curTask = null;
+function completeTask(taskId, bonus){ curTask = taskId; document.getElementById('rep_note').value=''; document.getElementById('rep_photo').value=''; document.getElementById('reportModal').style.display='flex'; }
+function closeReport(){ document.getElementById('reportModal').style.display='none'; curTask=null; }
+function submitReport(){
+  const note = document.getElementById('rep_note').value;
+  const file = document.getElementById('rep_photo').files[0];
+  if(!file){ sendReport(note, ''); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, 500/img.width);
+      const c = document.createElement('canvas');
+      c.width = img.width*scale; c.height = img.height*scale;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      sendReport(note, c.toDataURL('image/jpeg', 0.6));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function sendReport(note, photo){
+  fetch(`/tasks/${curTask}/complete`, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({note: note, photo: photo})})
   .then(r => r.json())
-  .then(data => {
-    if (data.status === 'success') {
-      const card = document.getElementById('task-' + taskId);
-      if (card) card.style.opacity = '0.6';
-      showBonus(data.bonus);
-    }
-  });
+  .then(data => { closeReport(); if(data.status==='success'){ location.reload(); } else alert(data.message||'Ошибка'); });
 }
 </script>
 {% endblock %}

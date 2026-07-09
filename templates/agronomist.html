@@ -204,12 +204,16 @@ tr:hover td{background:rgba(74,222,128,0.03)}
     <tbody>
     {% for t in all_tasks %}
     <tr>
-      <td><strong>{{ t.title }}</strong></td>
+      <td><strong>{{ t.title }}</strong>
+        {% if t.report_note %}<div style="font-size:0.75rem;color:#6ee7b7;margin-top:3px">📋 {{ t.report_note }}</div>{% endif %}
+        {% if t.photo_url %}<a href="{{ t.photo_url }}" target="_blank" style="font-size:0.75rem;color:#60a5fa">📷 {% if lang=='kz' %}фото{% else %}фото{% endif %}</a>{% endif %}
+      </td>
       <td>{{ t.farmer_name }}</td>
       <td>{{ t.plot_name }}</td>
       <td style="color:#4ade80;font-weight:700">+{{ t.bonus_amount }} ⭐</td>
-      <td><span class="badge {% if t.status=='approved' %}badge-green{% elif t.status=='overdue' %}badge-red{% elif t.status=='soon' %}badge-yellow{% else %}badge-blue{% endif %}">
+      <td><span class="badge {% if t.status=='approved' %}badge-green{% elif t.status=='overdue' %}badge-red{% elif t.status in ['soon','review'] %}badge-yellow{% else %}badge-blue{% endif %}">
         {% if t.status=='approved' %}✅ {% if lang=='kz' %}Бекітілді{% else %}Подтверждено{% endif %}
+        {% elif t.status=='review' %}🕓 {% if lang=='kz' %}Тексеруде{% else %}На проверке{% endif %}
         {% elif t.status=='overdue' %}❌ {% if lang=='kz' %}Мерзімі өтті{% else %}Просрочено{% endif %}
         {% elif t.status=='soon' %}⚡ {% if lang=='kz' %}Жақында{% else %}Скоро{% endif %}
         {% elif t.status=='upcoming' %}📅 {% if lang=='kz' %}Алдағы{% else %}Предстоит{% endif %}

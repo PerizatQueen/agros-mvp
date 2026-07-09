@@ -268,9 +268,18 @@ def tasks():
 @app.route('/tasks/<task_id>/complete', methods=['POST'])
 @farmer_required
 def complete_task(task_id):
+    # Фермер отправляет фотоотчёт → «на проверке». Бонус начисляет агроном при одобрении.
+    data = request.get_json() or {}
+    note = (data.get('note') or '').strip()
+    photo = data.get('photo') or ''
+    if len(photo) > 400000:
+        photo = ''
+    fields = {'status': 'review', 'report_note': note}
+    if photo:
+        fields['photo_url'] = photo
     try:
-        bonus, new_balance = db.complete_task(task_id, session['user_id'])
-        return jsonify({'status': 'success', 'bonus': bonus, 'new_balance': new_balance})
+        db.db_update('tasks', fields, {'id': f'eq.{task_id}'})
+        return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
 
