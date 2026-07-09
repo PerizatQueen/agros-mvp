@@ -320,22 +320,27 @@ def chat_message():
     if not GROQ_API_KEY:
         return jsonify({'reply': 'GROQ_API_KEY не настроен на сервере. Добавьте переменную в Railway.', 'type': 'ai'})
     try:
-        from groq import Groq
-        client = Groq(api_key=GROQ_API_KEY)
+        import requests as _req
         lg = lang()
         sys_prompt = ('Ты — AI-агроном платформы AgrOS. Помогаешь фермерам и агрономам Казахстана. '
                       'Отвечай коротко (3-4 предложения), без приветствий, сразу давай практический совет. '
                       'Отвечай на том языке, на котором задан вопрос — русском или казахском. '
                       'Сен — AgrOS AI-агрономысың. Сұрақ қандай тілде болса, сол тілде жауап бер.')
-        response = client.chat.completions.create(
-            model='llama-3.1-8b-instant',
-            messages=[
-                {'role': 'system', 'content': sys_prompt},
-                {'role': 'user', 'content': message}
-            ],
-            max_tokens=400
+        _resp = _req.post(
+            'https://api.groq.com/openai/v1/chat/completions',
+            headers={'Authorization': f'Bearer {GROQ_API_KEY}', 'Content-Type': 'application/json'},
+            json={
+                'model': 'llama-3.1-8b-instant',
+                'messages': [
+                    {'role': 'system', 'content': sys_prompt},
+                    {'role': 'user', 'content': message}
+                ],
+                'max_tokens': 400
+            },
+            timeout=30
         )
-        reply = response.choices[0].message.content
+        _resp.raise_for_status()
+        reply = _resp.json()['choices'][0]['message']['content']
         return jsonify({'reply': reply, 'type': 'ai'})
     except Exception as e:
         return jsonify({'reply': f'Ошибка AI: {str(e)}', 'type': 'ai'})
