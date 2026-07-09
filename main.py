@@ -74,14 +74,33 @@ def login():
         role = request.form.get('role', 'farmer')
         if step == 'phone':
             sms_code = request.form.get('sms_code', '')
-            if sms_code == '1234':
-                return render_template('login.html', step='pin', phone=phone, role=role)
-            return render_template('login.html', step='sms', phone=phone, role=role, error='Неверный SMS-код. Используйте 1234')
-        elif step == 'sms':
-            sms_code = request.form.get('sms_code', '')
-            if sms_code == '1234':
-                return render_template('login.html', step='pin', phone=phone, role=role)
-            return render_template('login.html', step='sms', phone=phone, role=role, error='Неверный SMS-код')
+            if sms_code != '1234':
+                return render_template('login.html', step='phone', phone=phone, role=role, error='Неверный SMS-код. Используйте 1234')
+            # Новый фермер (нет в базе) → регистрация. Агроном/админ — всегда PIN.
+            if role == 'farmer' and not db.get_user_by_phone(phone):
+                return render_template('login.html', step='register', phone=phone, role=role)
+            return render_template('login.html', step='pin', phone=phone, role=role)
+        elif step == 'register':
+            name = request.form.get('name', '').strip()
+            pin_confirm = request.form.get('pin_confirm', '').strip()
+            terms = request.form.get('terms', '')
+            if not name:
+                return render_template('login.html', step='register', phone=phone, role=role, error='Введите ФИО')
+            if not (pin.isdigit() and len(pin) == 4):
+                return render_template('login.html', step='register', phone=phone, role=role, name=name, error='PIN должен состоять из 4 цифр')
+            if pin != pin_confirm:
+                return render_template('login.html', step='register', phone=phone, role=role, name=name, error='PIN-коды не совпадают')
+            if not terms:
+                return render_template('login.html', step='register', phone=phone, role=role, name=name, error='Примите условия использования')
+            if db.get_user_by_phone(phone):
+                return render_template('login.html', step='pin', phone=phone, role=role, error='Аккаунт уже существует. Введите PIN.')
+            new_user = db.create_user(phone, name, hash_pin(pin), bonus_balance=100)
+            if not new_user:
+                return render_template('login.html', step='register', phone=phone, role=role, name=name, error='Не удалось создать аккаунт. Попробуйте позже.')
+            session['user_id'] = new_user['id']
+            session['user_name'] = new_user['name']
+            session['role'] = 'farmer'
+            return redirect(url_for('dashboard') + '?bonus=100')
         elif step == 'pin':
             if role == 'admin' and phone == ADMIN_PHONE and pin == ADMIN_PIN:
                 session['user_id'] = 'admin'

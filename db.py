@@ -48,6 +48,15 @@ def update_bonus_balance(user_id, amount):
         return new_balance
     return 0
 
+def create_user(phone, name, pin_hash, bonus_balance=0):
+    result = db_insert('users', {
+        'phone': phone,
+        'name': name,
+        'pin_hash': pin_hash,
+        'bonus_balance': bonus_balance
+    })
+    return result[0] if result else None
+
 # ===== PLOTS =====
 def get_plots(user_id):
     plots = db_get('plots', {'user_id': f'eq.{user_id}'})
