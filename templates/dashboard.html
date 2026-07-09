@@ -26,6 +26,22 @@
     </div>
   </div>
 
+  <!-- Быстрые действия -->
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+    <a href="/agro-support" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
+      <div style="font-size:1.5rem">🌿</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Агросүйем.{% else %}Агросопр.{% endif %}</div>
+    </a>
+    <a href="/harvest" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
+      <div style="font-size:1.5rem">🚚</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Егін{% else %}Урожай{% endif %}</div>
+    </a>
+    <a href="/trips" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
+      <div style="font-size:1.5rem">📦</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Рейстер{% else %}Рейсы{% endif %}</div>
+    </a>
+    <a href="/bonus-shop" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
+      <div style="font-size:1.5rem">🎁</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Дүкен{% else %}Магазин{% endif %}</div>
+    </a>
+  </div>
+
   {% if not has_plots %}
   <!-- Онбординг -->
   <div class="section-title">{% if lang == 'kz' %}🚀 Жұмысты бастаңыз{% else %}🚀 Начните работу{% endif %}</div>

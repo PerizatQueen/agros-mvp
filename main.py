@@ -376,6 +376,52 @@ def trips():
     return render_template('my_trips.html', user=user, trips=user_trips, lang=lang())
 
 
+# ===== АГРОСОПРОВОЖДЕНИЕ =====
+
+@app.route('/agro-support')
+@farmer_required
+def agro_support():
+    user = db.get_user_by_id(session['user_id'])
+    try:
+        catalog = db.db_get('catalog_items', {'is_active': 'eq.true'}) or []
+    except Exception:
+        catalog = []
+    try:
+        orders = db.db_get('agri_orders', {'user_id': f'eq.{session["user_id"]}'}, order='created_at.desc') or []
+    except Exception:
+        orders = []
+    has_contract = any(c['status'] == 'active' for c in db.get_contracts(session['user_id']))
+    return render_template('agro_support.html', user=user, catalog=catalog, orders=orders,
+                           has_contract=has_contract, lang=lang())
+
+
+@app.route('/agro-support/order', methods=['POST'])
+@farmer_required
+def agro_support_order():
+    data = request.get_json() or {}
+    item_name = (data.get('item_name') or '').strip()
+    if not item_name:
+        return jsonify({'status': 'error', 'message': 'Выберите товар'})
+    try:
+        qty = float(data.get('quantity', 1) or 1)
+        price = float(data.get('price', 0) or 0)
+    except Exception:
+        qty, price = 1, 0
+    payment = data.get('payment_method', 'cash')
+    contracts = [c for c in db.get_contracts(session['user_id']) if c['status'] == 'active']
+    contract_id = contracts[0]['id'] if contracts else None
+    if payment == 'credit' and not contract_id:
+        return jsonify({'status': 'error', 'message': 'Оплата в кредит доступна только при активном договоре'})
+    res = db.db_insert('agri_orders', {
+        'user_id': session['user_id'], 'contract_id': contract_id,
+        'item_name': item_name, 'quantity': qty, 'payment_method': payment,
+        'total_amount': price * qty, 'status': 'pending'
+    })
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось (таблица agri_orders — миграция №2?)'})
+    return jsonify({'status': 'success'})
+
+
 # ===== CHAT =====
 
 @app.route('/chat')
@@ -508,6 +554,19 @@ def _get_panel_data(template):
         all_trips.append(tr)
 
     try:
+        all_orders_raw = db.db_get('agri_orders', order='created_at.desc') or []
+    except Exception:
+        all_orders_raw = []
+    all_orders = []
+    for o in all_orders_raw:
+        try:
+            u = db.get_user_by_id(o['user_id'])
+            o['farmer_name'] = u['name'] if u else ''
+        except Exception:
+            o.setdefault('farmer_name', '')
+        all_orders.append(o)
+
+    try:
         prices = db.get_demand_prices() or []
     except Exception:
         prices = []
@@ -539,6 +598,7 @@ def _get_panel_data(template):
         all_users=all_users,
         farmers=farmers,
         all_trips=all_trips,
+        all_orders=all_orders,
         all_contracts=all_contracts,
         pending_contracts=pending_contracts,
         all_tasks=all_tasks,
@@ -611,6 +671,18 @@ def advance_trip():
     nxt = flow.get(t[0].get('status', 'planned'), 'completed')
     db.db_update('trips', {'status': nxt}, {'id': f'eq.{trip_id}'})
     return jsonify({'status': 'success', 'new_status': nxt})
+
+
+@app.route('/agronomist/order/decide', methods=['POST'])
+@agronomist_required
+def decide_agri_order():
+    data = request.get_json() or {}
+    order_id = data.get('order_id')
+    decision = data.get('decision')
+    if decision not in ('confirmed', 'rejected'):
+        return jsonify({'status': 'error', 'message': 'Некорректное решение'})
+    db.db_update('agri_orders', {'status': decision}, {'id': f'eq.{order_id}'})
+    return jsonify({'status': 'success'})
 
 
 # ===== ADMIN: пользователи и каталог =====

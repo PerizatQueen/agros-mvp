@@ -83,6 +83,7 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   <button class="nav-link" onclick="showPage('tasks',this)"><span>✅</span> {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</button>
   <button class="nav-link" onclick="showPage('farmers',this)"><span>👨‍🌾</span> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
   <button class="nav-link" onclick="showPage('trips',this)"><span>🚚</span> {% if lang=='kz' %}Рейстер{% else %}Рейсы{% endif %}</button>
+  <button class="nav-link" onclick="showPage('orders',this)"><span>🌿</span> {% if lang=='kz' %}Тапсырыстар{% else %}Заказы{% endif %}</button>
 
   <div class="nav-section">{% if lang=='kz' %}Баға{% else %}Цены{% endif %}</div>
   <button class="nav-link" onclick="showPage('prices',this)"><span>💰</span> {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
@@ -292,6 +293,43 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   </div>
 </div>
 
+<!-- ORDERS (агросопровождение) -->
+<div id="page-orders" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">🌿 {% if lang=='kz' %}Агросүйемелдеу тапсырыстары{% else %}Заказы агросопровождения{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Фермер тапсырыстарын бекіту{% else %}Одобрение заказов фермеров{% endif %}</div>
+  </div></div>
+  <div class="card">
+    <table><thead><tr>
+      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
+      <th>{% if lang=='kz' %}Тауар{% else %}Товар{% endif %}</th>
+      <th>{% if lang=='kz' %}Сомасы{% else %}Сумма{% endif %}</th>
+      <th>{% if lang=='kz' %}Төлем{% else %}Оплата{% endif %}</th>
+      <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
+      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
+    </tr></thead><tbody>
+    {% for o in all_orders %}
+    <tr>
+      <td><strong>{{ o.farmer_name }}</strong></td>
+      <td>{{ o.item_name }} × {{ o.quantity|int }}</td>
+      <td>{{ '{:,.0f}'.format((o.total_amount or 0)|float) }} ₸</td>
+      <td>{% if o.payment_method=='credit' %}<span class="badge badge-yellow">{% if lang=='kz' %}Несие{% else %}Кредит{% endif %}</span>{% else %}<span class="badge badge-blue">{% if lang=='kz' %}Қолма-қол{% else %}Наличные{% endif %}</span>{% endif %}</td>
+      <td><span class="badge {% if o.status=='confirmed' %}badge-green{% elif o.status=='rejected' %}badge-red{% else %}badge-yellow{% endif %}">
+        {% if o.status=='pending' %}{% if lang=='kz' %}Қаралуда{% else %}На рассмотрении{% endif %}
+        {% elif o.status=='confirmed' %}{% if lang=='kz' %}Расталды{% else %}Подтверждён{% endif %}
+        {% elif o.status=='rejected' %}{% if lang=='kz' %}Қабылданбады{% else %}Отклонён{% endif %}
+        {% else %}{{ o.status }}{% endif %}
+      </span></td>
+      <td>{% if o.status=='pending' %}<div style="display:flex;gap:6px">
+        <button class="btn btn-approve" onclick="decideOrder('{{ o.id }}','confirmed')">✓</button>
+        <button class="btn btn-reject" onclick="decideOrder('{{ o.id }}','rejected')">✕</button>
+      </div>{% else %}<span style="color:#2d6a4f">—</span>{% endif %}</td>
+    </tr>
+    {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Тапсырыстар жоқ{% else %}Нет заказов{% endif %}</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+</div>
+
 <!-- PRICES -->
 <div id="page-prices" class="page">
   <div class="topbar"><div>
@@ -379,6 +417,10 @@ function approveTask(id){
 }
 function advanceTrip(id){
   fetch('/agronomist/trip/advance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip_id:id})})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+function decideOrder(id,decision){
+  fetch('/agronomist/order/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_id:id,decision:decision})})
   .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
 }
 function updatePrice(id){

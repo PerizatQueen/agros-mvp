@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block title %}— {% if lang == 'kz' %}Агросүйемелдеу{% else %}Агросопровождение{% endif %}{% endblock %}
+{% block body %}
+<div class="header">
+  <div style="display:flex;align-items:center;gap:12px">
+    <a href="/dashboard" style="color:#94a3b8;text-decoration:none">←</a>
+    <div class="header-title">🌿 {% if lang == 'kz' %}Агросүйемелдеу{% else %}Агросопровождение{% endif %}</div>
+  </div>
+  <div class="lang-switcher">
+    <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
+    <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+  </div>
+</div>
+<div class="content">
+  <div class="section-title">🛒 {% if lang == 'kz' %}Тауарлар мен қызметтер{% else %}Каталог услуг и товаров{% endif %}</div>
+  {% if not catalog %}
+  <div class="card" style="text-align:center;padding:30px;color:#64748b">{% if lang == 'kz' %}Каталог бос — админ толтырады{% else %}Каталог пуст — наполняется админом{% endif %}</div>
+  {% endif %}
+  {% for item in catalog %}
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div style="flex:1">
+        <div class="card-title">{{ item.name }}</div>
+        <div style="font-size:0.82rem;color:#64748b;margin-top:4px">{{ item.description }}</div>
+      </div>
+      <div style="text-align:right;margin-left:10px">
+        <div style="font-weight:800;color:#4ade80">{{ '{:,.0f}'.format((item.price or 0)|float) }} ₸</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;align-items:flex-end">
+      <div class="input-group" style="width:72px;margin:0"><label>{% if lang == 'kz' %}Саны{% else %}Кол-во{% endif %}</label><input type="number" id="qty_{{ loop.index }}" value="1" min="1" style="width:100%"></div>
+      <div class="input-group" style="flex:1;margin:0"><label>{% if lang == 'kz' %}Төлем{% else %}Оплата{% endif %}</label>
+        <select id="pay_{{ loop.index }}" style="width:100%">
+          <option value="cash">{% if lang == 'kz' %}Қолма-қол{% else %}Наличные{% endif %}</option>
+          {% if has_contract %}<option value="credit">{% if lang == 'kz' %}Несиеге{% else %}В кредит{% endif %}</option>{% endif %}
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="order('{{ item.name }}', {{ item.price or 0 }}, {{ loop.index }})">{% if lang == 'kz' %}Тапсырыс{% else %}Заказать{% endif %}</button>
+    </div>
+  </div>
+  {% endfor %}
+
+  {% if not has_contract %}
+  <div class="card" style="border-color:#fcd34d;background:rgba(252,211,77,0.05);font-size:0.82rem;color:#fcd34d">
+    ⚠️ {% if lang == 'kz' %}Несиеге төлем белсенді шарт болғанда қолжетімді{% else %}Оплата в кредит доступна при активном договоре{% endif %}
+  </div>
+  {% endif %}
+
+  <div class="section-title" style="margin-top:20px">📋 {% if lang == 'kz' %}Менің тапсырыстарым{% else %}Мои заказы{% endif %}</div>
+  {% if not orders %}
+  <div class="card" style="text-align:center;padding:20px;color:#64748b">{% if lang == 'kz' %}Тапсырыстар жоқ{% else %}Заказов пока нет{% endif %}</div>
+  {% endif %}
+  {% for o in orders %}
+  <div class="card" style="margin-bottom:10px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-weight:600">{{ o.item_name }} × {{ o.quantity|int }}</div>
+        <div style="font-size:0.78rem;color:#64748b">{{ '{:,.0f}'.format((o.total_amount or 0)|float) }} ₸ · {% if o.payment_method == 'credit' %}{% if lang == 'kz' %}несие{% else %}кредит{% endif %}{% else %}{% if lang == 'kz' %}қолма-қол{% else %}наличные{% endif %}{% endif %}</div>
+      </div>
+      <span class="badge {% if o.status == 'confirmed' %}badge-green{% elif o.status == 'rejected' %}badge-red{% else %}badge-yellow{% endif %}">
+        {% if o.status == 'pending' %}{% if lang == 'kz' %}Қаралуда{% else %}На рассмотрении{% endif %}
+        {% elif o.status == 'confirmed' %}{% if lang == 'kz' %}Расталды{% else %}Подтверждён{% endif %}
+        {% elif o.status == 'rejected' %}{% if lang == 'kz' %}Қабылданбады{% else %}Отклонён{% endif %}
+        {% else %}{{ o.status }}{% endif %}
+      </span>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
+  <a href="/plots" class="nav-item"><span class="icon">🌱</span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
+</nav>
+{% block scripts %}
+<script>
+function order(name, price, idx){
+  const qty = parseFloat(document.getElementById('qty_'+idx).value || 1);
+  const pay = document.getElementById('pay_'+idx).value;
+  fetch('/agro-support/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item_name:name,price:price,quantity:qty,payment_method:pay})})
+  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+</script>
+{% endblock %}
+{% endblock %}
