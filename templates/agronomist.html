@@ -86,6 +86,9 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   <div class="nav-section">{% if lang=='kz' %}Баға{% else %}Цены{% endif %}</div>
   <button class="nav-link" onclick="showPage('prices',this)"><span>💰</span> {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
 
+  <div class="nav-section">{% if lang=='kz' %}Құралдар{% else %}Инструменты{% endif %}</div>
+  <button class="nav-link" onclick="showPage('calc',this)"><span>🧮</span> {% if lang=='kz' %}Калькулятор{% else %}Калькулятор{% endif %}</button>
+
   <div class="sidebar-bottom">
     <a href="/logout" class="nav-link danger"><span>🚪</span> {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
   </div>
@@ -267,6 +270,47 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   </div>
 </div>
 
+<!-- CALCULATOR -->
+<div id="page-calc" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">🧮 {% if lang=='kz' %}Калькулятор{% else %}Калькулятор агронома{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Күтілетін төлем мен шарт шарттарын есептеу{% else %}Расчёт ожидаемой выплаты и условий договора{% endif %}</div>
+  </div></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:16px">📋 {% if lang=='kz' %}Кіріс деректер{% else %}Входные данные{% endif %}</div>
+      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</label>
+        <select id="c_variety" onchange="onVar()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem">
+        {% for p in prices %}<option value="{{ p.id }}">{{ p.variety_name }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Бақ түрі (өнімділік){% else %}Тип сада (урожайность){% endif %}</label>
+        <select id="c_garden" onchange="onGarden()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem">
+          <option value="15">{% if lang=='kz' %}Экстенсивті (10–20 т/га){% else %}Экстенсивный (10–20 т/га){% endif %}</option>
+          <option value="32">{% if lang=='kz' %}Жартылай интенсивті (25–40){% else %}Полуинтенсивный (25–40){% endif %}</option>
+          <option value="55">{% if lang=='kz' %}Интенсивті (40–70){% else %}Интенсивный (40–70){% endif %}</option>
+          <option value="90">{% if lang=='kz' %}Суперинтенсивті (80–100){% else %}Суперинтенсивный (80–100){% endif %}</option>
+        </select>
+      </div>
+      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Аудан (га){% else %}Площадь (га){% endif %}</label><input type="number" id="c_area" value="1" oninput="calc()"></div>
+      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Өнімділік (т/га){% else %}Урожайность (т/га){% endif %}</label><input type="number" id="c_yield" value="15" oninput="calc()"></div>
+      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Тауарлы үлесі (%){% else %}Доля товарных (%){% endif %}</label><input type="number" id="c_comm" value="80" oninput="calc()"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div class="ig"><label>{% if lang=='kz' %}Тауарлы ₸/кг{% else %}Товарные ₸/кг{% endif %}</label><input type="number" id="c_pc" value="0" oninput="calc()"></div>
+        <div class="ig"><label>{% if lang=='kz' %}Жерге түскен ₸/кг{% else %}Падалица ₸/кг{% endif %}</label><input type="number" id="c_pf" value="0" oninput="calc()"></div>
+      </div>
+      <div class="ig"><label>{% if lang=='kz' %}Күтім + агросүйемелдеу (₸/га){% else %}Уход + агросопровождение (₸/га){% endif %}</label><input type="number" id="c_cost" value="0" oninput="calc()"></div>
+    </div>
+    <div class="card" style="background:#08160f">
+      <div class="card-title" style="margin-bottom:16px">💰 {% if lang=='kz' %}Есеп нәтижесі{% else %}Результат расчёта{% endif %}</div>
+      <div id="calcResult"></div>
+      <div style="margin-top:16px;font-size:0.72rem;color:#2d6a4f;line-height:1.5;border-top:1px solid #0d2e26;padding-top:12px">
+        ⚠️ {% if lang=='kz' %}Формула алдын ала — коэффициенттер клиентпен келісілуі керек.{% else %}Формула предварительная — коэффициенты требуют согласования с клиентом (в ТЗ это отмечено как блокер).{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script>
@@ -305,6 +349,28 @@ function filterC(s,btn){
     r.style.display=(s==='all'||r.dataset.status===s)?'':'none';
   });
 }
+var PRICES={ {% for p in prices %}"{{ p.id }}":{pc:{{ p.price_commercial or 0 }},pf:{{ p.price_fallen or 0 }}}{{ "," if not loop.last else "" }} {% endfor %} };
+function onVar(){var p=PRICES[document.getElementById('c_variety').value];if(p){document.getElementById('c_pc').value=p.pc;document.getElementById('c_pf').value=p.pf;}calc();}
+function onGarden(){document.getElementById('c_yield').value=document.getElementById('c_garden').value;calc();}
+function _r(l,v){return '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.88rem"><span style="color:#6ee7b7">'+l+'</span><strong>'+v+'</strong></div>';}
+function calc(){
+  var g=function(id){return +document.getElementById(id).value||0;};
+  var area=g('c_area'),yld=g('c_yield'),comm=g('c_comm')/100,pc=g('c_pc'),pf=g('c_pf'),cost=g('c_cost');
+  var totalKg=area*yld*1000, commKg=totalKg*comm, fallKg=totalKg*(1-comm);
+  var gross=commKg*pc+fallKg*pf, totalCost=cost*area, net=gross-totalCost;
+  var f=function(x){return Math.round(x).toLocaleString('ru-RU');};
+  var el=document.getElementById('calcResult'); if(!el)return;
+  el.innerHTML=
+    _r('{% if lang=="kz" %}Жалпы өнім{% else %}Общий урожай{% endif %}',f(totalKg)+' кг')+
+    _r('{% if lang=="kz" %}Тауарлы{% else %}Товарных{% endif %}',f(commKg)+' кг')+
+    _r('{% if lang=="kz" %}Жерге түскен{% else %}Падалицы{% endif %}',f(fallKg)+' кг')+
+    _r('{% if lang=="kz" %}Жалпы түсім{% else %}Валовая выручка{% endif %}',f(gross)+' ₸')+
+    _r('{% if lang=="kz" %}Шығындар{% else %}Расходы{% endif %}','−'+f(totalCost)+' ₸')+
+    '<div style="border-top:1px solid #0d2e26;margin:8px 0"></div>'+
+    '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:#4ade80;font-weight:700">{% if lang=="kz" %}Күтілетін төлем{% else %}Ожидаемая выплата{% endif %}</span><strong style="color:#4ade80;font-size:1.2rem">'+f(net)+' ₸</strong></div>'+
+    _r('{% if lang=="kz" %}Ұсынылатын көлем{% else %}Рекоменд. объём в договор{% endif %}',f(commKg)+' кг');
+}
+onVar();
 </script>
 </body>
 </html>

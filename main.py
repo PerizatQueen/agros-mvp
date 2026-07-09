@@ -527,6 +527,64 @@ def update_price():
     return jsonify({'status': 'success'})
 
 
+# ===== ADMIN: пользователи и каталог =====
+
+@app.route('/admin/user/add', methods=['POST'])
+@agronomist_required
+def admin_add_user():
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    phone = (data.get('phone') or '').strip().replace('+', '').replace(' ', '')
+    role = data.get('role') or 'farmer'
+    region = (data.get('region') or '').strip()
+    if not name or not phone:
+        return jsonify({'status': 'error', 'message': 'Укажите ФИО и телефон'})
+    if db.get_user_by_phone(phone):
+        return jsonify({'status': 'error', 'message': 'Пользователь с таким телефоном уже существует'})
+    # PIN по умолчанию 0000 — пользователь меняет через «Сброс PIN по SMS»
+    res = db.db_insert('users', {
+        'name': name, 'phone': phone, 'pin_hash': hash_pin('0000'),
+        'role': role, 'region': region, 'is_active': True, 'bonus_balance': 0
+    })
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось создать. Запущена ли SQL-миграция (колонки role/region/is_active)?'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/admin/user/toggle/<user_id>', methods=['POST'])
+@agronomist_required
+def admin_toggle_user(user_id):
+    u = db.get_user_by_id(user_id)
+    if not u:
+        return jsonify({'status': 'error', 'message': 'Пользователь не найден'})
+    new_state = not u.get('is_active', True)
+    res = db.db_update('users', {'is_active': new_state}, {'id': f'eq.{user_id}'})
+    if res == []:
+        return jsonify({'status': 'error', 'message': 'Не удалось. Запущена ли SQL-миграция (колонка is_active)?'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/admin/catalog/add', methods=['POST'])
+@agronomist_required
+def admin_add_catalog():
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    if not name:
+        return jsonify({'status': 'error', 'message': 'Укажите название'})
+    try:
+        price = float(data.get('price') or 0)
+    except Exception:
+        price = 0
+    res = db.db_insert('catalog_items', {
+        'name': name, 'type': data.get('type') or 'service',
+        'price': price, 'description': (data.get('description') or '').strip(),
+        'is_active': True
+    })
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось. Создана ли таблица catalog_items (SQL-миграция)?'})
+    return jsonify({'status': 'success'})
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
