@@ -1,29 +1,38 @@
 {% extends 'base.html' %}
-{% block title %}— Участки{% endblock %}
+{% block title %}— {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}{% endblock %}
 {% block body %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <div class="header">
-  <div class="header-title">🌱 Мои участки</div>
+  <div class="header-title">🌱 {% if lang=='kz' %}Менің учаскелерім{% else %}Мои участки{% endif %}</div>
   <div class="header-icons"><a href="/chat">💬</a></div>
 </div>
 <div class="content">
-  <a href="/plots/create" class="btn btn-primary btn-full" style="margin-bottom:20px">➕ Добавить участок</a>
+  <a href="/plots/create" class="btn btn-primary btn-full" style="margin-bottom:20px">➕ {% if lang=='kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</a>
+
   {% if not plots %}
   <div class="card" style="text-align:center;padding:40px">
     <div style="font-size:3rem">🌱</div>
-    <div style="margin-top:12px;color:#64748b">У вас пока нет участков</div>
-    <div style="font-size:0.85rem;color:#475569;margin-top:6px">Добавьте свой сад и получите +100 бонусов</div>
+    <div style="margin-top:12px;color:#64748b">{% if lang=='kz' %}Учаскелер жоқ{% else %}У вас пока нет участков{% endif %}</div>
+    <div style="font-size:0.85rem;color:#475569;margin-top:6px">{% if lang=='kz' %}Бақшаңызды қосыңыз +100 бонус алыңыз{% else %}Добавьте свой сад и получите +100 бонусов{% endif %}</div>
   </div>
   {% else %}
+
+  <!-- Leaflet Map -->
+  <div class="card" style="padding:0;overflow:hidden;margin-bottom:16px">
+    <div id="map" style="height:280px;width:100%;border-radius:14px"></div>
+  </div>
+
   {% for plot in plots %}
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
       <div>
         <div class="card-title">🍎 {{ plot.name }}</div>
-        <div style="font-size:0.85rem;color:#64748b">{{ plot.area_ha }} га ·
-          {% if plot.garden_type == 'intensive' %}Интенсивный
-          {% elif plot.garden_type == 'semi_intensive' %}Полуинтенсивный
-          {% elif plot.garden_type == 'extensive' %}Экстенсивный
-          {% else %}Суперинтенсивный{% endif %}
+        <div style="font-size:0.85rem;color:#64748b">{{ plot.area_ha }} {% if lang=='kz' %}га{% else %}га{% endif %} ·
+          {% if plot.garden_type == 'intensive' %}{% if lang=='kz' %}Қарқынды{% else %}Интенсивный{% endif %}
+          {% elif plot.garden_type == 'semi_intensive' %}{% if lang=='kz' %}Жартылай қарқынды{% else %}Полуинтенсивный{% endif %}
+          {% elif plot.garden_type == 'extensive' %}{% if lang=='kz' %}Экстенсивті{% else %}Экстенсивный{% endif %}
+          {% else %}{% if lang=='kz' %}Суперқарқынды{% else %}Суперинтенсивный{% endif %}{% endif %}
         </div>
       </div>
     </div>
@@ -31,7 +40,7 @@
     <div style="display:flex;flex-wrap:wrap;gap:6px">
       {% for v in plot.varieties %}
       <span style="background:#1a2744;border:1px solid #2d3748;border-radius:8px;padding:4px 10px;font-size:0.78rem;color:#94a3b8">
-        {{ v.variety_name }} · {{ v.area_ha }}га
+        {{ v.variety_name }} · {{ v.area_ha }}{% if lang=='kz' %}га{% else %}га{% endif %}
       </span>
       {% endfor %}
     </div>
@@ -43,10 +52,47 @@
   {% endfor %}
   {% endif %}
 </div>
+
 <nav class="bottom-nav">
-  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
-  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
-  <a href="/plots" class="nav-item active"><span class="icon">🌱</span>Участки</a>
-  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span><span>{% if lang=='kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/contracts" class="nav-item"><span class="icon">📄</span><span>{% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
+  <a href="/plots" class="nav-item active"><span class="icon">🌱</span><span>{% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
+  <a href="/tasks" class="nav-item"><span class="icon">✅</span><span>{% if lang=='kz' %}Жоспар{% else %}План{% endif %}</span></a>
 </nav>
+
+{% if plots %}
+<script>
+var map = L.map('map');
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap',
+  maxZoom: 18
+}).addTo(map);
+
+var greenIcon = L.icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34]
+});
+
+var plots = {{ plots_json|safe }};
+var bounds = [];
+
+if (plots.length > 0) {
+  plots.forEach(function(p) {
+    if (p.lat && p.lng) {
+      var m = L.marker([p.lat, p.lng], {icon: greenIcon}).addTo(map);
+      m.bindPopup('<strong>' + p.name + '</strong><br>' + p.area_ha + ' га<br>' + (p.address || ''));
+      bounds.push([p.lat, p.lng]);
+    }
+  });
+  if (bounds.length > 0) {
+    map.fitBounds(bounds, {padding: [30, 30]});
+  } else {
+    // Default: Алматинская область
+    map.setView([43.25, 76.95], 9);
+  }
+} else {
+  map.setView([43.25, 76.95], 9);
+}
+</script>
+{% endif %}
 {% endblock %}
