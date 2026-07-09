@@ -75,7 +75,6 @@ tr:hover td{background:rgba(255,255,255,0.02)}
   <div class="lang-bar">
     <a href="/set-lang/ru" class="lang-btn {% if lang!='kz' %}active{% endif %}">RU</a>
     <a href="/set-lang/kz" class="lang-btn {% if lang=='kz' %}active{% endif %}">ҚАЗ</a>
-    <a href="/logout" class="logout-link">{% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
   </div>
   <div class="nav-section">{% if lang=='kz' %}Басқару{% else %}Управление{% endif %}</div>
   <button class="nav-link active" onclick="showPage('dashboard',this)">✅ {% if lang=='kz' %}Шолу{% else %}Обзор{% endif %}</button>
