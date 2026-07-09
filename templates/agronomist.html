@@ -84,6 +84,7 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   <button class="nav-link" onclick="showPage('farmers',this)"><span>👨‍🌾</span> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
   <button class="nav-link" onclick="showPage('trips',this)"><span>🚚</span> {% if lang=='kz' %}Рейстер{% else %}Рейсы{% endif %}</button>
   <button class="nav-link" onclick="showPage('orders',this)"><span>🌿</span> {% if lang=='kz' %}Тапсырыстар{% else %}Заказы{% endif %}</button>
+  <button class="nav-link" onclick="showPage('journal',this)"><span>📜</span> {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
 
   <div class="nav-section">{% if lang=='kz' %}Баға{% else %}Цены{% endif %}</div>
   <button class="nav-link" onclick="showPage('prices',this)"><span>💰</span> {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
@@ -332,6 +333,25 @@ tr:hover td{background:rgba(74,222,128,0.03)}
     </tr>
     {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Тапсырыстар жоқ{% else %}Нет заказов{% endif %}</div></td></tr>{% endfor %}
     </tbody></table>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div id="page-journal" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">📜 {% if lang=='kz' %}Белсенділік журналы{% else %}Журнал активности{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Соңғы оқиғалар{% else %}Последние события платформы{% endif %}</div>
+  </div></div>
+  <div class="card">
+    {% for a in activity %}
+    <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #0d2e26">
+      <div style="font-size:1.2rem">{{ a.icon }}</div>
+      <div style="flex:1">
+        <div style="font-size:0.88rem;color:#e2e8f0">{{ a.text }}</div>
+        <div style="font-size:0.75rem;color:#2d6a4f">{{ a.who }}{% if a.when %} · {{ a.when[:16]|replace('T',' ') }}{% endif %}</div>
+      </div>
+    </div>
+    {% else %}<div class="empty-state">{% if lang=='kz' %}Оқиғалар жоқ{% else %}Событий нет{% endif %}</div>{% endfor %}
   </div>
 </div>
 

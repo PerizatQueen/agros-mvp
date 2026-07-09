@@ -639,6 +639,19 @@ def _get_panel_data(template):
     except Exception:
         catalog_items = []
 
+    activity = []
+    for c in all_contracts:
+        activity.append({'when': c.get('created_at', ''), 'who': c.get('farmer_name', ''), 'icon': '📄', 'text': 'Договор — ' + str(c.get('status', ''))})
+    for tr in all_trips:
+        activity.append({'when': tr.get('created_at', ''), 'who': tr.get('farmer_name', ''), 'icon': '🚚', 'text': 'Рейс — ' + str(tr.get('status', ''))})
+    for o in all_orders:
+        activity.append({'when': o.get('created_at', ''), 'who': o.get('farmer_name', ''), 'icon': '🌿', 'text': 'Заказ: ' + str(o.get('item_name', ''))})
+    for t in all_tasks:
+        if t.get('status') in ('review', 'approved'):
+            activity.append({'when': t.get('created_at', ''), 'who': t.get('farmer_name', ''), 'icon': '✅', 'text': 'Задача: ' + str(t.get('title', ''))})
+    activity.sort(key=lambda x: x.get('when') or '', reverse=True)
+    activity = activity[:40]
+
     stats = {
         'farmers': len(farmers),
         'active_contracts': len([c for c in all_contracts if c.get('status') == 'active']),
@@ -652,6 +665,7 @@ def _get_panel_data(template):
         farmers=farmers,
         all_trips=all_trips,
         all_orders=all_orders,
+        activity=activity,
         all_contracts=all_contracts,
         pending_contracts=pending_contracts,
         all_tasks=all_tasks,

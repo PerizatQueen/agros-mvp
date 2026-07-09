@@ -86,6 +86,7 @@ tr:hover td{background:rgba(255,255,255,0.02)}
   <button class="nav-link" onclick="showPage('bonuses',this)">🎁 {% if lang=='kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</button>
   <button class="nav-link" onclick="showPage('prices',this)">💰 {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
   <button class="nav-link" onclick="showPage('monitor',this)">🖥️ {% if lang=='kz' %}Мониторинг{% else %}Мониторинг{% endif %}</button>
+  <button class="nav-link" onclick="showPage('journal',this)">📜 {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
   <div class="sidebar-bottom">
     <a href="/logout" class="nav-link" style="color:#f87171">🚶 {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
   </div>
@@ -333,6 +334,25 @@ tr:hover td{background:rgba(255,255,255,0.02)}
     <div class="card"><div style="font-size:0.75rem;color:#475569;margin-bottom:8px">📄 {% if lang=='kz' %}Жалпы шарттар{% else %}Всего договоров{% endif %}</div><div style="font-size:2.5rem;font-weight:900;color:#60a5fa">{{ stats.active_contracts|int + stats.pending_contracts|int }}</div></div>
     <div class="card"><div style="font-size:0.75rem;color:#475569;margin-bottom:8px">⭐ {% if lang=='kz' %}Берілген бонустар{% else %}Выдано бонусов{% endif %}</div><div style="font-size:2.5rem;font-weight:900;color:#fcd34d">{{ stats.total_bonuses|default(0) }}</div></div>
     <div class="card"><div style="font-size:0.75rem;color:#475569;margin-bottom:8px">🌱 {% if lang=='kz' %}Жалпы учаскелер{% else %}Всего участков{% endif %}</div><div style="font-size:2.5rem;font-weight:900;color:#4ade80">{{ stats.plots }}</div></div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div id="page-journal" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">📜 {% if lang=='kz' %}Белсенділік журналы{% else %}Журнал активности{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Барлық оқиғалар{% else %}Все события платформы{% endif %}</div>
+  </div></div>
+  <div class="card">
+    {% for a in activity %}
+    <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #1a2040">
+      <div style="font-size:1.2rem">{{ a.icon }}</div>
+      <div style="flex:1">
+        <div style="font-size:0.88rem;color:#e2e8f0">{{ a.text }}</div>
+        <div style="font-size:0.75rem;color:#475569">{{ a.who }}{% if a.when %} · {{ a.when[:16]|replace('T',' ') }}{% endif %}</div>
+      </div>
+    </div>
+    {% else %}<div class="empty-state">{% if lang=='kz' %}Оқиғалар жоқ{% else %}Событий нет{% endif %}</div>{% endfor %}
   </div>
 </div>
 
