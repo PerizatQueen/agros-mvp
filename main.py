@@ -364,3 +364,19 @@ def update_price():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
+
+
+@app.route('/set-lang/<lang_code>')
+def set_lang(lang_code):
+    if lang_code in ('ru', 'kz'):
+        session['lang'] = lang_code
+    # Redirect back to previous page
+    ref = request.referrer
+    if ref:
+        return redirect(ref)
+    role = session.get('role')
+    if role == 'admin':
+        return redirect(url_for('admin_panel'))
+    elif role == 'agronomist':
+        return redirect(url_for('agronomist_panel'))
+    return redirect(url_for('dashboard'))
