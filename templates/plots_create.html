@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
-{% block title %}— Добавить участок{% endblock %}
+{% block title %}— {% if lang=='kz' %}Учаске қосу{% else %}Добавить участок{% endif %}{% endblock %}
 {% block body %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <div class="header">
   <div style="display:flex;align-items:center;gap:12px">
     <a href="/plots" style="color:#94a3b8;text-decoration:none">←</a>
-    <div class="header-title">Добавить участок</div>
+    <div class="header-title">{% if lang=='kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</div>
   </div>
-  <div style="font-size:0.85rem;color:#64748b">Шаг {{ step }}/3</div>
+  <div style="font-size:0.85rem;color:#64748b">{% if lang=='kz' %}Қадам{% else %}Шаг{% endif %} {{ step }}/3</div>
 </div>
 <div class="content">
-  <!-- Прогресс -->
   <div style="display:flex;gap:8px;margin-bottom:24px">
     {% for i in [1,2,3] %}
     <div style="flex:1;height:4px;border-radius:2px;background:{% if i <= step %}#4ade80{% else %}#2d3748{% endif %}"></div>
@@ -17,38 +18,42 @@
   </div>
 
   {% if step == 1 %}
-  <div class="section-title">📍 Данные участка</div>
+  <div class="section-title">📍 {% if lang=='kz' %}Учаске деректері{% else %}Данные участка{% endif %}</div>
   <form method="POST" id="step1form">
     <input type="hidden" name="step" value="2">
     <div class="input-group">
-      <label>Название участка</label>
-      <input type="text" name="name" placeholder="Например: Сад Жетысу" required>
+      <label>{% if lang=='kz' %}Учаске атауы{% else %}Название участка{% endif %}</label>
+      <input type="text" name="name" placeholder="{% if lang=='kz' %}Мысалы: Жетысу бақшасы{% else %}Например: Сад Жетысу{% endif %}" required>
     </div>
     <div class="input-group">
-      <label>Площадь (га)</label>
+      <label>{% if lang=='kz' %}Ауданы (га){% else %}Площадь (га){% endif %}</label>
       <input type="number" name="area_ha" placeholder="5.0" step="0.1" min="0.1" required>
     </div>
     <div class="input-group">
-      <label>Тип сада</label>
+      <label>{% if lang=='kz' %}Бақша түрі{% else %}Тип сада{% endif %}</label>
       <select name="garden_type">
-        <option value="extensive">Экстенсивный (10–20 т/га)</option>
-        <option value="semi_intensive">Полуинтенсивный (25–40 т/га)</option>
-        <option value="intensive" selected>Интенсивный (40–70 т/га)</option>
-        <option value="super_intensive">Суперинтенсивный (80–100 т/га)</option>
+        <option value="extensive">{% if lang=='kz' %}Экстенсивті (10–20 т/га){% else %}Экстенсивный (10–20 т/га){% endif %}</option>
+        <option value="semi_intensive">{% if lang=='kz' %}Жартылай қарқынды (25–40 т/га){% else %}Полуинтенсивный (25–40 т/га){% endif %}</option>
+        <option value="intensive" selected>{% if lang=='kz' %}Қарқынды (40–70 т/га){% else %}Интенсивный (40–70 т/га){% endif %}</option>
+        <option value="super_intensive">{% if lang=='kz' %}Суперқарқынды (80–100 т/га){% else %}Суперинтенсивный (80–100 т/га){% endif %}</option>
       </select>
     </div>
     <div class="input-group">
-      <label>GPS-метка (нажмите на карте)</label>
-      <div id="map" style="width:100%;height:200px;border-radius:10px;background:#1e2433;border:1.5px solid #2d3748;margin-bottom:8px;overflow:hidden"></div>
+      <label>🗺️ {% if lang=='kz' %}Картада нүктені таңдаңыз немесе мекенжай енгізіңіз{% else %}Нажмите на карте или введите адрес{% endif %}</label>
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input type="text" id="address_search" placeholder="{% if lang=='kz' %}Мекенжай іздеу...{% else %}Поиск адреса...{% endif %}" style="flex:1;background:#1e2433;border:1.5px solid #2d3748;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem;outline:none">
+        <button type="button" onclick="searchAddress()" style="background:#4ade80;color:#0f1117;border:none;border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer">🔍</button>
+      </div>
+      <div id="map" style="width:100%;height:220px;border-radius:10px;border:1.5px solid #2d3748;margin-bottom:8px;overflow:hidden"></div>
       <input type="hidden" name="lat" id="lat" value="43.2551">
       <input type="hidden" name="lng" id="lng" value="76.9126">
-      <input type="text" name="address" id="address" placeholder="Адрес определится автоматически">
+      <input type="text" name="address" id="address" placeholder="{% if lang=='kz' %}Мекенжай автоматты анықталады{% else %}Адрес определится автоматически{% endif %}" style="background:#1e2433;border:1.5px solid #2d3748;border-radius:8px;padding:9px 12px;color:#6ee7b7;font-size:0.85rem;width:100%;outline:none">
     </div>
-    <button type="submit" class="btn btn-primary btn-full">Далее →</button>
+    <button type="submit" class="btn btn-primary btn-full">{% if lang=='kz' %}Келесі →{% else %}Далее →{% endif %}</button>
   </form>
 
   {% elif step == 2 %}
-  <div class="section-title">🍎 Сорта</div>
+  <div class="section-title">🍎 {% if lang=='kz' %}Сорттар{% else %}Сорта{% endif %}</div>
   <form method="POST" id="step2form">
     <input type="hidden" name="step" value="3">
     <input type="hidden" name="name" value="{{ form_data.name }}">
@@ -60,79 +65,115 @@
     <input type="hidden" name="varieties_json" id="varieties_json" value="[]">
     <div id="varieties_list"></div>
     <div class="card" style="margin-bottom:16px">
-      <div class="card-title" style="margin-bottom:12px">Добавить сорт</div>
+      <div class="card-title" style="margin-bottom:12px">{% if lang=='kz' %}Сорт қосу{% else %}Добавить сорт{% endif %}</div>
       <div class="input-group">
-        <label>Сорт</label>
+        <label>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</label>
         <select id="v_name">
           <option>Гала</option><option>Голден</option>
           <option>Апорт</option><option>Симиренко</option>
         </select>
       </div>
       <div class="input-group">
-        <label>Площадь (га)</label>
+        <label>{% if lang=='kz' %}Ауданы (га){% else %}Площадь (га){% endif %}</label>
         <input type="number" id="v_area" placeholder="2.0" step="0.1" min="0.1">
       </div>
       <div class="input-group">
-        <label>Ожидаемый урожай (т)</label>
+        <label>{% if lang=='kz' %}Күтілетін егін (т){% else %}Ожидаемый урожай (т){% endif %}</label>
         <input type="number" id="v_yield" placeholder="100" min="1">
       </div>
-      <button type="button" class="btn btn-outline btn-full" onclick="addVariety()">➕ Добавить</button>
+      <button type="button" class="btn btn-outline btn-full" onclick="addVariety()">➕ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
     </div>
-    <button type="submit" class="btn btn-primary btn-full">Далее →</button>
+    <button type="submit" class="btn btn-primary btn-full">{% if lang=='kz' %}Келесі →{% else %}Далее →{% endif %}</button>
   </form>
 
   {% elif step == 3 %}
-  <div class="section-title">✅ Подтверждение</div>
+  <div class="section-title">✅ {% if lang=='kz' %}Растау{% else %}Подтверждение{% endif %}</div>
   <div class="card">
     <div class="card-title">{{ form_data.name }}</div>
     <div style="color:#64748b;font-size:0.9rem">{{ form_data.area_ha }} га · {{ form_data.garden_type }}</div>
     {% if form_data.address %}<div style="font-size:0.85rem;color:#475569;margin-top:6px">📍 {{ form_data.address }}</div>{% endif %}
+    {% if form_data.lat and form_data.lng %}<div style="font-size:0.78rem;color:#2d6a4f;margin-top:4px">📌 {{ form_data.lat }}, {{ form_data.lng }}</div>{% endif %}
   </div>
-  <div class="info-box">🏆 За добавление участка вам будет начислено <strong>+100 бонусов</strong>!</div>
+  <div class="info-box">🏆 {% if lang=='kz' %}Учаске қосқаныңыз үшін <strong>+100 бонус</strong> есептеледі!{% else %}За добавление участка вам будет начислено <strong>+100 бонусов</strong>!{% endif %}</div>
   <form method="POST">
     <input type="hidden" name="step" value="3">
     {% for key, val in form_data.items() %}
     <input type="hidden" name="{{ key }}" value="{{ val }}">
     {% endfor %}
-    <button type="submit" class="btn btn-primary btn-full">🌾 Сохранить участок</button>
+    <button type="submit" class="btn btn-primary btn-full">🌾 {% if lang=='kz' %}Учаскені сақтау{% else %}Сохранить участок{% endif %}</button>
   </form>
   {% endif %}
 </div>
+
 {% block scripts %}
-<script src="https://api-maps.yandex.ru/2.1/?apikey={{ yandex_key }}&lang=ru_RU" type="text/javascript"></script>
 <script>
+{% if step == 1 %}
+var lmap = L.map('map').setView([43.2551, 76.9126], 10);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap', maxZoom: 18
+}).addTo(lmap);
+
+var marker = L.marker([43.2551, 76.9126], {draggable: true}).addTo(lmap);
+
+function setCoords(lat, lng) {
+  document.getElementById('lat').value = lat.toFixed(6);
+  document.getElementById('lng').value = lng.toFixed(6);
+}
+
+function reverseGeocode(lat, lng) {
+  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=ru')
+    .then(r=>r.json()).then(d=>{
+      if(d.display_name) document.getElementById('address').value = d.display_name;
+    }).catch(()=>{});
+}
+
+lmap.on('click', function(e) {
+  marker.setLatLng(e.latlng);
+  setCoords(e.latlng.lat, e.latlng.lng);
+  reverseGeocode(e.latlng.lat, e.latlng.lng);
+});
+
+marker.on('dragend', function(e) {
+  var ll = e.target.getLatLng();
+  setCoords(ll.lat, ll.lng);
+  reverseGeocode(ll.lat, ll.lng);
+});
+
+function searchAddress() {
+  var q = document.getElementById('address_search').value.trim();
+  if (!q) return;
+  fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=1&accept-language=ru')
+    .then(r=>r.json()).then(d=>{
+      if(d.length > 0) {
+        var lat = parseFloat(d[0].lat), lng = parseFloat(d[0].lon);
+        lmap.setView([lat, lng], 13);
+        marker.setLatLng([lat, lng]);
+        setCoords(lat, lng);
+        document.getElementById('address').value = d[0].display_name;
+      } else {
+        alert('{% if lang=="kz" %}Мекенжай табылмады{% else %}Адрес не найден{% endif %}');
+      }
+    });
+}
+
+document.getElementById('address_search').addEventListener('keydown', function(e){
+  if(e.key==='Enter'){e.preventDefault();searchAddress();}
+});
+{% endif %}
+
 let varieties = [];
 function addVariety() {
   const name = document.getElementById('v_name').value;
   const area = document.getElementById('v_area').value;
   const yld = document.getElementById('v_yield').value;
-  if (!area) return alert('Укажите площадь');
+  if (!area) return alert('{% if lang=="kz" %}Ауданды көрсетіңіз{% else %}Укажите площадь{% endif %}');
   varieties.push({name, area_ha: parseFloat(area), expected_yield: parseFloat(yld)||0});
   document.getElementById('varieties_json').value = JSON.stringify(varieties);
-  const list = document.getElementById('varieties_list');
-  list.innerHTML = varieties.map(v =>
+  document.getElementById('varieties_list').innerHTML = varieties.map(v =>
     `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between">
       <span>🍎 ${v.name}</span><span style="color:#64748b">${v.area_ha}га · ${v.expected_yield}т</span>
     </div>`
   ).join('');
-}
-// Yandex Maps
-if (document.getElementById('map')) {
-  ymaps.ready(() => {
-    const map = new ymaps.Map('map', {center:[43.2551,76.9126], zoom:10});
-    let placemark = new ymaps.Placemark([43.2551,76.9126], {}, {preset:'islands#greenDotIcon'});
-    map.geoObjects.add(placemark);
-    map.events.add('click', e => {
-      const coords = e.get('coords');
-      placemark.geometry.setCoordinates(coords);
-      document.getElementById('lat').value = coords[0].toFixed(6);
-      document.getElementById('lng').value = coords[1].toFixed(6);
-      ymaps.geocode(coords).then(res => {
-        const addr = res.geoObjects.get(0);
-        if (addr) document.getElementById('address').value = addr.getAddressLine();
-      });
-    });
-  });
 }
 </script>
 {% endblock %}
