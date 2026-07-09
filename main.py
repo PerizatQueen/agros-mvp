@@ -102,12 +102,12 @@ def login():
             session['role'] = 'farmer'
             return redirect(url_for('dashboard') + '?bonus=100')
         elif step == 'pin':
-            if role == 'admin' and phone == ADMIN_PHONE and pin == ADMIN_PIN:
+            if role == 'admin' and pin == ADMIN_PIN:
                 session['user_id'] = 'admin'
                 session['user_name'] = 'Администратор'
                 session['role'] = 'admin'
                 return redirect(url_for('admin_panel'))
-            if role == 'agronomist' and phone == AGRONOMIST_PHONE and pin == AGRONOMIST_PIN:
+            if role == 'agronomist' and pin == AGRONOMIST_PIN:
                 session['user_id'] = 'agronomist'
                 session['user_name'] = 'Агроном'
                 session['role'] = 'agronomist'
