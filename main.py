@@ -1,6 +1,7 @@
 import os
 import hashlib
 import json
+import concurrent.futures
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import db
 
@@ -149,11 +150,18 @@ def set_lang(lg):
 @app.route('/dashboard')
 @farmer_required
 def dashboard():
-    user = db.get_user_by_id(session['user_id'])
-    plots = db.get_plots(session['user_id'])
-    contracts = db.get_contracts(session['user_id'])
-    tasks = db.get_tasks(session['user_id'])
-    prices = db.get_demand_prices()
+    uid = session['user_id']
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as _ex:
+        _fu = _ex.submit(db.get_user_by_id, uid)
+        _fp = _ex.submit(db.get_plots, uid)
+        _fc = _ex.submit(db.get_contracts, uid)
+        _ft = _ex.submit(db.get_tasks, uid)
+        _fpr = _ex.submit(db.get_demand_prices)
+    user = _fu.result()
+    plots = _fp.result()
+    contracts = _fc.result()
+    tasks = _ft.result()
+    prices = _fpr.result()
     active_contracts = [c for c in contracts if c['status'] == 'active']
     upcoming_tasks = [t for t in tasks if t['status'] in ('soon', 'upcoming')][:3]
     overdue_tasks = [t for t in tasks if t['status'] == 'overdue']
@@ -612,19 +620,36 @@ def _get_panel_data(template):
         return d
 
     # Батч-загрузка: каждую таблицу тянем один раз, связываем в памяти (без N+1)
-    all_users = db.db_get('users') or []
+    # Все независимые запросы — параллельно (время = один запрос, а не сумма)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=11) as _ex:
+        _f = {
+            'users': _ex.submit(db.db_get, 'users'),
+            'plots': _ex.submit(db.db_get, 'plots'),
+            'contracts': _ex.submit(db.db_get, 'contracts', None, '*', 'created_at.desc'),
+            'items': _ex.submit(db.db_get, 'contract_items'),
+            'tasks': _ex.submit(db.db_get, 'tasks', None, '*', 'due_date'),
+            'trips': _ex.submit(db.db_get, 'trips', None, '*', 'created_at.desc'),
+            'orders': _ex.submit(db.db_get, 'agri_orders', None, '*', 'created_at.desc'),
+            'prices': _ex.submit(db.db_get, 'demand_prices'),
+            'bonus_items': _ex.submit(db.db_get, 'bonus_items'),
+            'bonus_redemptions': _ex.submit(db.db_get, 'bonus_redemptions', None, '*', 'created_at.desc'),
+            'catalog_items': _ex.submit(db.db_get, 'catalog_items'),
+        }
+        _r = {k: (v.result() or []) for k, v in _f.items()}
+
+    all_users = _r['users']
     users_by_id = {u.get('id'): u for u in all_users}
     for u in all_users:
         u.setdefault('role', 'farmer')
         u.setdefault('is_active', True)
 
-    all_plots = db.db_get('plots') or []
+    all_plots = _r['plots']
     plots_by_id = {p.get('id'): p for p in all_plots}
     plots_by_user = _grp(all_plots, 'user_id')
 
-    all_contracts_raw = db.db_get('contracts', order='created_at.desc') or []
+    all_contracts_raw = _r['contracts']
     contracts_by_user = _grp(all_contracts_raw, 'user_id')
-    items_by_contract = _grp(db.db_get('contract_items') or [], 'contract_id')
+    items_by_contract = _grp(_r['items'], 'contract_id')
 
     farmers = [{**u,
                 'plots_count': len(plots_by_user.get(u.get('id'), [])),
@@ -642,7 +667,7 @@ def _get_panel_data(template):
     pending_contracts = [c for c in all_contracts if c.get('status') == 'pending']
 
     all_tasks = []
-    for t in (db.db_get('tasks', order='due_date') or []):
+    for t in _r['tasks']:
         tu = users_by_id.get(t.get('user_id'))
         tp = plots_by_id.get(t.get('plot_id'))
         t['farmer_name'] = tu.get('name', '') if tu else ''
@@ -650,21 +675,21 @@ def _get_panel_data(template):
         all_tasks.append(t)
 
     all_trips = []
-    for tr in (db.db_get('trips', order='created_at.desc') or []):
+    for tr in _r['trips']:
         tru = users_by_id.get(tr.get('user_id'))
         tr['farmer_name'] = tru.get('name', '') if tru else ''
         all_trips.append(tr)
 
     all_orders = []
-    for o in (db.db_get('agri_orders', order='created_at.desc') or []):
+    for o in _r['orders']:
         ou = users_by_id.get(o.get('user_id'))
         o['farmer_name'] = ou.get('name', '') if ou else ''
         all_orders.append(o)
 
-    prices = db.get_demand_prices() or []
-    bonus_items = db.db_get('bonus_items') or []
-    bonus_redemptions = db.db_get('bonus_redemptions', order='created_at.desc') or []
-    catalog_items = db.db_get('catalog_items') or []
+    prices = _r['prices']
+    bonus_items = _r['bonus_items']
+    bonus_redemptions = _r['bonus_redemptions']
+    catalog_items = _r['catalog_items']
 
     activity = []
     for c in all_contracts:
