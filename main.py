@@ -605,105 +605,66 @@ def admin_panel():
 
 
 def _get_panel_data(template):
-    try:
-        all_users = db.db_get('users') or []
-    except Exception:
-        all_users = []
-    farmers = []
-    for u in all_users:
-        try:
-            plots = db.db_get('plots', {'user_id': f'eq.{u["id"]}'}) or []
-            user_contracts = db.db_get('contracts', {'user_id': f'eq.{u["id"]}'}) or []
-        except Exception:
-            plots, user_contracts = [], []
-        farmers.append({**u, 'plots_count': len(plots), 'contracts_count': len(user_contracts)})
+    def _grp(rows, key):
+        d = {}
+        for r in rows:
+            d.setdefault(r.get(key), []).append(r)
+        return d
 
-    # Роль/активность могут отсутствовать в схеме до миграции — показываем разумные дефолты
+    # Батч-загрузка: каждую таблицу тянем один раз, связываем в памяти (без N+1)
+    all_users = db.db_get('users') or []
+    users_by_id = {u.get('id'): u for u in all_users}
     for u in all_users:
         u.setdefault('role', 'farmer')
         u.setdefault('is_active', True)
 
-    try:
-        all_contracts_raw = db.db_get('contracts', order='created_at.desc') or []
-    except Exception:
-        all_contracts_raw = []
+    all_plots = db.db_get('plots') or []
+    plots_by_id = {p.get('id'): p for p in all_plots}
+    plots_by_user = _grp(all_plots, 'user_id')
+
+    all_contracts_raw = db.db_get('contracts', order='created_at.desc') or []
+    contracts_by_user = _grp(all_contracts_raw, 'user_id')
+    items_by_contract = _grp(db.db_get('contract_items') or [], 'contract_id')
+
+    farmers = [{**u,
+                'plots_count': len(plots_by_user.get(u.get('id'), [])),
+                'contracts_count': len(contracts_by_user.get(u.get('id'), []))}
+               for u in all_users]
+
     all_contracts = []
     for c in all_contracts_raw:
-        try:
-            u = db.get_user_by_id(c['user_id'])
-            plot = db.db_get('plots', {'id': f'eq.{c["plot_id"]}'})
-            c['farmer_name'] = u['name'] if u else ''
-            c['plot_name'] = plot[0]['name'] if plot else ''
-            c['contract_items'] = db.db_get('contract_items', {'contract_id': f'eq.{c["id"]}'}) or []
-        except Exception:
-            c.setdefault('farmer_name', '')
-            c.setdefault('plot_name', '')
-            c.setdefault('contract_items', [])
+        cu = users_by_id.get(c.get('user_id'))
+        cp = plots_by_id.get(c.get('plot_id'))
+        c['farmer_name'] = cu.get('name', '') if cu else ''
+        c['plot_name'] = cp.get('name', '') if cp else ''
+        c['contract_items'] = items_by_contract.get(c.get('id'), [])
         all_contracts.append(c)
-
     pending_contracts = [c for c in all_contracts if c.get('status') == 'pending']
 
-    try:
-        all_tasks_raw = db.db_get('tasks', order='due_date') or []
-    except Exception:
-        all_tasks_raw = []
     all_tasks = []
-    for t in all_tasks_raw:
-        try:
-            u = db.get_user_by_id(t['user_id'])
-            plot = db.db_get('plots', {'id': f'eq.{t["plot_id"]}'})
-            t['farmer_name'] = u['name'] if u else ''
-            t['plot_name'] = plot[0]['name'] if plot else ''
-        except Exception:
-            t.setdefault('farmer_name', '')
-            t.setdefault('plot_name', '')
+    for t in (db.db_get('tasks', order='due_date') or []):
+        tu = users_by_id.get(t.get('user_id'))
+        tp = plots_by_id.get(t.get('plot_id'))
+        t['farmer_name'] = tu.get('name', '') if tu else ''
+        t['plot_name'] = tp.get('name', '') if tp else ''
         all_tasks.append(t)
 
-    try:
-        all_trips_raw = db.db_get('trips', order='created_at.desc') or []
-    except Exception:
-        all_trips_raw = []
     all_trips = []
-    for tr in all_trips_raw:
-        try:
-            u = db.get_user_by_id(tr['user_id'])
-            tr['farmer_name'] = u['name'] if u else ''
-        except Exception:
-            tr.setdefault('farmer_name', '')
+    for tr in (db.db_get('trips', order='created_at.desc') or []):
+        tru = users_by_id.get(tr.get('user_id'))
+        tr['farmer_name'] = tru.get('name', '') if tru else ''
         all_trips.append(tr)
 
-    try:
-        all_orders_raw = db.db_get('agri_orders', order='created_at.desc') or []
-    except Exception:
-        all_orders_raw = []
     all_orders = []
-    for o in all_orders_raw:
-        try:
-            u = db.get_user_by_id(o['user_id'])
-            o['farmer_name'] = u['name'] if u else ''
-        except Exception:
-            o.setdefault('farmer_name', '')
+    for o in (db.db_get('agri_orders', order='created_at.desc') or []):
+        ou = users_by_id.get(o.get('user_id'))
+        o['farmer_name'] = ou.get('name', '') if ou else ''
         all_orders.append(o)
 
-    try:
-        prices = db.get_demand_prices() or []
-    except Exception:
-        prices = []
-
-    try:
-        bonus_items = db.db_get('bonus_items') or []
-    except Exception:
-        bonus_items = []
-
-    try:
-        bonus_redemptions = db.db_get('bonus_redemptions', order='created_at.desc') or []
-    except Exception:
-        bonus_redemptions = []
-
-    try:
-        catalog_items = db.db_get('catalog_items') or []
-    except Exception:
-        catalog_items = []
+    prices = db.get_demand_prices() or []
+    bonus_items = db.db_get('bonus_items') or []
+    bonus_redemptions = db.db_get('bonus_redemptions', order='created_at.desc') or []
+    catalog_items = db.db_get('catalog_items') or []
 
     activity = []
     for c in all_contracts:

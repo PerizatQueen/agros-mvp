@@ -12,24 +12,35 @@ HEADERS = {
 
 REST = f'{SUPABASE_URL}/rest/v1'
 
+# Единая сессия с keep-alive — не переустанавливаем TLS на каждый запрос
+_session = requests.Session()
+_session.headers.update(HEADERS)
+
 def db_get(table, filters=None, select='*', order=None):
     params = {'select': select}
     if filters:
         params.update(filters)
     if order:
         params['order'] = order
-    r = requests.get(f'{REST}/{table}', headers=HEADERS, params=params)
-    return r.json() if r.ok else []
+    try:
+        r = _session.get(f'{REST}/{table}', params=params, timeout=12)
+        return r.json() if r.ok else []
+    except Exception:
+        return []
 
 def db_insert(table, data):
-    r = requests.post(f'{REST}/{table}', headers=HEADERS, json=data)
-    return r.json() if r.ok else []
+    try:
+        r = _session.post(f'{REST}/{table}', json=data, timeout=12)
+        return r.json() if r.ok else []
+    except Exception:
+        return []
 
 def db_update(table, data, filters):
-    params = {}
-    params.update(filters)
-    r = requests.patch(f'{REST}/{table}', headers=HEADERS, json=data, params=params)
-    return r.json() if r.ok else []
+    try:
+        r = _session.patch(f'{REST}/{table}', json=data, params=filters, timeout=12)
+        return r.json() if r.ok else []
+    except Exception:
+        return []
 
 # ===== USERS =====
 def get_user_by_phone(phone):
@@ -60,8 +71,15 @@ def create_user(phone, name, pin_hash, bonus_balance=0):
 # ===== PLOTS =====
 def get_plots(user_id):
     plots = db_get('plots', {'user_id': f'eq.{user_id}'})
+    if not plots:
+        return plots
+    ids = ','.join(p['id'] for p in plots)
+    varieties = db_get('plot_varieties', {'plot_id': f'in.({ids})'})
+    by_plot = {}
+    for v in varieties:
+        by_plot.setdefault(v.get('plot_id'), []).append(v)
     for plot in plots:
-        plot['varieties'] = db_get('plot_varieties', {'plot_id': f'eq.{plot["id"]}'})
+        plot['varieties'] = by_plot.get(plot['id'], [])
     return plots
 
 def get_plot(plot_id):
@@ -99,10 +117,19 @@ def get_demand_prices():
 # ===== CONTRACTS =====
 def get_contracts(user_id):
     contracts = db_get('contracts', {'user_id': f'eq.{user_id}'}, order='created_at.desc')
+    if not contracts:
+        return contracts
+    cids = ','.join(c['id'] for c in contracts)
+    items = db_get('contract_items', {'contract_id': f'in.({cids})'})
+    items_by_c = {}
+    for it in items:
+        items_by_c.setdefault(it.get('contract_id'), []).append(it)
+    pids = ','.join(c['plot_id'] for c in contracts if c.get('plot_id'))
+    plots = db_get('plots', {'id': f'in.({pids})'}, select='id,name') if pids else []
+    pname = {p['id']: p.get('name', '') for p in plots}
     for c in contracts:
-        c['contract_items'] = db_get('contract_items', {'contract_id': f'eq.{c["id"]}'})
-        plots = db_get('plots', {'id': f'eq.{c["plot_id"]}'}, select='name')
-        c['plot_name'] = plots[0]['name'] if plots else ''
+        c['contract_items'] = items_by_c.get(c['id'], [])
+        c['plot_name'] = pname.get(c.get('plot_id'), '')
     return contracts
 
 def create_contract(user_id, plot_id, items):
@@ -127,10 +154,12 @@ def create_contract(user_id, plot_id, items):
 def get_tasks(user_id, month=None):
     tasks = db_get('tasks', {'user_id': f'eq.{user_id}'}, order='due_date')
     if month:
-        tasks = [t for t in tasks if t.get('due_date', '').startswith(f'2026-{month:02d}')]
+        tasks = [t for t in tasks if (t.get('due_date') or '').startswith(f'2026-{month:02d}')]
+    pids = ','.join(t['plot_id'] for t in tasks if t.get('plot_id'))
+    plots = db_get('plots', {'id': f'in.({pids})'}, select='id,name') if pids else []
+    pname = {p['id']: p.get('name', '') for p in plots}
     for t in tasks:
-        plots = db_get('plots', {'id': f'eq.{t["plot_id"]}'}, select='name')
-        t['plot_name'] = plots[0]['name'] if plots else ''
+        t['plot_name'] = pname.get(t.get('plot_id'), '')
     return tasks
 
 def complete_task(task_id, user_id):
