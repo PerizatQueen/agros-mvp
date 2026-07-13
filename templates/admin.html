@@ -87,6 +87,8 @@ tr:hover td{background:rgba(255,255,255,0.02)}
   <button class="nav-link" onclick="showPage('prices',this)">💰 {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
   <button class="nav-link" onclick="showPage('monitor',this)">🖥️ {% if lang=='kz' %}Мониторинг{% else %}Мониторинг{% endif %}</button>
   <button class="nav-link" onclick="showPage('journal',this)">📜 {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
+  <button class="nav-link" onclick="showPage('subsidies',this)">🏛️ {% if lang=='kz' %}Субсидиялар{% else %}Субсидии{% endif %}</button>
+  <button class="nav-link" onclick="showPage('slots',this)">📅 {% if lang=='kz' %}Слоттар{% else %}Слоты приёмки{% endif %}</button>
   <div class="sidebar-bottom">
     <a href="/logout" class="nav-link" style="color:#f87171">🚶 {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
   </div>
@@ -137,6 +139,20 @@ tr:hover td{background:rgba(255,255,255,0.02)}
       <button class="btn btn-danger" onclick="document.getElementById('addUserForm').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
     </div>
   </div>
+  <div id="editUserForm" class="card" style="display:none;border-color:#60a5fa">
+    <div class="card-title" style="margin-bottom:16px">{% if lang=='kz' %}Пайдаланушыны өңдеу{% else %}Редактировать пользователя{% endif %}</div>
+    <input type="hidden" id="eu_id">
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="ig"><label>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</label><input id="eu_name"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Рөл{% else %}Роль{% endif %}</label>
+        <select id="eu_role"><option value="farmer">{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</option><option value="agronomist">{% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</option><option value="admin">Admin</option></select></div>
+      <div class="ig"><label>{% if lang=='kz' %}Аудан{% else %}Район{% endif %}</label><input id="eu_region"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="saveUser()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+      <button class="btn btn-danger" onclick="document.getElementById('editUserForm').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+    </div>
+  </div>
   <div class="ftabs">
     <button class="ftab active" onclick="filterU('all',this)">{% if lang=='kz' %}Барлығы{% else %}Все{% endif %}</button>
     <button class="ftab" onclick="filterU('farmer',this)">👨‍🌾</button>
@@ -156,7 +172,10 @@ tr:hover td{background:rgba(255,255,255,0.02)}
     <td>+7{{ u.phone }}</td>
     <td><span class="badge {% if u.role=='admin' %}badge-red{% elif u.role=='agronomist' %}badge-green{% else %}badge-blue{% endif %}">{{ u.role }}</span></td>
     <td><span class="badge {% if u.is_active %}badge-green{% else %}badge-red{% endif %}">{% if u.is_active %}✓{% else %}✗{% endif %}</span></td>
-    <td><button class="btn btn-danger" onclick="toggleUser('{{ u.id }}')">{% if u.is_active %}{% if lang=='kz' %}Бұғат{% else %}Блок{% endif %}{% else %}{% if lang=='kz' %}Ашу{% else %}Разблок{% endif %}{% endif %}</button></td>
+    <td><div style="display:flex;gap:6px">
+      <button class="btn btn-green" onclick="editUser('{{ u.id }}', this)" data-name="{{ u.name }}" data-role="{{ u.role }}" data-region="{{ u.region or '' }}">✎</button>
+      <button class="btn btn-danger" onclick="toggleUser('{{ u.id }}')">{% if u.is_active %}{% if lang=='kz' %}Бұғат{% else %}Блок{% endif %}{% else %}{% if lang=='kz' %}Ашу{% else %}Разблок{% endif %}{% endif %}</button>
+    </div></td>
   </tr>
   {% else %}<tr><td colspan="5"><div class="empty-state">{% if lang=='kz' %}Пайдаланушылар жоқ{% else %}Пользователей нет{% endif %}</div></td></tr>{% endfor %}
   </tbody></table></div>
@@ -337,6 +356,60 @@ tr:hover td{background:rgba(255,255,255,0.02)}
   </div>
 </div>
 
+<!-- SUBSIDIES -->
+<div id="page-subsidies" class="page">
+  <div class="topbar">
+    <div><div class="page-title">🏛️ {% if lang=='kz' %}Субсидиялар{% else %}Субсидии и гранты{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Фермер дашбордында көрінеді{% else %}Показываются на дашборде фермера{% endif %}</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('addSubForm').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  </div>
+  <div id="addSubForm" class="card" style="display:none;border-color:#f87171">
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="ig"><label>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</label><input id="sub_title"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Орган{% else %}Орган/организация{% endif %}</label><input id="sub_org"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Сипаттама{% else %}Описание{% endif %}</label><input id="sub_desc"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Сілтеме{% else %}Ссылка (URL){% endif %}</label><input id="sub_url" placeholder="https://egov.kz"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="addSubsidy()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+      <button class="btn btn-danger" onclick="document.getElementById('addSubForm').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+    </div>
+  </div>
+  <div class="card"><table><thead><tr>
+    <th>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</th><th>{% if lang=='kz' %}Орган{% else %}Орган{% endif %}</th><th></th>
+  </tr></thead><tbody>
+  {% for s in subsidies %}
+  <tr><td><strong>{{ s.title }}</strong><br><small style="color:#475569">{{ s.description }}</small></td><td>{{ s.org }}</td><td><button class="btn btn-danger" onclick="delSubsidy('{{ s.id }}')">✕</button></td></tr>
+  {% else %}<tr><td colspan="3"><div class="empty-state">{% if lang=='kz' %}Субсидиялар жоқ{% else %}Субсидий нет — на дашборде показываются стандартные{% endif %}</div></td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+
+<!-- SLOTS -->
+<div id="page-slots" class="page">
+  <div class="topbar">
+    <div><div class="page-title">📅 {% if lang=='kz' %}Қабылдау слоттары{% else %}Слоты пункта приёма{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Тәуліктік сыйымдылық{% else %}Суточная вместимость приёмки{% endif %}</div></div>
+    <button class="btn btn-primary" onclick="document.getElementById('addSlotForm').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  </div>
+  <div id="addSlotForm" class="card" style="display:none;border-color:#f87171">
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="ig"><label>{% if lang=='kz' %}Күні{% else %}Дата{% endif %}</label><input id="slot_date" type="date"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Сыйымдылық (т){% else %}Вместимость (т){% endif %}</label><input id="slot_cap" type="number"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" onclick="addSlot()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+      <button class="btn btn-danger" onclick="document.getElementById('addSlotForm').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+    </div>
+  </div>
+  <div class="card"><table><thead><tr>
+    <th>{% if lang=='kz' %}Күні{% else %}Дата{% endif %}</th><th>{% if lang=='kz' %}Сыйымдылық{% else %}Вместимость{% endif %}</th><th>{% if lang=='kz' %}Брондалған{% else %}Занято{% endif %}</th>
+  </tr></thead><tbody>
+  {% for sl in reception_slots %}
+  <tr><td>{{ sl.slot_date }}</td><td>{{ sl.capacity }} т</td><td>{{ sl.booked }} т</td></tr>
+  {% else %}<tr><td colspan="3"><div class="empty-state">{% if lang=='kz' %}Слоттар жоқ{% else %}Слотов нет{% endif %}</div></td></tr>{% endfor %}
+  </tbody></table></div>
+</div>
+
 <!-- JOURNAL -->
 <div id="page-journal" class="page">
   <div class="topbar"><div>
@@ -390,6 +463,26 @@ function addBonus(){
   const data={name:document.getElementById('b_name').value,description:document.getElementById('b_desc').value,cost:document.getElementById('b_cost').value,stock:document.getElementById('b_stock').value};
   fetch('/admin/bonus/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
     .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+function editUser(id,btn){
+  document.getElementById('eu_id').value=id;
+  document.getElementById('eu_name').value=btn.dataset.name||'';
+  document.getElementById('eu_role').value=btn.dataset.role||'farmer';
+  document.getElementById('eu_region').value=btn.dataset.region||'';
+  document.getElementById('editUserForm').style.display='block';
+}
+function saveUser(){
+  const data={user_id:document.getElementById('eu_id').value,name:document.getElementById('eu_name').value,role:document.getElementById('eu_role').value,region:document.getElementById('eu_region').value};
+  fetch('/admin/user/edit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+function addSubsidy(){
+  const data={title:document.getElementById('sub_title').value,org:document.getElementById('sub_org').value,description:document.getElementById('sub_desc').value,url:document.getElementById('sub_url').value};
+  fetch('/admin/subsidy/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
+}
+function delSubsidy(id){fetch('/admin/subsidy/'+id+'/delete',{method:'POST'}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
+function addSlot(){
+  const data={slot_date:document.getElementById('slot_date').value,capacity:document.getElementById('slot_cap').value};
+  fetch('/admin/slot/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
 }
 function savePrice(id){
   const data={price_commercial:document.getElementById('pc_'+id).value,price_fallen:document.getElementById('pf_'+id).value};

@@ -83,6 +83,7 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   <button class="nav-link" onclick="showPage('tasks',this)"><span>✅</span> {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</button>
   <button class="nav-link" onclick="showPage('farmers',this)"><span>👨‍🌾</span> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
   <button class="nav-link" onclick="showPage('create',this)"><span>➕</span> {% if lang=='kz' %}Құру{% else %}Создать{% endif %}</button>
+  <button class="nav-link" onclick="showPage('templates',this)"><span>📋</span> {% if lang=='kz' %}Шаблондар{% else %}Шаблоны{% endif %}</button>
   <button class="nav-link" onclick="showPage('trips',this)"><span>🚚</span> {% if lang=='kz' %}Рейстер{% else %}Рейсы{% endif %}</button>
   <button class="nav-link" onclick="showPage('orders',this)"><span>🌿</span> {% if lang=='kz' %}Тапсырыстар{% else %}Заказы{% endif %}</button>
   <button class="nav-link" onclick="showPage('journal',this)"><span>📜</span> {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
@@ -302,6 +303,46 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   </div>
 </div>
 
+<!-- CARE TEMPLATES -->
+<div id="page-templates" class="page">
+  <div class="topbar">
+    <div>
+      <div class="page-title">📋 {% if lang=='kz' %}Күтім жоспарының шаблондары{% else %}Шаблоны плана ухода{% endif %}</div>
+      <div class="page-sub">{% if lang=='kz' %}Шарт қол қойылғанда осы тапсырмалар автоматты құрылады{% else %}Эти задачи автоматически создаются при подписании договора{% endif %}</div>
+    </div>
+    <button class="btn btn-approve" onclick="document.getElementById('addTpl').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  </div>
+  <div id="addTpl" class="card" style="display:none">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px">
+      <div class="ig"><label>{% if lang=='kz' %}Тапсырма{% else %}Название задачи{% endif %}</label><input id="tpl_title"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Ай (7–12){% else %}Месяц (7–12){% endif %}</label><input id="tpl_month" type="number" value="7"></div>
+      <div class="ig"><label>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</label><input id="tpl_bonus" type="number" value="20"></div>
+    </div>
+    <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Сипаттама{% else %}Описание{% endif %}</label><input id="tpl_desc"></div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-save" onclick="addTemplate()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+      <button class="btn btn-reject" onclick="document.getElementById('addTpl').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+    </div>
+  </div>
+  <div class="card">
+    <table><thead><tr>
+      <th>{% if lang=='kz' %}Тапсырма{% else %}Задача{% endif %}</th>
+      <th>{% if lang=='kz' %}Ай{% else %}Месяц{% endif %}</th>
+      <th>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</th>
+      <th></th>
+    </tr></thead><tbody>
+    {% for t in care_templates %}
+    <tr>
+      <td><strong>{{ t.title }}</strong>{% if t.description %}<div style="font-size:0.75rem;color:#2d6a4f">{{ t.description }}</div>{% endif %}</td>
+      <td>{{ t.month }}</td>
+      <td style="color:#4ade80">+{{ t.bonus_amount }}</td>
+      <td><button class="btn btn-reject" onclick="delTemplate('{{ t.id }}')">✕</button></td>
+    </tr>
+    {% else %}<tr><td colspan="4"><div class="empty-state">{% if lang=='kz' %}Шаблондар жоқ — стандартты жоспар қолданылады{% else %}Шаблонов нет — используется стандартный план (5 задач){% endif %}</div></td></tr>{% endfor %}
+    </tbody></table>
+  </div>
+</div>
+
 <!-- TRIPS -->
 <div id="page-trips" class="page">
   <div class="topbar"><div>
@@ -506,6 +547,8 @@ function _agroPost(url,data,okMsg){
 function agroCreateFarmer(){_agroPost('/agronomist/farmer/create',{name:document.getElementById('nf_name').value,phone:document.getElementById('nf_phone').value},'Фермер создан ✓');}
 function agroCreatePlot(){_agroPost('/agronomist/plot/create',{farmer_id:document.getElementById('pl_farmer').value,name:document.getElementById('pl_name').value,area_ha:document.getElementById('pl_area').value,garden_type:document.getElementById('pl_garden').value},'Участок создан ✓');}
 function agroCreateContract(){_agroPost('/agronomist/contract/create',{farmer_id:document.getElementById('ct_farmer').value,plot_id:document.getElementById('ct_plot').value,variety:document.getElementById('ct_variety').value,volume_kg:document.getElementById('ct_vol').value,price_per_kg:document.getElementById('ct_price').value},'Договор создан ✓');}
+function addTemplate(){_agroPost('/agronomist/template/add',{title:document.getElementById('tpl_title').value,description:document.getElementById('tpl_desc').value,month:document.getElementById('tpl_month').value,bonus_amount:document.getElementById('tpl_bonus').value},'Шаблон добавлен ✓');}
+function delTemplate(id){fetch('/agronomist/template/'+id+'/delete',{method:'POST'}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
 fillPlots();
 function updatePrice(id){
   const c=document.getElementById('pc_'+id).value;

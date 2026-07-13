@@ -151,17 +151,19 @@ def set_lang(lg):
 @farmer_required
 def dashboard():
     uid = session['user_id']
-    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as _ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as _ex:
         _fu = _ex.submit(db.get_user_by_id, uid)
         _fp = _ex.submit(db.get_plots, uid)
         _fc = _ex.submit(db.get_contracts, uid)
         _ft = _ex.submit(db.get_tasks, uid)
         _fpr = _ex.submit(db.get_demand_prices)
+        _fsub = _ex.submit(db.db_get, 'subsidies', {'is_active': 'eq.true'})
     user = _fu.result()
     plots = _fp.result()
     contracts = _fc.result()
     tasks = _ft.result()
     prices = _fpr.result()
+    subsidies = _fsub.result() or []
     active_contracts = [c for c in contracts if c['status'] == 'active']
     upcoming_tasks = [t for t in tasks if t['status'] in ('soon', 'upcoming')][:3]
     overdue_tasks = [t for t in tasks if t['status'] == 'overdue']
@@ -169,7 +171,7 @@ def dashboard():
         user=user, plots=plots, contracts=active_contracts,
         tasks=upcoming_tasks, overdue_tasks=overdue_tasks, prices=prices[:4],
         has_plots=len(plots) > 0, has_contracts=len(contracts) > 0,
-        has_active=len(active_contracts) > 0, lang=lang())
+        has_active=len(active_contracts) > 0, subsidies=subsidies, lang=lang())
 
 
 @app.route('/plots')
@@ -490,13 +492,14 @@ def transport_archive(t_id):
 def chat():
     user = None
     agro_messages = []
+    support_messages = []
     if session.get('role') == 'farmer':
         user = db.get_user_by_id(session['user_id'])
-        try:
-            agro_messages = db.db_get('messages', {'user_id': f'eq.{session["user_id"]}'}, order='created_at') or []
-        except Exception:
-            agro_messages = []
-    return render_template('chat.html', user=user, agro_messages=agro_messages, lang=lang())
+        all_msgs = db.db_get('messages', {'user_id': f'eq.{session["user_id"]}'}, order='created_at') or []
+        agro_messages = [m for m in all_msgs if (m.get('channel') or 'agronomist') != 'support']
+        support_messages = [m for m in all_msgs if m.get('channel') == 'support']
+    return render_template('chat.html', user=user, agro_messages=agro_messages,
+                           support_messages=support_messages, lang=lang())
 
 
 @app.route('/chat/message', methods=['POST'])
@@ -554,6 +557,20 @@ def chat_agro_messages():
     except Exception:
         msgs = []
     return jsonify({'messages': [{'sender': m.get('sender'), 'body': m.get('body')} for m in msgs]})
+
+
+@app.route('/chat/support/send', methods=['POST'])
+@farmer_required
+def chat_support_send():
+    data = request.get_json(silent=True) or {}
+    body = (data.get('message') or '').strip()
+    if not body:
+        return jsonify({'status': 'error'})
+    res = db.db_insert('messages', {'user_id': session['user_id'], 'sender': 'farmer',
+                                    'body': body, 'channel': 'support'})
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось (миграция №4 для channel?)'})
+    return jsonify({'status': 'success'})
 
 
 @app.route('/agronomist/chat')
@@ -634,6 +651,9 @@ def _get_panel_data(template):
             'bonus_items': _ex.submit(db.db_get, 'bonus_items'),
             'bonus_redemptions': _ex.submit(db.db_get, 'bonus_redemptions', None, '*', 'created_at.desc'),
             'catalog_items': _ex.submit(db.db_get, 'catalog_items'),
+            'care_templates': _ex.submit(db.db_get, 'care_templates'),
+            'subsidies': _ex.submit(db.db_get, 'subsidies'),
+            'reception_slots': _ex.submit(db.db_get, 'reception_slots', None, '*', 'slot_date'),
         }
         _r = {k: (v.result() or []) for k, v in _f.items()}
 
@@ -694,6 +714,9 @@ def _get_panel_data(template):
     bonus_items = _r['bonus_items']
     bonus_redemptions = _r['bonus_redemptions']
     catalog_items = _r['catalog_items']
+    care_templates = _r['care_templates']
+    subsidies = _r['subsidies']
+    reception_slots = _r['reception_slots']
 
     activity = []
     for c in all_contracts:
@@ -734,6 +757,9 @@ def _get_panel_data(template):
         bonus_items=bonus_items,
         bonus_redemptions=bonus_redemptions,
         catalog_items=catalog_items,
+        care_templates=care_templates,
+        subsidies=subsidies,
+        reception_slots=reception_slots,
         role=session.get('role'),
         user_name=session.get('user_name'),
         lang=lang()
@@ -756,13 +782,19 @@ def _auto_create_care_plan(user_id, plot_id):
             return
     except Exception:
         return
-    plan = [
-        ('Весенняя обрезка', 'Санитарная и формирующая обрезка деревьев', '2026-07-15', 30),
-        ('Обработка от вредителей', 'Опрыскивание от яблонной плодожорки', '2026-07-25', 40),
-        ('Внесение удобрений', 'Азотные удобрения под корень', '2026-08-05', 25),
-        ('Мониторинг болезней', 'Осмотр листьев на признаки парши', '2026-08-20', 20),
-        ('Подготовка к сбору', 'Проверка готовности плодов к сбору', '2026-09-10', 35),
-    ]
+    templates = db.db_get('care_templates') or []
+    if templates:
+        plan = [(t.get('title', 'Задача'), (t.get('description') or ''),
+                 '2026-%02d-15' % int(t.get('month') or 7), int(t.get('bonus_amount') or 20))
+                for t in templates]
+    else:
+        plan = [
+            ('Весенняя обрезка', 'Санитарная и формирующая обрезка деревьев', '2026-07-15', 30),
+            ('Обработка от вредителей', 'Опрыскивание от яблонной плодожорки', '2026-07-25', 40),
+            ('Внесение удобрений', 'Азотные удобрения под корень', '2026-08-05', 25),
+            ('Мониторинг болезней', 'Осмотр листьев на признаки парши', '2026-08-20', 20),
+            ('Подготовка к сбору', 'Проверка готовности плодов к сбору', '2026-09-10', 35),
+        ]
     for title, desc, due, bonus in plan:
         try:
             db.db_insert('tasks', {
@@ -901,6 +933,32 @@ def agro_create_contract():
     return jsonify({'status': 'success'})
 
 
+@app.route('/agronomist/template/add', methods=['POST'])
+@agronomist_required
+def agro_template_add():
+    data = request.get_json(silent=True) or {}
+    title = (data.get('title') or '').strip()
+    if not title:
+        return jsonify({'status': 'error', 'message': 'Укажите название'})
+    try:
+        month = int(float(data.get('month') or 7))
+        bonus = int(float(data.get('bonus_amount') or 20))
+    except Exception:
+        month, bonus = 7, 20
+    res = db.db_insert('care_templates', {'title': title, 'description': (data.get('description') or '').strip(),
+                                          'month': month, 'bonus_amount': bonus})
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось (миграция №4 для care_templates?)'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/agronomist/template/<t_id>/delete', methods=['POST'])
+@agronomist_required
+def agro_template_delete(t_id):
+    db.db_delete('care_templates', {'id': f'eq.{t_id}'})
+    return jsonify({'status': 'success'})
+
+
 # ===== ADMIN: пользователи и каталог =====
 
 @app.route('/admin/user/add', methods=['POST'])
@@ -977,6 +1035,65 @@ def admin_add_bonus():
     })
     if not res:
         return jsonify({'status': 'error', 'message': 'Не удалось. Создана ли таблица bonus_items (SQL-миграция)?'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/admin/subsidy/add', methods=['POST'])
+@agronomist_required
+def admin_add_subsidy():
+    data = request.get_json(silent=True) or {}
+    title = (data.get('title') or '').strip()
+    if not title:
+        return jsonify({'status': 'error', 'message': 'Укажите название'})
+    res = db.db_insert('subsidies', {'title': title, 'org': (data.get('org') or '').strip(),
+                                     'description': (data.get('description') or '').strip(),
+                                     'url': (data.get('url') or '').strip(), 'is_active': True})
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось (миграция №4 для subsidies?)'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/admin/subsidy/<s_id>/delete', methods=['POST'])
+@agronomist_required
+def admin_del_subsidy(s_id):
+    db.db_delete('subsidies', {'id': f'eq.{s_id}'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/admin/slot/add', methods=['POST'])
+@agronomist_required
+def admin_add_slot():
+    data = request.get_json(silent=True) or {}
+    slot_date = (data.get('slot_date') or '').strip()
+    if not slot_date:
+        return jsonify({'status': 'error', 'message': 'Укажите дату'})
+    try:
+        cap = int(float(data.get('capacity') or 0))
+    except Exception:
+        cap = 0
+    res = db.db_insert('reception_slots', {'slot_date': slot_date, 'capacity': cap, 'booked': 0})
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось (миграция №4 для reception_slots?)'})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/admin/user/edit', methods=['POST'])
+@agronomist_required
+def admin_edit_user():
+    data = request.get_json(silent=True) or {}
+    uid = data.get('user_id')
+    if not uid:
+        return jsonify({'status': 'error', 'message': 'Не указан пользователь'})
+    fields = {}
+    if (data.get('name') or '').strip():
+        fields['name'] = data['name'].strip()
+    if data.get('role'):
+        fields['role'] = data['role']
+    if 'region' in data:
+        fields['region'] = (data.get('region') or '').strip()
+    if not fields:
+        return jsonify({'status': 'error', 'message': 'Нет изменений'})
+    db.db_update('users', fields, {'id': f'eq.{uid}'})
     return jsonify({'status': 'success'})
 
 

@@ -42,6 +42,13 @@ def db_update(table, data, filters):
     except Exception:
         return []
 
+def db_delete(table, filters):
+    try:
+        r = _session.delete(f'{REST}/{table}', params=filters, timeout=12)
+        return r.ok
+    except Exception:
+        return False
+
 # ===== USERS =====
 def get_user_by_phone(phone):
     result = db_get('users', {'phone': f'eq.{phone}'})

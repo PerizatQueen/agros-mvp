@@ -27,6 +27,7 @@
   <div class="chat-tabs">
     <button class="chat-tab active" id="tab-ai" onclick="switchTab('ai')">🤖 {% if lang=='kz' %}AI-көмекші{% else %}AI-ассистент{% endif %}</button>
     <button class="chat-tab" id="tab-agro" onclick="switchTab('agro')">🌿 {% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</button>
+    <button class="chat-tab" id="tab-support" onclick="switchTab('support')">🎫 {% if lang=='kz' %}Қолдау{% else %}Поддержка{% endif %}</button>
   </div>
 
   <!-- AI -->
@@ -61,6 +62,21 @@
     </div>
     <div style="font-size:0.75rem;color:#475569;margin-top:8px;text-align:center">
       {% if lang=='kz' %}Агроном жауабы бетті жаңартқанда көрінеді.{% else %}Ответ агронома появится при обновлении страницы.{% endif %}
+    </div>
+  </div>
+
+  <!-- ПОДДЕРЖКА -->
+  <div class="pane" id="pane-support">
+    <div class="messages" id="supportMessages">
+      {% for m in support_messages %}
+      <div class="msg {% if m.sender == 'farmer' %}msg-user{% else %}msg-bot{% endif %}">{{ m.body }}</div>
+      {% else %}
+      <div class="msg msg-bot">{% if lang=='kz' %}🎫 Мәселеңізді сипаттаңыз — қолдау қызметі жауап береді (шарт/рейс/тапсырыс бойынша).{% else %}🎫 Опишите проблему — поддержка ответит (по договору, рейсу или заказу).{% endif %}</div>
+      {% endfor %}
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="supportInput" placeholder="{% if lang=='kz' %}Мәселені сипаттаңыз...{% else %}Опишите проблему...{% endif %}" onkeydown="if(event.key==='Enter')sendSupport()">
+      <button onclick="sendSupport()">→</button>
     </div>
   </div>
 </div>
@@ -103,6 +119,15 @@ function sendAgro() {
   input.value = '';
   fetch('/chat/agronomist/send', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: text})})
   .then(r => r.json()).then(d => { if(d.status!=='success') alert('Ошибка отправки'); });
+}
+function sendSupport() {
+  const input = document.getElementById('supportInput');
+  const text = input.value.trim();
+  if (!text) return;
+  addMsg(text, 'msg-user', 'supportMessages');
+  input.value = '';
+  fetch('/chat/support/send', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: text})})
+  .then(r => r.json()).then(d => { if(d.status!=='success') alert(d.message || 'Ошибка отправки'); });
 }
 </script>
 {% endblock %}
