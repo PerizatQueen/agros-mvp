@@ -656,6 +656,10 @@ def _get_panel_data(template):
                 'contracts_count': len(contracts_by_user.get(u.get('id'), []))}
                for u in all_users]
 
+    farmer_plots = {}
+    for p in all_plots:
+        farmer_plots.setdefault(p.get('user_id'), []).append({'id': p.get('id'), 'name': p.get('name')})
+
     all_contracts = []
     for c in all_contracts_raw:
         cu = users_by_id.get(c.get('user_id'))
@@ -718,6 +722,7 @@ def _get_panel_data(template):
     return render_template(template,
         all_users=all_users,
         farmers=farmer_users,
+        farmer_plots=farmer_plots,
         all_trips=all_trips,
         all_orders=all_orders,
         activity=activity,
@@ -842,6 +847,57 @@ def decide_agri_order():
     if decision not in ('confirmed', 'rejected'):
         return jsonify({'status': 'error', 'message': 'Некорректное решение'})
     db.db_update('agri_orders', {'status': decision}, {'id': f'eq.{order_id}'})
+    return jsonify({'status': 'success'})
+
+
+# ===== АГРОНОМ: онбординг от имени фермера (ТЗ 5.1) =====
+
+@app.route('/agronomist/farmer/create', methods=['POST'])
+@agronomist_required
+def agro_create_farmer():
+    data = request.get_json(silent=True) or {}
+    name = (data.get('name') or '').strip()
+    phone = (data.get('phone') or '').strip().replace('+', '').replace(' ', '')
+    if not name or not phone:
+        return jsonify({'status': 'error', 'message': 'Укажите ФИО и телефон'})
+    if db.get_user_by_phone(phone):
+        return jsonify({'status': 'error', 'message': 'Телефон уже зарегистрирован'})
+    res = db.db_insert('users', {'name': name, 'phone': phone, 'pin_hash': hash_pin('0000'),
+                                 'role': 'farmer', 'is_active': True, 'bonus_balance': 0})
+    return jsonify({'status': 'success'}) if res else jsonify({'status': 'error', 'message': 'Не удалось'})
+
+
+@app.route('/agronomist/plot/create', methods=['POST'])
+@agronomist_required
+def agro_create_plot():
+    data = request.get_json(silent=True) or {}
+    farmer_id = data.get('farmer_id')
+    name = (data.get('name') or '').strip()
+    if not farmer_id or not name:
+        return jsonify({'status': 'error', 'message': 'Выберите фермера и укажите название'})
+    try:
+        db.create_plot(farmer_id, name, data.get('area_ha') or 0, data.get('garden_type') or 'интенсивный',
+                       data.get('lat') or '43.2551', data.get('lng') or '76.9126', data.get('address') or '', [])
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/agronomist/contract/create', methods=['POST'])
+@agronomist_required
+def agro_create_contract():
+    data = request.get_json(silent=True) or {}
+    farmer_id = data.get('farmer_id')
+    plot_id = data.get('plot_id')
+    if not farmer_id or not plot_id:
+        return jsonify({'status': 'error', 'message': 'Выберите фермера и участок'})
+    items = [{'variety_name': data.get('variety') or 'Гала',
+              'volume_kg': data.get('volume_kg') or 0,
+              'price_per_kg': data.get('price_per_kg') or 0}]
+    try:
+        db.create_contract(farmer_id, plot_id, items)
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
     return jsonify({'status': 'success'})
 
 

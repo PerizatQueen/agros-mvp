@@ -82,6 +82,7 @@ tr:hover td{background:rgba(74,222,128,0.03)}
   <button class="nav-link" onclick="showPage('contracts',this)"><span>📄</span> {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</button>
   <button class="nav-link" onclick="showPage('tasks',this)"><span>✅</span> {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</button>
   <button class="nav-link" onclick="showPage('farmers',this)"><span>👨‍🌾</span> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
+  <button class="nav-link" onclick="showPage('create',this)"><span>➕</span> {% if lang=='kz' %}Құру{% else %}Создать{% endif %}</button>
   <button class="nav-link" onclick="showPage('trips',this)"><span>🚚</span> {% if lang=='kz' %}Рейстер{% else %}Рейсы{% endif %}</button>
   <button class="nav-link" onclick="showPage('orders',this)"><span>🌿</span> {% if lang=='kz' %}Тапсырыстар{% else %}Заказы{% endif %}</button>
   <button class="nav-link" onclick="showPage('journal',this)"><span>📜</span> {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
@@ -255,6 +256,49 @@ tr:hover td{background:rgba(74,222,128,0.03)}
     </tr>
     {% else %}<tr><td colspan="5"><div class="empty-state">{% if lang=='kz' %}Фермерлер жоқ{% else %}Нет фермеров{% endif %}</div></td></tr>{% endfor %}
     </tbody></table>
+  </div>
+</div>
+
+<!-- CREATE (онбординг от имени фермера) -->
+<div id="page-create" class="page">
+  <div class="topbar"><div>
+    <div class="page-title">➕ {% if lang=='kz' %}Фермер атынан құру{% else %}Создание от имени фермера{% endif %}</div>
+    <div class="page-sub">{% if lang=='kz' %}Офлайн-онбординг{% else %}Офлайн-онбординг фермеров{% endif %}</div>
+  </div></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">👨‍🌾 {% if lang=='kz' %}Жаңа фермер{% else %}Новый фермер{% endif %}</div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</label><input id="nf_name"></div>
+      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</label><input id="nf_phone" placeholder="7001234567"></div>
+      <button class="btn btn-approve" style="width:100%" onclick="agroCreateFarmer()">{% if lang=='kz' %}Фермер құру{% else %}Создать фермера{% endif %}</button>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">🌱 {% if lang=='kz' %}Участок{% else %}Участок{% endif %}</div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
+        <select id="pl_farmer" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</label><input id="pl_name"></div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Аудан (га){% else %}Площадь (га){% endif %}</label><input id="pl_area" type="number"></div>
+      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Бақ түрі{% else %}Тип сада{% endif %}</label>
+        <select id="pl_garden" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">
+          <option value="экстенсивный">{% if lang=='kz' %}Экстенсивті{% else %}Экстенсивный{% endif %}</option>
+          <option value="полуинтенсивный">{% if lang=='kz' %}Жартылай{% else %}Полуинтенсивный{% endif %}</option>
+          <option value="интенсивный" selected>{% if lang=='kz' %}Интенсивті{% else %}Интенсивный{% endif %}</option>
+          <option value="суперинтенсивный">{% if lang=='kz' %}Супер{% else %}Суперинтенсивный{% endif %}</option>
+        </select></div>
+      <button class="btn btn-approve" style="width:100%" onclick="agroCreatePlot()">{% if lang=='kz' %}Участок құру{% else %}Создать участок{% endif %}</button>
+    </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">📄 {% if lang=='kz' %}Шарт{% else %}Договор{% endif %}</div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
+        <select id="ct_farmer" onchange="fillPlots()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Участок{% else %}Участок{% endif %}</label><select id="ct_plot" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0"></select></div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</label><input id="ct_variety" placeholder="Гала"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div class="ig"><label>{% if lang=='kz' %}Көлемі (кг){% else %}Объём (кг){% endif %}</label><input id="ct_vol" type="number"></div>
+        <div class="ig"><label>{% if lang=='kz' %}Баға ₸/кг{% else %}Цена ₸/кг{% endif %}</label><input id="ct_price" type="number"></div>
+      </div>
+      <button class="btn btn-approve" style="width:100%" onclick="agroCreateContract()">{% if lang=='kz' %}Шарт құру{% else %}Создать договор{% endif %}</button>
+    </div>
   </div>
 </div>
 
@@ -449,6 +493,20 @@ function decideOrder(id,decision){
   fetch('/agronomist/order/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_id:id,decision:decision})})
   .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
 }
+var FARMER_PLOTS = {{ farmer_plots|tojson }};
+function fillPlots(){
+  var el=document.getElementById('ct_farmer'); if(!el)return;
+  var sel=document.getElementById('ct_plot'); sel.innerHTML='';
+  (FARMER_PLOTS[el.value]||[]).forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);});
+}
+function _agroPost(url,data,okMsg){
+  fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+  .then(r=>r.json()).then(d=>{if(d.status==='success'){alert(okMsg);location.reload();}else alert(d.message||'Ошибка');});
+}
+function agroCreateFarmer(){_agroPost('/agronomist/farmer/create',{name:document.getElementById('nf_name').value,phone:document.getElementById('nf_phone').value},'Фермер создан ✓');}
+function agroCreatePlot(){_agroPost('/agronomist/plot/create',{farmer_id:document.getElementById('pl_farmer').value,name:document.getElementById('pl_name').value,area_ha:document.getElementById('pl_area').value,garden_type:document.getElementById('pl_garden').value},'Участок создан ✓');}
+function agroCreateContract(){_agroPost('/agronomist/contract/create',{farmer_id:document.getElementById('ct_farmer').value,plot_id:document.getElementById('ct_plot').value,variety:document.getElementById('ct_variety').value,volume_kg:document.getElementById('ct_vol').value,price_per_kg:document.getElementById('ct_price').value},'Договор создан ✓');}
+fillPlots();
 function updatePrice(id){
   const c=document.getElementById('pc_'+id).value;
   const f=document.getElementById('pf_'+id).value;
