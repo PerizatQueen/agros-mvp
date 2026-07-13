@@ -718,17 +718,20 @@ def _get_panel_data(template):
     activity.sort(key=lambda x: x.get('when') or '', reverse=True)
     activity = activity[:40]
 
+    farmer_users = [f for f in farmers if (f.get('role') or 'farmer') == 'farmer']
     stats = {
-        'farmers': len(farmers),
+        'farmers': len(farmer_users),
+        'agronomists': len([f for f in farmers if f.get('role') == 'agronomist']),
         'active_contracts': len([c for c in all_contracts if c.get('status') == 'active']),
         'pending_contracts': len(pending_contracts),
         'pending_tasks': len([t for t in all_tasks if t.get('status') != 'approved']),
-        'plots': sum(f.get('plots_count', 0) for f in farmers)
+        'plots': sum(f.get('plots_count', 0) for f in farmer_users),
+        'total_bonuses': sum((f.get('bonus_balance') or 0) for f in farmers),
     }
 
     return render_template(template,
         all_users=all_users,
-        farmers=farmers,
+        farmers=farmer_users,
         all_trips=all_trips,
         all_orders=all_orders,
         activity=activity,
