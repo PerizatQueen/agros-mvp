@@ -933,6 +933,29 @@ def agro_create_contract():
     return jsonify({'status': 'success'})
 
 
+@app.route('/agronomist/task/create', methods=['POST'])
+@agronomist_required
+def agro_create_task():
+    data = request.get_json(silent=True) or {}
+    farmer_id = data.get('farmer_id')
+    title = (data.get('title') or '').strip()
+    if not farmer_id or not title:
+        return jsonify({'status': 'error', 'message': 'Выберите фермера и укажите задачу'})
+    try:
+        bonus = int(float(data.get('bonus_amount') or 20))
+        month = int(float(data.get('month') or 7))
+    except Exception:
+        bonus, month = 20, 7
+    res = db.db_insert('tasks', {
+        'user_id': farmer_id, 'plot_id': data.get('plot_id') or None,
+        'title': title, 'description': (data.get('description') or '').strip(),
+        'due_date': '2026-%02d-15' % month, 'status': 'upcoming', 'bonus_amount': bonus
+    })
+    if not res:
+        return jsonify({'status': 'error', 'message': 'Не удалось создать задачу'})
+    return jsonify({'status': 'success'})
+
+
 @app.route('/agronomist/template/add', methods=['POST'])
 @agronomist_required
 def agro_template_add():

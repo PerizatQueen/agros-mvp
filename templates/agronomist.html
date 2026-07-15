@@ -300,6 +300,19 @@ tr:hover td{background:rgba(74,222,128,0.03)}
       </div>
       <button class="btn btn-approve" style="width:100%" onclick="agroCreateContract()">{% if lang=='kz' %}Шарт құру{% else %}Создать договор{% endif %}</button>
     </div>
+    <div class="card">
+      <div class="card-title" style="margin-bottom:14px">✅ {% if lang=='kz' %}Тапсырма{% else %}Задача фермеру{% endif %}</div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
+        <select id="tk_farmer" onchange="fillTaskPlots()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</label><select id="tk_plot" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0"></select></div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Тапсырма{% else %}Название задачи{% endif %}</label><input id="tk_title" placeholder="{% if lang=='kz' %}Суару{% else %}Полив сада{% endif %}"></div>
+      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Сипаттама{% else %}Описание{% endif %}</label><input id="tk_desc"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+        <div class="ig"><label>{% if lang=='kz' %}Ай (7–12){% else %}Месяц (7–12){% endif %}</label><input id="tk_month" type="number" value="7"></div>
+        <div class="ig"><label>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</label><input id="tk_bonus" type="number" value="20"></div>
+      </div>
+      <button class="btn btn-approve" style="width:100%" onclick="agroCreateTask()">{% if lang=='kz' %}Тапсырма құру{% else %}Создать задачу{% endif %}</button>
+    </div>
   </div>
 </div>
 
@@ -549,7 +562,14 @@ function agroCreatePlot(){_agroPost('/agronomist/plot/create',{farmer_id:documen
 function agroCreateContract(){_agroPost('/agronomist/contract/create',{farmer_id:document.getElementById('ct_farmer').value,plot_id:document.getElementById('ct_plot').value,variety:document.getElementById('ct_variety').value,volume_kg:document.getElementById('ct_vol').value,price_per_kg:document.getElementById('ct_price').value},'Договор создан ✓');}
 function addTemplate(){_agroPost('/agronomist/template/add',{title:document.getElementById('tpl_title').value,description:document.getElementById('tpl_desc').value,month:document.getElementById('tpl_month').value,bonus_amount:document.getElementById('tpl_bonus').value},'Шаблон добавлен ✓');}
 function delTemplate(id){fetch('/agronomist/template/'+id+'/delete',{method:'POST'}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
-fillPlots();
+function fillTaskPlots(){
+  var el=document.getElementById('tk_farmer'); if(!el)return;
+  var sel=document.getElementById('tk_plot'); sel.innerHTML='';
+  var o0=document.createElement('option'); o0.value=''; o0.textContent='—'; sel.appendChild(o0);
+  (FARMER_PLOTS[el.value]||[]).forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);});
+}
+function agroCreateTask(){_agroPost('/agronomist/task/create',{farmer_id:document.getElementById('tk_farmer').value,plot_id:document.getElementById('tk_plot').value,title:document.getElementById('tk_title').value,description:document.getElementById('tk_desc').value,month:document.getElementById('tk_month').value,bonus_amount:document.getElementById('tk_bonus').value},'Задача создана ✓');}
+fillPlots(); fillTaskPlots();
 function updatePrice(id){
   const c=document.getElementById('pc_'+id).value;
   const f=document.getElementById('pf_'+id).value;
