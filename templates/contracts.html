@@ -1,41 +1,90 @@
 {% extends 'base.html' %}
 {% block title %}- {% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}{% endblock %}
+
+{% block extra_styles %}
+:root{--bg:#0F1117;--surface:#181C24;--surface2:#222836;--accent:#B7FF3C;--accent2:#53E08B;--tx:#FFFFFF;--muted:#9AA4B2;--bd:rgba(255,255,255,0.06);--shadow:0 10px 30px rgba(0,0,0,0.35);}
+body{background:var(--bg);color:var(--tx);}
+.ic{width:20px;height:20px;display:block;flex:none}
+.header{background:rgba(15,17,23,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
+.header-title{color:var(--tx);font-size:1rem;font-weight:700;display:flex;align-items:center;gap:10px;}
+.htitle-mark{width:28px;height:28px;border-radius:9px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--accent);flex:none;}
+.htitle-mark .ic{width:16px;height:16px}
+.header-icons{display:flex;gap:8px;align-items:center;}
+.iconbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:0;}
+.iconbtn .ic{width:18px;height:18px}.iconbtn:hover{color:var(--tx);}
+.lang-switcher{gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:11px;padding:3px;}
+.lang-btn{padding:5px 8px;border-radius:8px;font-size:.68rem;border:none;}
+.lang-btn.active{background:var(--accent);color:#0F1117;}.lang-btn:not(.active){color:var(--muted);background:transparent;}
+.content{padding:20px 18px 104px;}
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
+.card-title{color:var(--tx);font-weight:600;font-size:1rem;}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:.68rem;font-weight:600;white-space:nowrap;}
+.chip .chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.chip-green{background:rgba(183,255,60,.12);color:var(--accent);}
+.chip-yellow{background:rgba(252,211,77,.12);color:#FCD34D;}
+.chip-blue{background:rgba(83,224,139,.12);color:var(--accent2);}
+.chip-red{background:rgba(248,113,113,.14);color:#F87171;}
+.chip-gray{background:rgba(154,164,178,.12);color:var(--muted);}
+.btn-lime{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#0F1117;font-weight:700;font-size:.92rem;padding:15px 20px;border-radius:16px;text-decoration:none;border:none;cursor:pointer;width:100%;box-shadow:var(--shadow);}
+.btn-lime:hover{opacity:.9}.btn-lime .ic{width:18px;height:18px}
+.empty{text-align:center;padding:44px 20px;}
+.empty-ic{width:56px;height:56px;border-radius:18px;background:var(--surface2);color:var(--muted);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.empty-ic .ic{width:26px;height:26px}.empty h4{font-weight:600;font-size:1rem;color:var(--tx);}.empty p{color:var(--muted);font-size:.82rem;margin-top:6px;}
+.rowtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+.cmeta{font-size:.78rem;color:var(--muted);margin-top:5px;}
+.bottom-nav{background:rgba(24,28,36,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);}
+.nav-item{color:var(--muted);gap:5px;font-size:.64rem;font-weight:500;padding:9px 4px;}
+.nav-item.active,.nav-item:hover{color:var(--accent);}
+.nav-item .icon{display:flex;align-items:center;justify-content:center;}.nav-item .icon .ic{width:22px;height:22px}
+.progress{display:flex;gap:4px;margin:16px 0;}
+.progress .seg{flex:1;height:4px;border-radius:3px;background:var(--surface2);}
+.progress .seg.on{background:var(--accent);}
+.items{margin-top:6px;border-top:1px solid var(--bd);padding-top:8px;}
+.item-row{display:flex;justify-content:space-between;font-size:.82rem;padding:7px 0;}
+.item-row .name{color:var(--muted);}.item-row .val{color:var(--tx);}
+.total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;}
+.total .lbl{font-size:.8rem;color:var(--muted);}
+.total .amt{font-size:1.3rem;font-weight:700;letter-spacing:-.02em;color:var(--tx);}
+{% endblock %}
+
 {% block body %}
 <div class="header">
-  <div class="header-title">📄 {% if lang == 'kz' %}Менің шарттарым{% else %}Мои договоры{% endif %}</div>
+  <div class="header-title">
+    <span class="htitle-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+    {% if lang == 'kz' %}Менің шарттарым{% else %}Мои договоры{% endif %}
+  </div>
   <div class="header-icons">
     <div class="lang-switcher">
       <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
       <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
     </div>
-    <a href="/chat">💬</a>
-    <a href="/logout" style="font-size:0.78rem;color:#f87171;font-weight:600;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 9px;border-radius:6px">{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}</a>
+    <a href="/chat" class="iconbtn" title="Чат"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></a>
+    <a href="/logout" class="iconbtn" title="{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></a>
   </div>
 </div>
 <div class="content">
-  <a href="/contracts/create" class="btn btn-primary btn-full" style="margin-bottom:20px">➕ {% if lang == 'kz' %}Жаңа шарт{% else %}Новый договор{% endif %}</a>
+  <a href="/contracts/create" class="btn-lime" style="margin-bottom:20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M5 12h14"/><path d="M12 5v14"/></svg> {% if lang == 'kz' %}Жаңа шарт{% else %}Новый договор{% endif %}</a>
 
   {% if not contracts %}
-  <div class="card" style="text-align:center;padding:40px">
-    <div style="font-size:3rem">📄</div>
-    <div style="margin-top:12px;color:#64748b">{% if lang == 'kz' %}Сізде әлі шарт жоқ{% else %}У вас пока нет договоров{% endif %}</div>
-    <div style="font-size:0.82rem;color:#475569;margin-top:6px">{% if lang == 'kz' %}Учаске қосып, шарт жасаңыз{% else %}Добавьте участок и создайте договор{% endif %}</div>
+  <div class="card empty">
+    <div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></div>
+    <h4>{% if lang == 'kz' %}Сізде әлі шарт жоқ{% else %}У вас пока нет договоров{% endif %}</h4>
+    <p>{% if lang == 'kz' %}Учаске қосып, шарт жасаңыз{% else %}Добавьте участок и создайте договор{% endif %}</p>
   </div>
   {% else %}
   {% for c in contracts %}
   <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
+    <div class="rowtop">
       <div>
-        <div class="card-title">🍎 {{ c.plot_name }}</div>
-        <div style="font-size:0.78rem;color:#64748b">{{ c.created_at[:10] if c.created_at else '' }}</div>
+        <div class="card-title">{{ c.plot_name }}</div>
+        <div class="cmeta">{{ c.created_at[:10] if c.created_at else '' }}</div>
       </div>
-      <span class="badge
-        {% if c.status == 'active' %}badge-green
-        {% elif c.status == 'pending' %}badge-yellow
-        {% elif c.status == 'draft' %}badge-gray
-        {% elif c.status == 'completed' %}badge-blue
-        {% else %}badge-gray{% endif %}">
-        {% if c.status == 'active' %}{% if lang == 'kz' %}Белсенді{% else %}Активен{% endif %}
+      <span class="chip
+        {% if c.status == 'active' %}chip-green
+        {% elif c.status == 'pending' %}chip-yellow
+        {% elif c.status == 'awaiting_sign' or c.status == 'reviewing' %}chip-blue
+        {% else %}chip-gray{% endif %}">
+        {% if c.status == 'active' %}<span class="chip-dot"></span>{% endif %}{% if c.status == 'active' %}{% if lang == 'kz' %}Белсенді{% else %}Активен{% endif %}
         {% elif c.status == 'pending' %}{% if lang == 'kz' %}Қарастырылуда{% else %}На рассмотрении{% endif %}
         {% elif c.status == 'reviewing' %}{% if lang == 'kz' %}Тексерілуде{% else %}Рассматривается{% endif %}
         {% elif c.status == 'awaiting_sign' %}{% if lang == 'kz' %}Қол күтуде{% else %}Ожидает подписи{% endif %}
@@ -45,46 +94,41 @@
       </span>
     </div>
 
-    <!-- Прогресс статуса -->
-    <div style="display:flex;gap:4px;margin-bottom:12px">
+    <div class="progress">
       {% set statuses = ['draft','pending','reviewing','awaiting_sign','active','completed'] %}
       {% set current_idx = statuses.index(c.status) if c.status in statuses else 0 %}
       {% for i in range(6) %}
-      <div style="flex:1;height:3px;border-radius:2px;background:{% if i <= current_idx %}#4ade80{% else %}#2d3748{% endif %}"></div>
+      <div class="seg {% if i <= current_idx %}on{% endif %}"></div>
       {% endfor %}
     </div>
 
     {% if c.contract_items %}
-    <div style="margin-bottom:10px">
+    <div class="items">
       {% for item in c.contract_items %}
-      <div style="display:flex;justify-content:space-between;font-size:0.83rem;padding:5px 0;border-bottom:1px solid #2d3748">
-        <span style="color:#94a3b8">{{ item.variety_name }}</span>
-        <span style="color:#e2e8f0">{{ '{:,.0f}'.format(item.volume_kg) }} кг · {{ item.price_per_kg }} ₸/кг</span>
+      <div class="item-row">
+        <span class="name">{{ item.variety_name }}</span>
+        <span class="val">{{ '{:,.0f}'.format(item.volume_kg) }} кг · {{ item.price_per_kg }} ₸/кг</span>
       </div>
       {% endfor %}
     </div>
     {% endif %}
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:0.82rem;color:#64748b">{% if lang == 'kz' %}Барлығы:{% else %}Итого:{% endif %}</div>
-      <div style="font-size:1.1rem;font-weight:700;color:#4ade80">{{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
+    <div class="total">
+      <span class="lbl">{% if lang == 'kz' %}Барлығы:{% else %}Итого:{% endif %}</span>
+      <span class="amt">{{ '{:,.0f}'.format(c.total_amount) }} ₸</span>
     </div>
     {% if c.status == 'awaiting_sign' %}
-    <button onclick="signContract('{{ c.id }}')" class="btn btn-primary btn-full" style="margin-top:12px">✍️ {% if lang == 'kz' %}Электронды қол қою{% else %}Подписать (э-подпись){% endif %}</button>
+    <button onclick="signContract('{{ c.id }}')" class="btn-lime" style="margin-top:16px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg> {% if lang == 'kz' %}Электронды қол қою{% else %}Подписать (э-подпись){% endif %}</button>
     {% endif %}
   </div>
   {% endfor %}
   {% endif %}
 </div>
 
-{% block extra_styles %}
-<style>.nav-item .icon{font-size:1.4rem}.nav-item span:last-child{font-size:0.65rem;margin-top:1px}</style>
-{% endblock %}
-
 <nav class="bottom-nav">
-  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
-  <a href="/contracts" class="nav-item active"><span class="icon">📄</span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
-  <a href="/plots" class="nav-item"><span class="icon">🌱</span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
-  <a href="/tasks" class="nav-item"><span class="icon">✅</span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
+  <a href="/dashboard" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/contracts" class="nav-item active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
+  <a href="/plots" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
+  <a href="/tasks" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
 </nav>
 {% block scripts %}
 <script>
