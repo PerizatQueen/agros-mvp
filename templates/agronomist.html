@@ -125,20 +125,20 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
       <div class="page-title">{% if lang=='kz' %}Жалпы шолу{% else %}Общий обзор{% endif %}</div>
       <div class="page-sub">{% if lang=='kz' %}Фермерлердің ағымдағы жағдайы{% else %}Текущее состояние фермеров{% endif %}</div>
     </div>
-    <div class="topbar-badge">🌿 {% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</div>
+    <div class="topbar-badge"> {% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</div>
   </div>
   <div class="stats-grid">
-    <div class="stat-card"><div class="stat-val">{{ stats.farmers }}</div><div class="stat-lbl">👨‍🌾 {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div></div>
-    <div class="stat-card"><div class="stat-val">{{ stats.plots }}</div><div class="stat-lbl">🌱 {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</div></div>
-    <div class="stat-card blue"><div class="stat-val blue">{{ stats.active_contracts }}</div><div class="stat-lbl">📄 {% if lang=='kz' %}Белсенді шарттар{% else %}Активных договоров{% endif %}</div></div>
-    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.pending_contracts }}</div><div class="stat-lbl">⏳ {% if lang=='kz' %}Бекітуді күтуде{% else %}На рассмотрении{% endif %}</div></div>
-    <div class="stat-card"><div class="stat-val">{{ stats.pending_tasks }}</div><div class="stat-lbl">✅ {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.farmers }}</div><div class="stat-lbl"> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.plots }}</div><div class="stat-lbl"> {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</div></div>
+    <div class="stat-card blue"><div class="stat-val blue">{{ stats.active_contracts }}</div><div class="stat-lbl"> {% if lang=='kz' %}Белсенді шарттар{% else %}Активных договоров{% endif %}</div></div>
+    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.pending_contracts }}</div><div class="stat-lbl"> {% if lang=='kz' %}Бекітуді күтуде{% else %}На рассмотрении{% endif %}</div></div>
+    <div class="stat-card"><div class="stat-val">{{ stats.pending_tasks }}</div><div class="stat-lbl"> {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</div></div>
   </div>
 
   {% if pending_contracts %}
   <div class="card">
     <div class="card-header">
-      <div class="card-title">⏳ {% if lang=='kz' %}Бекітуді күтетін шарттар{% else %}Договоры на рассмотрении{% endif %}</div>
+      <div class="card-title"> {% if lang=='kz' %}Бекітуді күтетін шарттар{% else %}Договоры на рассмотрении{% endif %}</div>
       <div class="card-count">{{ pending_contracts|length }}</div>
     </div>
     <table><thead><tr>
@@ -153,15 +153,15 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
       <td>{{ c.plot_name }}</td>
       <td><strong>{{ '{:,.0f}'.format(c.total_amount) }} ₸</strong></td>
       <td style="display:flex;gap:8px">
-        <button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">✓ {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>
-        <button class="btn btn-reject" onclick="rejectContract('{{ c.id }}')">✕ {% if lang=='kz' %}Қабылдамау{% else %}Отклонить{% endif %}</button>
+        <button class="btn btn-approve" onclick="approveContract('{{ c.id }}')"> {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>
+        <button class="btn btn-reject" onclick="rejectContract('{{ c.id }}')"> {% if lang=='kz' %}Қабылдамау{% else %}Отклонить{% endif %}</button>
       </td>
     </tr>
     {% endfor %}
     </tbody></table>
   </div>
   {% else %}
-  <div class="card"><div class="empty-state">📋 {% if lang=='kz' %}Күтудегі шарттар жоқ{% else %}Нет договоров на рассмотрении{% endif %}</div></div>
+  <div class="card"><div class="empty-state"> {% if lang=='kz' %}Күтудегі шарттар жоқ{% else %}Нет договоров на рассмотрении{% endif %}</div></div>
   {% endif %}
 </div>
 
@@ -173,9 +173,9 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
   </div></div>
   <div class="ftabs">
     <button class="ftab active" onclick="filterC('all',this)">{% if lang=='kz' %}Барлығы{% else %}Все{% endif %}</button>
-    <button class="ftab" onclick="filterC('pending',this)">⏳ {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}</button>
-    <button class="ftab" onclick="filterC('active',this)">✅ {% if lang=='kz' %}Белсенді{% else %}Активные{% endif %}</button>
-    <button class="ftab" onclick="filterC('rejected',this)">❌ {% if lang=='kz' %}Қабылданбаған{% else %}Отклонённые{% endif %}</button>
+    <button class="ftab" onclick="filterC('pending',this)"> {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}</button>
+    <button class="ftab" onclick="filterC('active',this)"> {% if lang=='kz' %}Белсенді{% else %}Активные{% endif %}</button>
+    <button class="ftab" onclick="filterC('rejected',this)"> {% if lang=='kz' %}Қабылданбаған{% else %}Отклонённые{% endif %}</button>
   </div>
   <div class="card">
     <table><thead><tr>
@@ -194,13 +194,13 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
       <td>{{ '{:,.0f}'.format(c.total_amount) }} ₸</td>
       <td style="color:#2d6a4f">{{ c.created_at[:10] if c.created_at else '' }}</td>
       <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% elif c.status=='awaiting_sign' %}badge-blue{% else %}badge-red{% endif %}">
-        {% if c.status=='active' %}✅ {% if lang=='kz' %}Белсенді{% else %}Активный{% endif %}
-        {% elif c.status=='pending' %}⏳ {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}
-        {% elif c.status=='awaiting_sign' %}✍️ {% if lang=='kz' %}Қол күтуде{% else %}Ожидает подписи{% endif %}
-        {% elif c.status=='rejected' %}❌ {% if lang=='kz' %}Қабылданбаған{% else %}Отклонён{% endif %}
+        {% if c.status=='active' %} {% if lang=='kz' %}Белсенді{% else %}Активный{% endif %}
+        {% elif c.status=='pending' %} {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}
+        {% elif c.status=='awaiting_sign' %} {% if lang=='kz' %}Қол күтуде{% else %}Ожидает подписи{% endif %}
+        {% elif c.status=='rejected' %} {% if lang=='kz' %}Қабылданбаған{% else %}Отклонён{% endif %}
         {% else %}{{ c.status }}{% endif %}
       </span></td>
-      <td>{% if c.status=='pending' %}<button class="btn btn-approve" onclick="approveContract('{{ c.id }}')">✓ {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>{% endif %}</td>
+      <td>{% if c.status=='pending' %}<button class="btn btn-approve" onclick="approveContract('{{ c.id }}')"> {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>{% endif %}</td>
     </tr>
     {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Шарттар жоқ{% else %}Нет договоров{% endif %}</div></td></tr>{% endfor %}
     </tbody></table>
@@ -226,21 +226,21 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
     {% for t in all_tasks %}
     <tr>
       <td><strong>{{ t.title }}</strong>
-        {% if t.report_note %}<div style="font-size:0.75rem;color:#6ee7b7;margin-top:3px">📋 {{ t.report_note }}</div>{% endif %}
-        {% if t.photo_url %}<a href="{{ t.photo_url }}" target="_blank" style="font-size:0.75rem;color:#60a5fa">📷 {% if lang=='kz' %}фото{% else %}фото{% endif %}</a>{% endif %}
+        {% if t.report_note %}<div style="font-size:0.75rem;color:#6ee7b7;margin-top:3px"> {{ t.report_note }}</div>{% endif %}
+        {% if t.photo_url %}<a href="{{ t.photo_url }}" target="_blank" style="font-size:0.75rem;color:#60a5fa"> {% if lang=='kz' %}фото{% else %}фото{% endif %}</a>{% endif %}
       </td>
       <td>{{ t.farmer_name }}</td>
       <td>{{ t.plot_name }}</td>
-      <td style="color:#4ade80;font-weight:700">+{{ t.bonus_amount }} ⭐</td>
+      <td style="color:#4ade80;font-weight:700">+{{ t.bonus_amount }} </td>
       <td><span class="badge {% if t.status=='approved' %}badge-green{% elif t.status=='overdue' %}badge-red{% elif t.status in ['soon','review'] %}badge-yellow{% else %}badge-blue{% endif %}">
-        {% if t.status=='approved' %}✅ {% if lang=='kz' %}Бекітілді{% else %}Подтверждено{% endif %}
-        {% elif t.status=='review' %}🕓 {% if lang=='kz' %}Тексеруде{% else %}На проверке{% endif %}
-        {% elif t.status=='overdue' %}❌ {% if lang=='kz' %}Мерзімі өтті{% else %}Просрочено{% endif %}
-        {% elif t.status=='soon' %}⚡ {% if lang=='kz' %}Жақында{% else %}Скоро{% endif %}
-        {% elif t.status=='upcoming' %}📅 {% if lang=='kz' %}Алдағы{% else %}Предстоит{% endif %}
+        {% if t.status=='approved' %} {% if lang=='kz' %}Бекітілді{% else %}Подтверждено{% endif %}
+        {% elif t.status=='review' %} {% if lang=='kz' %}Тексеруде{% else %}На проверке{% endif %}
+        {% elif t.status=='overdue' %} {% if lang=='kz' %}Мерзімі өтті{% else %}Просрочено{% endif %}
+        {% elif t.status=='soon' %} {% if lang=='kz' %}Жақында{% else %}Скоро{% endif %}
+        {% elif t.status=='upcoming' %} {% if lang=='kz' %}Алдағы{% else %}Предстоит{% endif %}
         {% else %}{{ t.status }}{% endif %}
       </span></td>
-      <td>{% if t.status!='approved' %}<button class="btn btn-approve" onclick="approveTask('{{ t.id }}')">✓ {% if lang=='kz' %}Бекіту{% else %}Подтвердить{% endif %}</button>{% else %}<span style="color:#4ade80">✓</span>{% endif %}</td>
+      <td>{% if t.status!='approved' %}<button class="btn btn-approve" onclick="approveTask('{{ t.id }}')"> {% if lang=='kz' %}Бекіту{% else %}Подтвердить{% endif %}</button>{% else %}<span style="color:#4ade80"></span>{% endif %}</td>
     </tr>
     {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Тапсырмалар жоқ{% else %}Нет задач{% endif %}</div></td></tr>{% endfor %}
     </tbody></table>
@@ -254,7 +254,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
     <div class="page-sub">{% if lang=='kz' %}Тіркелген пайдаланушылар{% else %}Зарегистрированные пользователи{% endif %}</div>
   </div></div>
   <div class="card">
-    <div class="card-header"><div class="card-title">👨‍🌾 {% if lang=='kz' %}Барлық фермерлер{% else %}Все фермеры{% endif %}</div><div class="card-count">{{ farmers|length }}</div></div>
+    <div class="card-header"><div class="card-title"> {% if lang=='kz' %}Барлық фермерлер{% else %}Все фермеры{% endif %}</div><div class="card-count">{{ farmers|length }}</div></div>
     <table><thead><tr>
       <th>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</th>
       <th>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</th>
@@ -267,7 +267,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
     <tr>
       <td><strong>{{ f.name }}</strong></td>
       <td style="color:#6ee7b7">+7{{ f.phone }}</td>
-      <td><span style="color:#4ade80;font-weight:700">{{ f.bonus_balance }} ⭐</span></td>
+      <td><span style="color:#4ade80;font-weight:700">{{ f.bonus_balance }} </span></td>
       <td>{{ f.plots_count }}</td>
       <td>{{ f.contracts_count }}</td>
     </tr>
@@ -279,18 +279,18 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
 <!-- CREATE (онбординг от имени фермера) -->
 <div id="page-create" class="page">
   <div class="topbar"><div>
-    <div class="page-title">➕ {% if lang=='kz' %}Фермер атынан құру{% else %}Создание от имени фермера{% endif %}</div>
+    <div class="page-title"> {% if lang=='kz' %}Фермер атынан құру{% else %}Создание от имени фермера{% endif %}</div>
     <div class="page-sub">{% if lang=='kz' %}Офлайн-онбординг{% else %}Офлайн-онбординг фермеров{% endif %}</div>
   </div></div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
     <div class="card">
-      <div class="card-title" style="margin-bottom:14px">👨‍🌾 {% if lang=='kz' %}Жаңа фермер{% else %}Новый фермер{% endif %}</div>
+      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Жаңа фермер{% else %}Новый фермер{% endif %}</div>
       <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</label><input id="nf_name"></div>
       <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</label><input id="nf_phone" placeholder="7001234567"></div>
       <button class="btn btn-approve" style="width:100%" onclick="agroCreateFarmer()">{% if lang=='kz' %}Фермер құру{% else %}Создать фермера{% endif %}</button>
     </div>
     <div class="card">
-      <div class="card-title" style="margin-bottom:14px">🌱 {% if lang=='kz' %}Участок{% else %}Участок{% endif %}</div>
+      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Участок{% else %}Участок{% endif %}</div>
       <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
         <select id="pl_farmer" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
       <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</label><input id="pl_name"></div>
@@ -305,7 +305,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
       <button class="btn btn-approve" style="width:100%" onclick="agroCreatePlot()">{% if lang=='kz' %}Участок құру{% else %}Создать участок{% endif %}</button>
     </div>
     <div class="card">
-      <div class="card-title" style="margin-bottom:14px">📄 {% if lang=='kz' %}Шарт{% else %}Договор{% endif %}</div>
+      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Шарт{% else %}Договор{% endif %}</div>
       <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
         <select id="ct_farmer" onchange="fillPlots()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
       <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Участок{% else %}Участок{% endif %}</label><select id="ct_plot" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0"></select></div>
@@ -317,7 +317,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
       <button class="btn btn-approve" style="width:100%" onclick="agroCreateContract()">{% if lang=='kz' %}Шарт құру{% else %}Создать договор{% endif %}</button>
     </div>
     <div class="card">
-      <div class="card-title" style="margin-bottom:14px">✅ {% if lang=='kz' %}Тапсырма{% else %}Задача фермеру{% endif %}</div>
+      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Тапсырма{% else %}Задача фермеру{% endif %}</div>
       <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
         <select id="tk_farmer" onchange="fillTaskPlots()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
       <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</label><select id="tk_plot" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0"></select></div>
@@ -336,7 +336,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
 <div id="page-templates" class="page">
   <div class="topbar">
     <div>
-      <div class="page-title">📋 {% if lang=='kz' %}Күтім жоспарының шаблондары{% else %}Шаблоны плана ухода{% endif %}</div>
+      <div class="page-title"> {% if lang=='kz' %}Күтім жоспарының шаблондары{% else %}Шаблоны плана ухода{% endif %}</div>
       <div class="page-sub">{% if lang=='kz' %}Шарт қол қойылғанда осы тапсырмалар автоматты құрылады{% else %}Эти задачи автоматически создаются при подписании договора{% endif %}</div>
     </div>
     <button class="btn btn-approve" onclick="document.getElementById('addTpl').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
@@ -365,7 +365,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
       <td><strong>{{ t.title }}</strong>{% if t.description %}<div style="font-size:0.75rem;color:#2d6a4f">{{ t.description }}</div>{% endif %}</td>
       <td>{{ t.month }}</td>
       <td style="color:#4ade80">+{{ t.bonus_amount }}</td>
-      <td><button class="btn btn-reject" onclick="delTemplate('{{ t.id }}')">✕</button></td>
+      <td><button class="btn btn-reject" onclick="delTemplate('{{ t.id }}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td>
     </tr>
     {% else %}<tr><td colspan="4"><div class="empty-state">{% if lang=='kz' %}Шаблондар жоқ — стандартты жоспар қолданылады{% else %}Шаблонов нет — используется стандартный план (5 задач){% endif %}</div></td></tr>{% endfor %}
     </tbody></table>
@@ -375,7 +375,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
 <!-- TRIPS -->
 <div id="page-trips" class="page">
   <div class="topbar"><div>
-    <div class="page-title">🚚 {% if lang=='kz' %}Рейстер / қабылдау{% else %}Рейсы / приёмка{% endif %}</div>
+    <div class="page-title"> {% if lang=='kz' %}Рейстер / қабылдау{% else %}Рейсы / приёмка{% endif %}</div>
     <div class="page-sub">{% if lang=='kz' %}Егін тапсыруды бақылау{% else %}Контроль сдачи урожая{% endif %}</div>
   </div></div>
   <div class="card">
@@ -390,9 +390,9 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
     {% for t in all_trips %}
     <tr>
       <td><strong>{{ t.farmer_name }}</strong></td>
-      <td>{% if t.cargo_type == 'commercial' %}🍎 {% if lang=='kz' %}Тауарлы{% else %}Товарные{% endif %}{% else %}🍂 {% if lang=='kz' %}Жерге түскен{% else %}Падалица{% endif %}{% endif %}</td>
+      <td>{% if t.cargo_type == 'commercial' %} {% if lang=='kz' %}Тауарлы{% else %}Товарные{% endif %}{% else %} {% if lang=='kz' %}Жерге түскен{% else %}Падалица{% endif %}{% endif %}</td>
       <td>{{ '{:,.0f}'.format((t.volume_kg or 0)|float) }} кг</td>
-      <td>{% if t.destination=='warehouse' %}🏠 {% if lang=='kz' %}Қойма{% else %}Плодохран.{% endif %}{% elif t.destination=='factory' %}🏭 {% if lang=='kz' %}Зауыт{% else %}Завод{% endif %}{% else %}📦 {% if lang=='kz' %}Пункт{% else %}Пункт приёма{% endif %}{% endif %}</td>
+      <td>{% if t.destination=='warehouse' %} {% if lang=='kz' %}Қойма{% else %}Плодохран.{% endif %}{% elif t.destination=='factory' %} {% if lang=='kz' %}Зауыт{% else %}Завод{% endif %}{% else %} {% if lang=='kz' %}Пункт{% else %}Пункт приёма{% endif %}{% endif %}</td>
       <td><span class="badge {% if t.status in ['paid','completed'] %}badge-green{% elif t.status=='received' %}badge-yellow{% elif t.status=='cancelled' %}badge-red{% else %}badge-blue{% endif %}">
         {% if t.status=='planned' %}{% if lang=='kz' %}Жоспарланды{% else %}Запланирован{% endif %}
         {% elif t.status=='confirmed' %}{% if lang=='kz' %}Расталды{% else %}Подтверждён{% endif %}
@@ -402,11 +402,11 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
         {% else %}{{ t.status }}{% endif %}
       </span></td>
       <td>
-        {% if t.status == 'planned' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">✓ {% if lang=='kz' %}Растау{% else %}Подтвердить{% endif %}</button>
-        {% elif t.status == 'confirmed' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">📦 {% if lang=='kz' %}Қабылдау{% else %}Приёмка{% endif %}</button>
-        {% elif t.status == 'received' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">💰 {% if lang=='kz' %}Төлем{% else %}Оплата{% endif %}</button>
-        {% elif t.status == 'paid' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')">✓ {% if lang=='kz' %}Жабу{% else %}Завершить{% endif %}</button>
-        {% else %}<span style="color:#4ade80">✓</span>{% endif %}
+        {% if t.status == 'planned' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Растау{% else %}Подтвердить{% endif %}</button>
+        {% elif t.status == 'confirmed' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Қабылдау{% else %}Приёмка{% endif %}</button>
+        {% elif t.status == 'received' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Төлем{% else %}Оплата{% endif %}</button>
+        {% elif t.status == 'paid' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Жабу{% else %}Завершить{% endif %}</button>
+        {% else %}<span style="color:#4ade80"></span>{% endif %}
       </td>
     </tr>
     {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Рейстер жоқ{% else %}Нет рейсов{% endif %}</div></td></tr>{% endfor %}
@@ -417,7 +417,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
 <!-- ORDERS (агросопровождение) -->
 <div id="page-orders" class="page">
   <div class="topbar"><div>
-    <div class="page-title">🌿 {% if lang=='kz' %}Агросүйемелдеу тапсырыстары{% else %}Заказы агросопровождения{% endif %}</div>
+    <div class="page-title"> {% if lang=='kz' %}Агросүйемелдеу тапсырыстары{% else %}Заказы агросопровождения{% endif %}</div>
     <div class="page-sub">{% if lang=='kz' %}Фермер тапсырыстарын бекіту{% else %}Одобрение заказов фермеров{% endif %}</div>
   </div></div>
   <div class="card">
@@ -442,8 +442,8 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
         {% else %}{{ o.status }}{% endif %}
       </span></td>
       <td>{% if o.status=='pending' %}<div style="display:flex;gap:6px">
-        <button class="btn btn-approve" onclick="decideOrder('{{ o.id }}','confirmed')">✓</button>
-        <button class="btn btn-reject" onclick="decideOrder('{{ o.id }}','rejected')">✕</button>
+        <button class="btn btn-approve" onclick="decideOrder('{{ o.id }}','confirmed')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+        <button class="btn btn-reject" onclick="decideOrder('{{ o.id }}','rejected')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
       </div>{% else %}<span style="color:#2d6a4f">—</span>{% endif %}</td>
     </tr>
     {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Тапсырыстар жоқ{% else %}Нет заказов{% endif %}</div></td></tr>{% endfor %}
@@ -454,7 +454,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
 <!-- JOURNAL -->
 <div id="page-journal" class="page">
   <div class="topbar"><div>
-    <div class="page-title">📜 {% if lang=='kz' %}Белсенділік журналы{% else %}Журнал активности{% endif %}</div>
+    <div class="page-title"> {% if lang=='kz' %}Белсенділік журналы{% else %}Журнал активности{% endif %}</div>
     <div class="page-sub">{% if lang=='kz' %}Соңғы оқиғалар{% else %}Последние события платформы{% endif %}</div>
   </div></div>
   <div class="card">
@@ -476,16 +476,16 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
     <div class="page-title">{% if lang=='kz' %}Бағаларды басқару{% else %}Управление ценами{% endif %}</div>
     <div class="page-sub">{% if lang=='kz' %}Алма сорттарының сатып алу бағалары{% else %}Закупочные цены на сорта яблок{% endif %}</div>
   </div></div>
-  <div id="okMsg" class="alert-success">✅ {% if lang=='kz' %}Бағалар сәтті жаңартылды!{% else %}Цены успешно обновлены!{% endif %}</div>
+  <div id="okMsg" class="alert-success"> {% if lang=='kz' %}Бағалар сәтті жаңартылды!{% else %}Цены успешно обновлены!{% endif %}</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
   {% for p in prices %}
   <div class="card">
-    <div class="card-header"><div class="card-title">🍎 {{ p.variety_name }}</div></div>
+    <div class="card-header"><div class="card-title"> {{ p.variety_name }}</div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
       <div class="ig"><label>{% if lang=='kz' %}Тауарлы (₸/кг){% else %}Товарные (₸/кг){% endif %}</label><input type="number" id="pc_{{ p.id }}" value="{{ p.price_commercial }}"></div>
       <div class="ig"><label>{% if lang=='kz' %}Жерге түскен (₸/кг){% else %}Падалые (₸/кг){% endif %}</label><input type="number" id="pf_{{ p.id }}" value="{{ p.price_fallen }}"></div>
     </div>
-    <button class="btn btn-save" style="width:100%" onclick="updatePrice('{{ p.id }}')">💾 {% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
+    <button class="btn btn-save" style="width:100%" onclick="updatePrice('{{ p.id }}')"> {% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
   </div>
   {% endfor %}
   </div>
@@ -494,12 +494,12 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
 <!-- CALCULATOR -->
 <div id="page-calc" class="page">
   <div class="topbar"><div>
-    <div class="page-title">🧮 {% if lang=='kz' %}Калькулятор{% else %}Калькулятор агронома{% endif %}</div>
+    <div class="page-title"> {% if lang=='kz' %}Калькулятор{% else %}Калькулятор агронома{% endif %}</div>
     <div class="page-sub">{% if lang=='kz' %}Күтілетін төлем мен шарт шарттарын есептеу{% else %}Расчёт ожидаемой выплаты и условий договора{% endif %}</div>
   </div></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
     <div class="card">
-      <div class="card-title" style="margin-bottom:16px">📋 {% if lang=='kz' %}Кіріс деректер{% else %}Входные данные{% endif %}</div>
+      <div class="card-title" style="margin-bottom:16px"> {% if lang=='kz' %}Кіріс деректер{% else %}Входные данные{% endif %}</div>
       <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</label>
         <select id="c_variety" onchange="onVar()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem">
         {% for p in prices %}<option value="{{ p.id }}">{{ p.variety_name }}</option>{% endfor %}
@@ -523,10 +523,10 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
       <div class="ig"><label>{% if lang=='kz' %}Күтім + агросүйемелдеу (₸/га){% else %}Уход + агросопровождение (₸/га){% endif %}</label><input type="number" id="c_cost" value="0" oninput="calc()"></div>
     </div>
     <div class="card" style="background:#08160f">
-      <div class="card-title" style="margin-bottom:16px">💰 {% if lang=='kz' %}Есеп нәтижесі{% else %}Результат расчёта{% endif %}</div>
+      <div class="card-title" style="margin-bottom:16px"> {% if lang=='kz' %}Есеп нәтижесі{% else %}Результат расчёта{% endif %}</div>
       <div id="calcResult"></div>
       <div style="margin-top:16px;font-size:0.72rem;color:#2d6a4f;line-height:1.5;border-top:1px solid #0d2e26;padding-top:12px">
-        ⚠️ {% if lang=='kz' %}Формула алдын ала — коэффициенттер клиентпен келісілуі керек.{% else %}Формула предварительная — коэффициенты требуют согласования с клиентом (в ТЗ это отмечено как блокер).{% endif %}
+         {% if lang=='kz' %}Формула алдын ала — коэффициенттер клиентпен келісілуі керек.{% else %}Формула предварительная — коэффициенты требуют согласования с клиентом (в ТЗ это отмечено как блокер).{% endif %}
       </div>
     </div>
   </div>
@@ -573,10 +573,10 @@ function _agroPost(url,data,okMsg){
   fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
   .then(r=>r.json()).then(d=>{if(d.status==='success'){alert(okMsg);location.reload();}else alert(d.message||'Ошибка');});
 }
-function agroCreateFarmer(){_agroPost('/agronomist/farmer/create',{name:document.getElementById('nf_name').value,phone:document.getElementById('nf_phone').value},'Фермер создан ✓');}
-function agroCreatePlot(){_agroPost('/agronomist/plot/create',{farmer_id:document.getElementById('pl_farmer').value,name:document.getElementById('pl_name').value,area_ha:document.getElementById('pl_area').value,garden_type:document.getElementById('pl_garden').value},'Участок создан ✓');}
-function agroCreateContract(){_agroPost('/agronomist/contract/create',{farmer_id:document.getElementById('ct_farmer').value,plot_id:document.getElementById('ct_plot').value,variety:document.getElementById('ct_variety').value,volume_kg:document.getElementById('ct_vol').value,price_per_kg:document.getElementById('ct_price').value},'Договор создан ✓');}
-function addTemplate(){_agroPost('/agronomist/template/add',{title:document.getElementById('tpl_title').value,description:document.getElementById('tpl_desc').value,month:document.getElementById('tpl_month').value,bonus_amount:document.getElementById('tpl_bonus').value},'Шаблон добавлен ✓');}
+function agroCreateFarmer(){_agroPost('/agronomist/farmer/create',{name:document.getElementById('nf_name').value,phone:document.getElementById('nf_phone').value},'Фермер создан ');}
+function agroCreatePlot(){_agroPost('/agronomist/plot/create',{farmer_id:document.getElementById('pl_farmer').value,name:document.getElementById('pl_name').value,area_ha:document.getElementById('pl_area').value,garden_type:document.getElementById('pl_garden').value},'Участок создан ');}
+function agroCreateContract(){_agroPost('/agronomist/contract/create',{farmer_id:document.getElementById('ct_farmer').value,plot_id:document.getElementById('ct_plot').value,variety:document.getElementById('ct_variety').value,volume_kg:document.getElementById('ct_vol').value,price_per_kg:document.getElementById('ct_price').value},'Договор создан ');}
+function addTemplate(){_agroPost('/agronomist/template/add',{title:document.getElementById('tpl_title').value,description:document.getElementById('tpl_desc').value,month:document.getElementById('tpl_month').value,bonus_amount:document.getElementById('tpl_bonus').value},'Шаблон добавлен ');}
 function delTemplate(id){fetch('/agronomist/template/'+id+'/delete',{method:'POST'}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
 function fillTaskPlots(){
   var el=document.getElementById('tk_farmer'); if(!el)return;
@@ -584,7 +584,7 @@ function fillTaskPlots(){
   var o0=document.createElement('option'); o0.value=''; o0.textContent='—'; sel.appendChild(o0);
   (FARMER_PLOTS[el.value]||[]).forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);});
 }
-function agroCreateTask(){_agroPost('/agronomist/task/create',{farmer_id:document.getElementById('tk_farmer').value,plot_id:document.getElementById('tk_plot').value,title:document.getElementById('tk_title').value,description:document.getElementById('tk_desc').value,month:document.getElementById('tk_month').value,bonus_amount:document.getElementById('tk_bonus').value},'Задача создана ✓');}
+function agroCreateTask(){_agroPost('/agronomist/task/create',{farmer_id:document.getElementById('tk_farmer').value,plot_id:document.getElementById('tk_plot').value,title:document.getElementById('tk_title').value,description:document.getElementById('tk_desc').value,month:document.getElementById('tk_month').value,bonus_amount:document.getElementById('tk_bonus').value},'Задача создана ');}
 fillPlots(); fillTaskPlots();
 function updatePrice(id){
   const c=document.getElementById('pc_'+id).value;
