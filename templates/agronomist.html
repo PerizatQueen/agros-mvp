@@ -460,7 +460,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
   <div class="card">
     {% for a in activity %}
     <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #0d2e26">
-      <div style="font-size:1.2rem">{{ a.icon }}</div>
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:7px;flex:none;box-shadow:0 0 8px rgba(183,255,60,.5)"></div>
       <div style="flex:1">
         <div style="font-size:0.88rem;color:#e2e8f0">{{ a.text }}</div>
         <div style="font-size:0.75rem;color:#2d6a4f">{{ a.who }}{% if a.when %} · {{ a.when[:16]|replace('T',' ') }}{% endif %}</div>
