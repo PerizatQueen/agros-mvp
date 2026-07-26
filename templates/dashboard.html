@@ -1,126 +1,238 @@
 {% extends 'base.html' %}
 {% block title %}- {% if lang == 'kz' %}Басты бет{% else %}Главная{% endif %}{% endblock %}
+
+{% block extra_styles %}
+:root{
+  --bg:#0F1117;--surface:#181C24;--surface2:#222836;
+  --accent:#B7FF3C;--accent2:#53E08B;
+  --tx:#FFFFFF;--muted:#9AA4B2;--bd:rgba(255,255,255,0.06);
+  --shadow:0 10px 30px rgba(0,0,0,0.35);
+}
+body{background:var(--bg);color:var(--tx);}
+.ic{width:20px;height:20px;display:block;flex:none}
+
+/* HEADER */
+.header{background:rgba(15,17,23,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
+.brand{display:flex;align-items:center;gap:9px;}
+.brand-mark{width:26px;height:26px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#0F1117;}
+.brand-mark .ic{width:15px;height:15px}
+.brand-name{font-size:.98rem;font-weight:700;letter-spacing:-.01em;color:var(--tx);}
+.hicons{display:flex;align-items:center;gap:7px;}
+.iconbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:.15s;font-size:0;}
+.iconbtn:hover{color:var(--tx);border-color:rgba(255,255,255,.14);}
+.iconbtn .ic{width:18px;height:18px}
+.lang-switcher{gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:11px;padding:3px;}
+.lang-btn{padding:5px 8px;border-radius:8px;font-size:.68rem;border:none;}
+.lang-btn.active{background:var(--accent);color:#0F1117;}
+.lang-btn:not(.active){color:var(--muted);background:transparent;}
+
+/* CONTENT + CARDS */
+.content{padding:20px 18px 104px;}
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
+.section-title{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:26px 4px 12px;}
+
+/* WEATHER */
+.weather{display:flex;justify-content:space-between;align-items:flex-start;}
+.w-loc{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.76rem;font-weight:500;}
+.w-loc .ic{width:14px;height:14px}
+.w-temp{font-size:2.6rem;font-weight:700;letter-spacing:-.02em;margin:12px 0 2px;display:flex;align-items:center;gap:12px;line-height:1;}
+.w-temp .ic{width:26px;height:26px;color:var(--accent);}
+.w-sub{color:var(--muted);font-size:.8rem;}
+.w-fc{display:flex;gap:18px;text-align:center;padding-top:4px;}
+.w-fc .d{font-size:.66rem;color:var(--muted);margin-bottom:8px;}
+.w-fc .t{font-size:.9rem;font-weight:600;color:var(--tx);}
+
+/* BONUS */
+.bonus{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:flex-start;}
+.bonus::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:linear-gradient(var(--accent),var(--accent2));}
+.bonus-lbl{color:var(--muted);font-size:.76rem;font-weight:500;}
+.bonus-num{font-size:2.6rem;font-weight:700;letter-spacing:-.02em;line-height:1.05;margin-top:6px;}
+.bonus-num small{font-size:1rem;font-weight:500;color:var(--muted);}
+.bonus-hint{color:var(--muted);font-size:.72rem;margin-top:6px;}
+.bonus-ic{width:46px;height:46px;border-radius:15px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--accent);}
+.bonus-ic .ic{width:22px;height:22px}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px;}
+.qa{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 6px;background:var(--surface);border:1px solid var(--bd);border-radius:18px;text-decoration:none;transition:.15s;box-shadow:var(--shadow);}
+.qa:hover{border-color:rgba(255,255,255,.14);transform:translateY(-1px);}
+.qa-ic{width:42px;height:42px;border-radius:13px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--accent);}
+.qa-ic .ic{width:20px;height:20px}
+.qa-lbl{font-size:.66rem;color:var(--muted);font-weight:500;text-align:center;letter-spacing:.01em;}
+
+/* CHIPS */
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:.68rem;font-weight:600;white-space:nowrap;}
+.chip .chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+.chip-active{background:rgba(183,255,60,.12);color:var(--accent);}
+.chip-yellow{background:rgba(252,211,77,.12);color:#FCD34D;}
+.chip-blue{background:rgba(83,224,139,.12);color:var(--accent2);}
+.chip-red{background:rgba(248,113,113,.14);color:#F87171;}
+
+/* CONTRACT + TASK */
+.rowcard{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.rowcard h4{font-size:.98rem;font-weight:600;color:var(--tx);}
+.rowcard .meta{font-size:.78rem;color:var(--muted);margin-top:5px;}
+.card.overdue{border-color:rgba(248,113,113,.3);}
+
+/* PRICES */
+.price-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);}
+.price-row:first-child{padding-top:2px;}
+.price-row:last-child{border-bottom:none;padding-bottom:2px;}
+.price-row .v{font-weight:600;font-size:.95rem;}
+.price-row .f{font-size:.74rem;color:var(--muted);margin-top:3px;}
+.price-row .amt{font-size:1.45rem;font-weight:700;letter-spacing:-.02em;text-align:right;}
+.price-row .per{font-size:.66rem;color:var(--muted);text-align:right;margin-top:2px;}
+
+/* SUBSIDY */
+.subs h4{font-size:.98rem;font-weight:600;}
+.subs .org{font-size:.78rem;color:var(--muted);margin:7px 0 15px;line-height:1.4;}
+.btn-prem{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:14px;background:var(--surface2);border:1px solid var(--bd);color:var(--accent);font-size:.82rem;font-weight:600;text-decoration:none;transition:.15s;}
+.btn-prem:hover{background:#2a3140;border-color:rgba(183,255,60,.28);}
+.btn-prem .ic{width:15px;height:15px}
+
+/* ONBOARDING */
+.step{display:flex;align-items:center;gap:14px;}
+.step + .step{margin-top:18px;}
+.step-n{width:34px;height:34px;border-radius:11px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:var(--muted);flex:none;}
+.step.on .step-n{background:var(--accent);color:#0F1117;}
+.step.off{opacity:.4;}
+.step h4{font-weight:600;font-size:.95rem;}
+.step p{font-size:.78rem;color:var(--muted);margin-top:3px;}
+.step .go{margin-left:auto;background:var(--accent);color:#0F1117;padding:9px 16px;border-radius:12px;font-size:.8rem;font-weight:700;text-decoration:none;white-space:nowrap;}
+
+/* BOTTOM NAV */
+.bottom-nav{background:rgba(24,28,36,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);}
+.nav-item{color:var(--muted);gap:5px;font-size:.64rem;font-weight:500;padding:9px 4px;}
+.nav-item.active,.nav-item:hover{color:var(--accent);}
+.nav-item .icon{display:flex;align-items:center;justify-content:center;}
+.nav-item .icon .ic{width:22px;height:22px}
+{% endblock %}
+
 {% block body %}
 <div class="header">
-  <div class="header-title">🌾 AgrOS</div>
-  <div class="header-icons">
+  <div class="brand">
+    <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
+    <div class="brand-name">AgrOS</div>
+  </div>
+  <div class="header-icons hicons">
     <div class="lang-switcher">
       <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
       <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
     </div>
-    <a href="/chat" title="Чат">💬</a>
-    <a href="/profile" title="Профиль">👤</a>
-    <a href="/logout" style="font-size:0.78rem;color:#f87171;font-weight:600;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 9px;border-radius:6px">{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}</a>
+    <a href="/chat" class="iconbtn" title="Чат"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></a>
+    <a href="/profile" class="iconbtn" title="Профиль"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
+    <a href="/logout" class="iconbtn" title="{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></a>
   </div>
 </div>
+
 <div class="content">
 
   <!-- Погода -->
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;background:linear-gradient(135deg,#1e3a5f,#0f2942);border-color:#3b5c7e">
+  <div class="card weather">
     <div>
-      <div style="font-size:0.72rem;color:#93c5fd">📍 {% if lang == 'kz' %}Алматы облысы{% else %}Алматинская область{% endif %}</div>
-      <div style="font-size:1.6rem;font-weight:800;color:#fff">☀️ +26°C</div>
-      <div style="font-size:0.72rem;color:#93c5fd">{% if lang == 'kz' %}Ашық, жел 3 м/с{% else %}Ясно, ветер 3 м/с{% endif %}</div>
+      <div class="w-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> {% if lang == 'kz' %}Алматы облысы{% else %}Алматинская область{% endif %}</div>
+      <div class="w-temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>+26°</div>
+      <div class="w-sub">{% if lang == 'kz' %}Ашық, жел 3 м/с{% else %}Ясно, ветер 3 м/с{% endif %}</div>
     </div>
-    <div style="display:flex;gap:12px;text-align:center;font-size:0.7rem;color:#bfdbfe">
-      <div><div>{% if lang == 'kz' %}Ерт{% else %}Зв{% endif %}</div><div style="font-size:1.1rem">⛅</div><div>+24°</div></div>
-      <div><div>{% if lang == 'kz' %}Бүрс{% else %}Пн{% endif %}</div><div style="font-size:1.1rem">☀️</div><div>+27°</div></div>
-      <div><div>{% if lang == 'kz' %}Сәрс{% else %}Вт{% endif %}</div><div style="font-size:1.1rem">🌦️</div><div>+22°</div></div>
+    <div class="w-fc">
+      <div><div class="d">{% if lang == 'kz' %}Ерт{% else %}Зв{% endif %}</div><div class="t">+24°</div></div>
+      <div><div class="d">{% if lang == 'kz' %}Бүрс{% else %}Пн{% endif %}</div><div class="t">+27°</div></div>
+      <div><div class="d">{% if lang == 'kz' %}Сәрс{% else %}Вт{% endif %}</div><div class="t">+22°</div></div>
     </div>
   </div>
 
   <!-- Бонусный виджет -->
-  <div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:#4ade80;margin-bottom:16px">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="font-size:0.78rem;color:#86efac">{% if lang == 'kz' %}Бонус балансы{% else %}Бонусный баланс{% endif %}</div>
-        <div style="font-size:2.2rem;font-weight:900;color:#fff;line-height:1.1">{{ user.bonus_balance }} <span style="font-size:1rem;font-weight:400">{% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</span></div>
-        <div style="font-size:0.72rem;color:#86efac;margin-top:2px">1 {% if lang == 'kz' %}бонус{% else %}бонус{% endif %} = 1 ₸</div>
-      </div>
-      <div style="font-size:2.8rem">🏆</div>
+  <div class="card bonus">
+    <div>
+      <div class="bonus-lbl">{% if lang == 'kz' %}Бонус балансы{% else %}Бонусный баланс{% endif %}</div>
+      <div class="bonus-num">{{ user.bonus_balance }} <small>{% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</small></div>
+      <div class="bonus-hint">1 {% if lang == 'kz' %}бонус{% else %}бонус{% endif %} = 1 ₸</div>
     </div>
+    <div class="bonus-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
   </div>
 
   <!-- Быстрые действия -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
-    <a href="/agro-support" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
-      <div style="font-size:1.5rem">🌿</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Агросүйем.{% else %}Агросопр.{% endif %}</div>
+  <div class="qa-grid">
+    <a href="/agro-support" class="qa">
+      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
+      <div class="qa-lbl">{% if lang == 'kz' %}Агросүйем.{% else %}Агросопр.{% endif %}</div>
     </a>
-    <a href="/harvest" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
-      <div style="font-size:1.5rem">🚚</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Егін{% else %}Урожай{% endif %}</div>
+    <a href="/harvest" class="qa">
+      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg></div>
+      <div class="qa-lbl">{% if lang == 'kz' %}Егін{% else %}Урожай{% endif %}</div>
     </a>
-    <a href="/trips" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
-      <div style="font-size:1.5rem">📦</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Рейстер{% else %}Рейсы{% endif %}</div>
+    <a href="/trips" class="qa">
+      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
+      <div class="qa-lbl">{% if lang == 'kz' %}Рейстер{% else %}Рейсы{% endif %}</div>
     </a>
-    <a href="/bonus-shop" style="text-decoration:none;background:#111827;border:1px solid #1e2433;border-radius:12px;padding:12px 4px;text-align:center;color:#e2e8f0">
-      <div style="font-size:1.5rem">🎁</div><div style="font-size:0.6rem;color:#94a3b8;margin-top:3px">{% if lang == 'kz' %}Дүкен{% else %}Магазин{% endif %}</div>
+    <a href="/bonus-shop" class="qa">
+      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
+      <div class="qa-lbl">{% if lang == 'kz' %}Дүкен{% else %}Магазин{% endif %}</div>
     </a>
   </div>
 
   {% if not has_plots %}
   <!-- Онбординг -->
-  <div class="section-title">{% if lang == 'kz' %}🚀 Жұмысты бастаңыз{% else %}🚀 Начните работу{% endif %}</div>
+  <div class="section-title">{% if lang == 'kz' %}Жұмысты бастаңыз{% else %}Начните работу{% endif %}</div>
   <div class="card">
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-      <div style="min-width:32px;height:32px;background:#4ade80;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#0f1117;font-weight:700;font-size:0.9rem">1</div>
-      <div style="flex:1">
-        <div style="font-weight:600">{% if lang == 'kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</div>
-        <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Бақшаңызды тіркеңіз{% else %}Зарегистрируйте свой сад{% endif %}</div>
-      </div>
-      <a href="/plots/create" style="background:#4ade80;color:#0f1117;padding:7px 14px;border-radius:8px;font-size:0.8rem;font-weight:700;text-decoration:none;white-space:nowrap">{% if lang == 'kz' %}Қосу{% else %}Добавить{% endif %}</a>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;opacity:0.45">
-      <div style="min-width:32px;height:32px;background:#2d3748;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700;font-size:0.9rem">2</div>
+    <div class="step on">
+      <div class="step-n">1</div>
       <div>
-        <div style="font-weight:600">{% if lang == 'kz' %}Шарт жасасу{% else %}Создать договор{% endif %}</div>
-        <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Сатып алу шартын жасасыңыз{% else %}Заключите договор закупки{% endif %}</div>
+        <h4>{% if lang == 'kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</h4>
+        <p>{% if lang == 'kz' %}Бақшаңызды тіркеңіз{% else %}Зарегистрируйте свой сад{% endif %}</p>
+      </div>
+      <a href="/plots/create" class="go">{% if lang == 'kz' %}Қосу{% else %}Добавить{% endif %}</a>
+    </div>
+    <div class="step off">
+      <div class="step-n">2</div>
+      <div>
+        <h4>{% if lang == 'kz' %}Шарт жасасу{% else %}Создать договор{% endif %}</h4>
+        <p>{% if lang == 'kz' %}Сатып алу шартын жасасыңыз{% else %}Заключите договор закупки{% endif %}</p>
       </div>
     </div>
-    <div style="display:flex;align-items:center;gap:12px;opacity:0.45">
-      <div style="min-width:32px;height:32px;background:#2d3748;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-weight:700;font-size:0.9rem">3</div>
+    <div class="step off">
+      <div class="step-n">3</div>
       <div>
-        <div style="font-weight:600">{% if lang == 'kz' %}Күтім жоспарын алыңыз{% else %}Получите план ухода{% endif %}</div>
-        <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Шартқа қол қойыңыз{% else %}Подпишите договор{% endif %}</div>
+        <h4>{% if lang == 'kz' %}Күтім жоспарын алыңыз{% else %}Получите план ухода{% endif %}</h4>
+        <p>{% if lang == 'kz' %}Шартқа қол қойыңыз{% else %}Подпишите договор{% endif %}</p>
       </div>
     </div>
   </div>
   {% else %}
 
   {% if contracts %}
-  <div class="section-title">📄 {% if lang == 'kz' %}Белсенді шарттар{% else %}Активные договоры{% endif %}</div>
+  <div class="section-title">{% if lang == 'kz' %}Белсенді шарттар{% else %}Активные договоры{% endif %}</div>
   {% for c in contracts %}
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:start">
-      <div>
-        <div class="card-title">🍎 {{ c.plot_name }}</div>
-        <div style="font-size:0.82rem;color:#64748b">{{ c.contract_items|length }} {% if lang == 'kz' %}сорт{% else %}сорта{% endif %} · {{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
-      </div>
-      <span class="badge badge-green">{% if lang == 'kz' %}Белсенді{% else %}Активен{% endif %}</span>
+  <div class="card rowcard">
+    <div>
+      <h4>{{ c.plot_name }}</h4>
+      <div class="meta">{{ c.contract_items|length }} {% if lang == 'kz' %}сорт{% else %}сорта{% endif %} · {{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
     </div>
+    <span class="chip chip-active"><span class="chip-dot"></span>{% if lang == 'kz' %}Белсенді{% else %}Активен{% endif %}</span>
   </div>
   {% endfor %}
   {% endif %}
 
   {% if tasks or overdue_tasks %}
-  <div class="section-title">📅 {% if lang == 'kz' %}Жақындағы тапсырмалар{% else %}Ближайшие задачи{% endif %}</div>
+  <div class="section-title">{% if lang == 'kz' %}Жақындағы тапсырмалар{% else %}Ближайшие задачи{% endif %}</div>
   {% for t in overdue_tasks %}
-  <div class="card" style="border-color:#f87171">
-    <div style="display:flex;justify-content:space-between">
-      <div class="card-title">{{ t.title }}</div>
-      <span class="badge badge-red">{% if lang == 'kz' %}Мерзімі өтті{% else %}Просрочена{% endif %}</span>
+  <div class="card overdue rowcard">
+    <div>
+      <h4>{{ t.title }}</h4>
+      <div class="meta">{{ t.plot_name }}</div>
     </div>
-    <div style="font-size:0.8rem;color:#64748b">{{ t.plot_name }}</div>
+    <span class="chip chip-red">{% if lang == 'kz' %}Мерзімі өтті{% else %}Просрочена{% endif %}</span>
   </div>
   {% endfor %}
   {% for t in tasks %}
-  <div class="card">
-    <div style="display:flex;justify-content:space-between">
-      <div class="card-title">{{ t.title }}</div>
-      <span class="badge {% if t.status == 'soon' %}badge-yellow{% else %}badge-blue{% endif %}">
-        {% if t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро срок{% endif %}{% else %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}{% endif %}
-      </span>
+  <div class="card rowcard">
+    <div>
+      <h4>{{ t.title }}</h4>
+      <div class="meta">{{ t.plot_name }} · +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
     </div>
-    <div style="font-size:0.8rem;color:#64748b">{{ t.plot_name }} · +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
+    <span class="chip {% if t.status == 'soon' %}chip-yellow{% else %}chip-blue{% endif %}">
+      {% if t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро срок{% endif %}{% else %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}{% endif %}
+    </span>
   </div>
   {% endfor %}
   {% endif %}
@@ -128,70 +240,61 @@
   {% endif %}
 
   <!-- Цены -->
-  <div class="section-title">💰 {% if lang == 'kz' %}Ағымдағы бағалар{% else %}Актуальные цены{% endif %}</div>
-  {% for p in prices %}
-  <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-    <div>
-      <div class="card-title">🍎 {{ p.variety_name }}</div>
-      <div style="font-size:0.78rem;color:#64748b">{% if lang == 'kz' %}Жерге түскен: {{ p.price_fallen }} ₸/кг{% else %}Падалица: {{ p.price_fallen }} ₸/кг{% endif %}</div>
+  <div class="section-title">{% if lang == 'kz' %}Ағымдағы бағалар{% else %}Актуальные цены{% endif %}</div>
+  <div class="card">
+    {% for p in prices %}
+    <div class="price-row">
+      <div>
+        <div class="v">{{ p.variety_name }}</div>
+        <div class="f">{% if lang == 'kz' %}Жерге түскен: {{ p.price_fallen }} ₸/кг{% else %}Падалица: {{ p.price_fallen }} ₸/кг{% endif %}</div>
+      </div>
+      <div>
+        <div class="amt">{{ p.price_commercial }} ₸</div>
+        <div class="per">{% if lang == 'kz' %}кг үшін{% else %}за кг{% endif %}</div>
+      </div>
     </div>
-    <div style="text-align:right">
-      <div style="font-size:1.3rem;font-weight:700;color:#4ade80">{{ p.price_commercial }} ₸</div>
-      <div style="font-size:0.72rem;color:#64748b">{% if lang == 'kz' %}кг үшін{% else %}за кг{% endif %}</div>
-    </div>
+    {% endfor %}
   </div>
-  {% endfor %}
 
   <!-- Субсидии и гранты (ТЗ 4.11) -->
-  <div class="section-title" style="margin-top:20px">🏛️ {% if lang == 'kz' %}Субсидиялар мен гранттар{% else %}Субсидии и гранты{% endif %}</div>
+  <div class="section-title">{% if lang == 'kz' %}Субсидиялар мен гранттар{% else %}Субсидии и гранты{% endif %}</div>
   {% if subsidies %}
   {% for s in subsidies %}
-  <div class="card">
-    <div style="font-weight:600">{{ s.title }}</div>
-    <div style="font-size:0.78rem;color:#64748b;margin:4px 0 10px">{{ s.org }}{% if s.description %} · {{ s.description }}{% endif %}</div>
-    <a href="{{ s.url or 'https://egov.kz' }}" target="_blank" rel="noopener" style="display:inline-block;font-size:0.8rem;padding:7px 14px;border-radius:8px;border:1px solid #4ade80;color:#4ade80;text-decoration:none">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} ↗</a>
+  <div class="card subs">
+    <h4>{{ s.title }}</h4>
+    <div class="org">{{ s.org }}{% if s.description %} · {{ s.description }}{% endif %}</div>
+    <a href="{{ s.url or 'https://egov.kz' }}" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
   </div>
   {% endfor %}
   {% else %}
-  <div class="card">
-    <div style="font-weight:600">{% if lang == 'kz' %}Бақ отырғызуға субсидия{% else %}Субсидия на закладку сада{% endif %}</div>
-    <div style="font-size:0.78rem;color:#64748b;margin:4px 0 10px">{% if lang == 'kz' %}ҚР АШМ · шығынның 40%-ына дейін{% else %}МСХ РК · до 40% затрат{% endif %}</div>
-    <a href="https://egov.kz" target="_blank" rel="noopener" style="display:inline-block;font-size:0.8rem;padding:7px 14px;border-radius:8px;border:1px solid #4ade80;color:#4ade80;text-decoration:none">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} ↗</a>
+  <div class="card subs">
+    <h4>{% if lang == 'kz' %}Бақ отырғызуға субсидия{% else %}Субсидия на закладку сада{% endif %}</h4>
+    <div class="org">{% if lang == 'kz' %}ҚР АШМ · шығынның 40%-ына дейін{% else %}МСХ РК · до 40% затрат{% endif %}</div>
+    <a href="https://egov.kz" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
   </div>
-  <div class="card">
-    <div style="font-weight:600">{% if lang == 'kz' %}Тамшылатып суару гранты{% else %}Грант на капельное орошение{% endif %}</div>
-    <div style="font-size:0.78rem;color:#64748b;margin:4px 0 10px">{% if lang == 'kz' %}«Аграрлық несие корпорациясы»{% else %}АО «Аграрная кредитная корпорация»{% endif %}</div>
-    <a href="https://egov.kz" target="_blank" rel="noopener" style="display:inline-block;font-size:0.8rem;padding:7px 14px;border-radius:8px;border:1px solid #4ade80;color:#4ade80;text-decoration:none">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} ↗</a>
+  <div class="card subs">
+    <h4>{% if lang == 'kz' %}Тамшылатып суару гранты{% else %}Грант на капельное орошение{% endif %}</h4>
+    <div class="org">{% if lang == 'kz' %}«Аграрлық несие корпорациясы»{% else %}АО «Аграрная кредитная корпорация»{% endif %}</div>
+    <a href="https://egov.kz" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
   </div>
   {% endif %}
 </div>
 
-{% block extra_styles %}
-<style>
-.bottom-nav { background: #111827; border-top: 1px solid #1e2433; }
-.nav-item { color: #475569; }
-.nav-item.active { color: #4ade80; }
-.nav-item:hover { color: #4ade80; }
-.nav-item .icon { font-size: 1.4rem; }
-.nav-item span:last-child { font-size: 0.65rem; margin-top: 1px; }
-</style>
-{% endblock %}
-
 <nav class="bottom-nav">
   <a href="/dashboard" class="nav-item active">
-    <span class="icon">🏠</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
     <span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span>
   </a>
   <a href="/contracts" class="nav-item">
-    <span class="icon">📄</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
     <span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span>
   </a>
   <a href="/plots" class="nav-item">
-    <span class="icon">🌱</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
     <span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span>
   </a>
   <a href="/tasks" class="nav-item">
-    <span class="icon">✅</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span>
     <span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span>
   </a>
 </nav>
