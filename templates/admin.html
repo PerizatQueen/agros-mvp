@@ -6,91 +6,105 @@
 <title>AgrOS — Админ</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0c14;color:#e2e8f0}
-.sidebar{width:240px;background:#0f1320;height:100vh;position:fixed;left:0;top:0;border-right:1px solid #1a2040;display:flex;flex-direction:column}
-.sidebar-header{padding:20px 20px 16px;border-bottom:1px solid #1a2040}
-.sidebar-logo{font-size:1.3rem;font-weight:900;color:#f87171}
-.sidebar-role{font-size:0.7rem;color:#475569;margin-top:2px;text-transform:uppercase;letter-spacing:1px}
-.sidebar-user{font-size:0.8rem;color:#94a3b8;margin-top:6px;padding-top:6px;border-top:1px solid #1a2040}
-.lang-bar{padding:8px 12px;border-bottom:1px solid #1a2040;display:flex;gap:6px;align-items:center}
-.lang-btn{padding:3px 10px;border-radius:6px;font-size:0.72rem;font-weight:700;border:1.5px solid transparent;cursor:pointer;text-decoration:none;transition:all 0.15s}
-.lang-btn.active{background:#f87171;color:#0a0c14;border-color:#f87171}
-.lang-btn:not(.active){background:transparent;color:#475569;border-color:#1a2040}
-.logout-link{margin-left:auto;font-size:0.72rem;color:#f87171;text-decoration:none;border:1px solid rgba(248,113,113,0.3);padding:3px 8px;border-radius:6px}
-.nav-section{padding:12px 12px 4px;font-size:0.65rem;color:#475569;text-transform:uppercase;letter-spacing:1px}
-.nav-link{display:flex;align-items:center;gap:10px;padding:10px 16px;margin:2px 8px;border-radius:8px;color:#94a3b8;text-decoration:none;font-size:0.875rem;cursor:pointer;border:none;background:none;width:calc(100% - 16px);text-align:left;transition:all 0.15s}
-.nav-link:hover{background:rgba(248,113,113,0.08);color:#f87171}
-.nav-link.active{background:rgba(248,113,113,0.12);color:#f87171;font-weight:600;border-left:3px solid #f87171}
-.sidebar-bottom{margin-top:auto;padding:12px;border-top:1px solid #1a2040}
-.main{margin-left:240px;padding:28px 32px;min-height:100vh}
-.page{display:none}.page.active{display:block}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
-.page-title{font-size:1.4rem;font-weight:700;color:#f1f5f9}
-.page-sub{font-size:0.82rem;color:#475569;margin-top:2px}
-.topbar-badge{background:rgba(248,113,113,0.15);color:#f87171;padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;border:1px solid rgba(248,113,113,0.3)}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px}
-.stat-card{background:#131929;border-radius:14px;padding:18px;border:1px solid #1e2d45;position:relative;overflow:hidden}
-.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:#f87171}
-.stat-card.green::before{background:#4ade80}.stat-card.blue::before{background:#60a5fa}.stat-card.yellow::before{background:#fcd34d}
-.stat-val{font-size:2rem;font-weight:900;color:#f1f5f9;line-height:1}
-.stat-val.green{color:#4ade80}.stat-val.blue{color:#60a5fa}.stat-val.yellow{color:#fcd34d}.stat-val.red{color:#f87171}
-.stat-lbl{font-size:0.75rem;color:#475569;margin-top:6px}
-.card{background:#131929;border-radius:14px;padding:20px;border:1px solid #1e2d45;margin-bottom:16px}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.card-title{font-weight:700;color:#f1f5f9;font-size:0.95rem}
-.card-count{font-size:0.75rem;color:#475569;background:#1e2d45;padding:3px 10px;border-radius:20px}
+:root{--bg:#0A0C10;--panel:#0C0E13;--surface:#141821;--surface2:#1B212C;--accent:#B7FF3C;--accent2:#6EE7A8;--tx:#F3F5F8;--muted:#868F9E;--bd:rgba(255,255,255,0.06);--glow:0 0 30px rgba(183,255,60,0.15);--shadow:0 10px 34px rgba(0,0,0,0.45)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#20262f;border-radius:8px}::-webkit-scrollbar-track{background:transparent}
+svg{flex:none}
+.sidebar{width:250px;background:var(--panel);height:100vh;position:fixed;left:0;top:0;border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:6px}
+.sidebar-header{padding:16px 14px 6px}
+.sidebar-logo{display:flex;align-items:center;gap:10px;font-size:1.05rem;font-weight:700;color:var(--tx);letter-spacing:-.01em}
+.sidebar-logo .lm{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#0A0C10}
+.sidebar-logo .lm svg{width:17px;height:17px}
+.sidebar-role{font-size:.6rem;color:var(--muted);margin-top:14px;text-transform:uppercase;letter-spacing:.14em;padding-left:2px}
+.sidebar-user{font-size:.8rem;color:var(--muted);margin-top:8px;padding:10px 12px;background:var(--surface);border:1px solid var(--bd);border-radius:12px;display:flex;align-items:center;gap:8px}
+.sidebar-user svg{width:15px;height:15px}
+.lang-bar{padding:12px 8px 6px;display:flex;gap:5px;align-items:center}
+.lang-btn{padding:5px 11px;border-radius:9px;font-size:.7rem;font-weight:700;border:1px solid var(--bd);text-decoration:none;transition:.15s;color:var(--muted);background:var(--surface)}
+.lang-btn.active{background:var(--accent);color:#0A0C10;border-color:transparent}
+.logout-link{margin-left:auto;font-size:.72rem;color:#F87171;text-decoration:none;border:1px solid rgba(248,113,113,.3);padding:5px 10px;border-radius:9px}
+.nav-section{padding:14px 14px 6px;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font-weight:600}
+.nav-link{display:flex;align-items:center;gap:11px;padding:10px 12px;margin:2px 6px;border-radius:11px;color:var(--muted);text-decoration:none;font-size:.86rem;font-weight:500;cursor:pointer;border:1px solid transparent;background:none;width:calc(100% - 12px);text-align:left;transition:.15s;position:relative}
+.nav-link svg{width:18px;height:18px}
+.nav-link:hover{background:var(--surface);color:var(--tx)}
+.nav-link.active{background:linear-gradient(90deg,rgba(183,255,60,.14),rgba(183,255,60,.03));color:var(--accent);font-weight:600;border-color:rgba(183,255,60,.14);box-shadow:var(--glow)}
+.nav-link.active::before{content:'';position:absolute;left:-6px;top:9px;bottom:9px;width:3px;border-radius:3px;background:var(--accent)}
+.sidebar-bottom{margin-top:auto;padding:8px 0 6px;border-top:1px solid var(--bd)}
+.main{margin-left:250px;padding:34px 40px;min-height:100vh;max-width:1440px}
+.page{display:none}.page.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.page-title{font-size:1.55rem;font-weight:700;color:var(--tx);letter-spacing:-.02em}
+.page-sub{font-size:.84rem;color:var(--muted);margin-top:4px}
+.topbar-badge{background:rgba(183,255,60,.1);color:var(--accent);padding:7px 15px;border-radius:999px;font-size:.76rem;font-weight:600;border:1px solid rgba(183,255,60,.18)}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:30px}
+.stat-card{background:linear-gradient(160deg,var(--surface),#0F131A);border-radius:18px;padding:22px;border:1px solid var(--bd);position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.stat-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(183,255,60,.14),transparent 70%)}
+.stat-card.blue::before{background:radial-gradient(circle,rgba(110,231,168,.14),transparent 70%)}
+.stat-val{font-size:2.4rem;font-weight:700;color:var(--tx);line-height:1;letter-spacing:-.03em}
+.stat-val.green{color:var(--accent)}.stat-val.blue{color:var(--accent2)}.stat-val.yellow{color:#FCD34D}.stat-val.red{color:#F87171}
+.stat-lbl{font-size:.76rem;color:var(--muted);margin-top:10px}
+.card{background:linear-gradient(160deg,var(--surface),#10141B);border-radius:18px;padding:22px;border:1px solid var(--bd);margin-bottom:16px;box-shadow:var(--shadow)}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-weight:600;color:var(--tx);font-size:.98rem}
+.card-count{font-size:.72rem;color:var(--muted);background:var(--surface2);padding:3px 11px;border-radius:999px}
 table{width:100%;border-collapse:collapse}
-th{background:#0f1320;color:#475569;padding:10px 14px;text-align:left;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.5px;font-weight:600}
-td{padding:12px 14px;border-bottom:1px solid #1a2040;font-size:0.85rem;color:#cbd5e1;vertical-align:middle}
+th{color:var(--muted);padding:0 14px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-bottom:1px solid var(--bd)}
+td{padding:14px;border-bottom:1px solid var(--bd);font-size:.86rem;color:#D7DCE3;vertical-align:middle}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,0.02)}
-.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:600}
-.badge-green{background:rgba(74,222,128,0.12);color:#4ade80;border:1px solid rgba(74,222,128,0.2)}
-.badge-yellow{background:rgba(252,211,77,0.12);color:#fcd34d;border:1px solid rgba(252,211,77,0.2)}
-.badge-red{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.2)}
-.badge-blue{background:rgba(96,165,250,0.12);color:#60a5fa;border:1px solid rgba(96,165,250,0.2)}
-.btn{padding:7px 14px;border-radius:8px;font-weight:600;font-size:0.8rem;border:none;cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:5px}
-.btn-primary{background:#f87171;color:#0a0c14}.btn-primary:hover{background:#ef4444}
-.btn-green{background:#4ade80;color:#0a0c14}.btn-green:hover{background:#22c55e}
-.btn-danger{background:rgba(248,113,113,0.12);color:#f87171;border:1px solid rgba(248,113,113,0.3)}
-.ig label{display:block;font-size:0.75rem;color:#475569;margin-bottom:4px}
-.ig input,.ig select{width:100%;background:#0f1320;border:1.5px solid #1e2d45;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem;outline:none}
-.ig input:focus,.ig select:focus{border-color:#f87171}
-.ftabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
-.ftab{padding:6px 14px;border-radius:8px;border:1.5px solid #1e2d45;color:#475569;background:transparent;cursor:pointer;font-size:0.8rem}
-.ftab.active{background:#f87171;color:#0a0c14;border-color:#f87171;font-weight:600}
+tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:.7rem;font-weight:600}
+.badge-green{background:rgba(183,255,60,.12);color:var(--accent)}
+.badge-yellow{background:rgba(252,211,77,.12);color:#FCD34D}
+.badge-red{background:rgba(248,113,113,.13);color:#F87171}
+.badge-blue{background:rgba(110,231,168,.12);color:var(--accent2)}
+.badge-gray{background:rgba(134,143,158,.12);color:var(--muted)}
+.btn{padding:9px 16px;border-radius:11px;font-weight:600;font-size:.8rem;border:none;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn svg{width:15px;height:15px}
+.btn-approve,.btn-primary,.btn-green{background:var(--accent);color:#0A0C10}
+.btn-approve:hover,.btn-primary:hover,.btn-green:hover{box-shadow:var(--glow);opacity:.95}
+.btn-save{background:var(--accent2);color:#0A0C10}
+.btn-reject,.btn-danger{background:rgba(248,113,113,.12);color:#F87171;border:1px solid rgba(248,113,113,.28)}
+.btn-reject:hover,.btn-danger:hover{background:rgba(248,113,113,.18)}
+.ig label{display:block;font-size:.74rem;color:var(--muted);margin-bottom:6px}
+.ig input,.ig select,.ig textarea{width:100%;background:var(--surface2);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;color:var(--tx);font-size:.9rem;outline:none;transition:.15s}
+.ig input:focus,.ig select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(183,255,60,.1)}
+.ftabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.ftab{padding:8px 15px;border-radius:11px;border:1px solid var(--bd);color:var(--muted);background:var(--surface);cursor:pointer;font-size:.8rem;font-weight:500;transition:.15s}
+.ftab:hover{color:var(--tx)}
+.ftab.active{background:var(--accent);color:#0A0C10;border-color:transparent;font-weight:600}
+.alert-success{background:rgba(183,255,60,.08);border:1px solid rgba(183,255,60,.25);border-radius:12px;padding:12px 16px;color:var(--accent);margin-bottom:16px;display:none;font-size:.85rem}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.empty-state{text-align:center;padding:40px 20px;color:#475569}
-.bonus-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #1a2040}
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted);font-size:.9rem}
+.bonus-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd)}
 .bonus-item:last-child{border-bottom:none}
 </style>
 </head>
 <body>
 <div class="sidebar">
   <div class="sidebar-header">
-    <div class="sidebar-logo">🔴 AgrOS</div>
+    <div class="sidebar-logo"><span class="lm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span> AgrOS</div>
     <div class="sidebar-role">{% if lang=='kz' %}Әкімші панелі{% else %}Панель администратора{% endif %}</div>
-    <div class="sidebar-user">👤 {{ user_name }}</div>
+    <div class="sidebar-user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> {{ user_name }}</div>
   </div>
   <div class="lang-bar">
     <a href="/set-lang/ru" class="lang-btn {% if lang!='kz' %}active{% endif %}">RU</a>
     <a href="/set-lang/kz" class="lang-btn {% if lang=='kz' %}active{% endif %}">ҚАЗ</a>
   </div>
   <div class="nav-section">{% if lang=='kz' %}Басқару{% else %}Управление{% endif %}</div>
-  <button class="nav-link active" onclick="showPage('dashboard',this)">✅ {% if lang=='kz' %}Шолу{% else %}Обзор{% endif %}</button>
-  <button class="nav-link" onclick="showPage('users',this)">👥 {% if lang=='kz' %}Пайдаланушылар{% else %}Пользователи{% endif %}</button>
-  <button class="nav-link" onclick="showPage('farmers',this)">👨‍🌾 {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
-  <button class="nav-link" onclick="showPage('contracts',this)">📄 {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</button>
+  <button class="nav-link active" onclick="showPage('dashboard',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> {% if lang=='kz' %}Шолу{% else %}Обзор{% endif %}</button>
+  <button class="nav-link" onclick="showPage('users',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> {% if lang=='kz' %}Пайдаланушылар{% else %}Пользователи{% endif %}</button>
+  <button class="nav-link" onclick="showPage('farmers',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
+  <button class="nav-link" onclick="showPage('contracts',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</button>
   <div class="nav-section">{% if lang=='kz' %}Жүйе{% else %}Система{% endif %}</div>
-  <button class="nav-link" onclick="showPage('catalog',this)">📦 {% if lang=='kz' %}Каталог{% else %}Каталог{% endif %}</button>
-  <button class="nav-link" onclick="showPage('bonuses',this)">🎁 {% if lang=='kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</button>
-  <button class="nav-link" onclick="showPage('prices',this)">💰 {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
-  <button class="nav-link" onclick="showPage('monitor',this)">🖥️ {% if lang=='kz' %}Мониторинг{% else %}Мониторинг{% endif %}</button>
-  <button class="nav-link" onclick="showPage('journal',this)">📜 {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
-  <button class="nav-link" onclick="showPage('subsidies',this)">🏛️ {% if lang=='kz' %}Субсидиялар{% else %}Субсидии{% endif %}</button>
-  <button class="nav-link" onclick="showPage('slots',this)">📅 {% if lang=='kz' %}Слоттар{% else %}Слоты приёмки{% endif %}</button>
+  <button class="nav-link" onclick="showPage('catalog',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg> {% if lang=='kz' %}Каталог{% else %}Каталог{% endif %}</button>
+  <button class="nav-link" onclick="showPage('bonuses',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg> {% if lang=='kz' %}Бонус дүкені{% else %}Магазин бонусов{% endif %}</button>
+  <button class="nav-link" onclick="showPage('prices',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg> {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
+  <button class="nav-link" onclick="showPage('monitor',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> {% if lang=='kz' %}Мониторинг{% else %}Мониторинг{% endif %}</button>
+  <button class="nav-link" onclick="showPage('journal',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg> {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
+  <button class="nav-link" onclick="showPage('subsidies',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg> {% if lang=='kz' %}Субсидиялар{% else %}Субсидии{% endif %}</button>
+  <button class="nav-link" onclick="showPage('slots',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/><path d="M16 18h.01"/></svg> {% if lang=='kz' %}Слоттар{% else %}Слоты приёмки{% endif %}</button>
   <div class="sidebar-bottom">
-    <a href="/logout" class="nav-link" style="color:#f87171">🚶 {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
+    <a href="/logout" class="nav-link" style="color:#F87171"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
   </div>
 </div>
 
