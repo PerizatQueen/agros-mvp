@@ -1,7 +1,10 @@
 import os
 import hashlib
 import json
+import time
 import concurrent.futures
+import requests
+from datetime import date
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import db
 
@@ -147,23 +150,94 @@ def set_lang(lg):
 
 # ===== FARMER ROUTES =====
 
+_weather_cache = {'ts': 0, 'data': None}
+_WCODE = {
+    0: ('Ясно', 'Ашық'), 1: ('Малооблачно', 'Аздап бұлтты'), 2: ('Переменная облачность', 'Айнымалы бұлт'), 3: ('Пасмурно', 'Бұлтты'),
+    45: ('Туман', 'Тұман'), 48: ('Туман', 'Тұман'),
+    51: ('Морось', 'Себелек'), 53: ('Морось', 'Себелек'), 55: ('Морось', 'Себелек'),
+    61: ('Дождь', 'Жаңбыр'), 63: ('Дождь', 'Жаңбыр'), 65: ('Сильный дождь', 'Қатты жаңбыр'),
+    66: ('Ледяной дождь', 'Мұзды жаңбыр'), 67: ('Ледяной дождь', 'Мұзды жаңбыр'),
+    71: ('Снег', 'Қар'), 73: ('Снег', 'Қар'), 75: ('Сильный снег', 'Қатты қар'), 77: ('Снег', 'Қар'),
+    80: ('Ливень', 'Нөсер'), 81: ('Ливень', 'Нөсер'), 82: ('Сильный ливень', 'Қатты нөсер'),
+    85: ('Снег', 'Қар'), 86: ('Снег', 'Қар'),
+    95: ('Гроза', 'Найзағай'), 96: ('Гроза с градом', 'Бұршақты найзағай'), 99: ('Гроза с градом', 'Бұршақты найзағай'),
+}
+_WDAYS_RU = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
+_WDAYS_KZ = ['Дс', 'Сс', 'Ср', 'Бс', 'Жм', 'Сб', 'Жс']
+
+
+def get_weather():
+    # Живая погода (open-meteo, без ключа), кэш 30 мин. Алматы.
+    now = time.time()
+    if _weather_cache['data'] and now - _weather_cache['ts'] < 1800:
+        return _weather_cache['data']
+    try:
+        r = requests.get('https://api.open-meteo.com/v1/forecast', params={
+            'latitude': 43.25, 'longitude': 76.95,
+            'current': 'temperature_2m,weather_code,wind_speed_10m',
+            'daily': 'weather_code,temperature_2m_max', 'timezone': 'auto', 'forecast_days': 4
+        }, timeout=6)
+        j = r.json()
+        cur = j.get('current', {})
+        code = int(cur.get('weather_code', 0))
+        daily = j.get('daily', {})
+        times = daily.get('time', [])
+        days = []
+        for i in range(1, min(4, len(times))):
+            y, m, d = map(int, times[i].split('-'))
+            wd = date(y, m, d).weekday()
+            dc = int(daily['weather_code'][i])
+            days.append({'ru': _WDAYS_RU[wd], 'kz': _WDAYS_KZ[wd],
+                         'temp': round(daily['temperature_2m_max'][i]),
+                         'label_ru': _WCODE.get(dc, ('', ''))[0], 'label_kz': _WCODE.get(dc, ('', ''))[1]})
+        data = {'temp': round(cur.get('temperature_2m', 0)), 'wind': round(cur.get('wind_speed_10m', 0)),
+                'label_ru': _WCODE.get(code, ('Ясно', 'Ашық'))[0], 'label_kz': _WCODE.get(code, ('Ясно', 'Ашық'))[1],
+                'days': days}
+        _weather_cache['ts'] = now
+        _weather_cache['data'] = data
+        return data
+    except Exception:
+        return _weather_cache['data']
+
+
+@app.route('/geocode')
+@login_required
+def geocode():
+    q = request.args.get('q')
+    headers = {'User-Agent': 'AgrOS-demo/1.0 (agros)'}
+    try:
+        if q:
+            resp = requests.get('https://nominatim.openstreetmap.org/search',
+                params={'q': q, 'format': 'json', 'limit': 1, 'accept-language': 'ru'},
+                headers=headers, timeout=8)
+            return jsonify(resp.json())
+        resp = requests.get('https://nominatim.openstreetmap.org/reverse',
+            params={'lat': request.args.get('lat'), 'lon': request.args.get('lng'),
+                    'format': 'json', 'accept-language': 'ru'}, headers=headers, timeout=8)
+        return jsonify(resp.json())
+    except Exception:
+        return jsonify([] if q else {})
+
+
 @app.route('/dashboard')
 @farmer_required
 def dashboard():
     uid = session['user_id']
-    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as _ex:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=7) as _ex:
         _fu = _ex.submit(db.get_user_by_id, uid)
         _fp = _ex.submit(db.get_plots, uid)
         _fc = _ex.submit(db.get_contracts, uid)
         _ft = _ex.submit(db.get_tasks, uid)
         _fpr = _ex.submit(db.get_demand_prices)
         _fsub = _ex.submit(db.db_get, 'subsidies', {'is_active': 'eq.true'})
+        _fw = _ex.submit(get_weather)
     user = _fu.result()
     plots = _fp.result()
     contracts = _fc.result()
     tasks = _ft.result()
     prices = _fpr.result()
     subsidies = _fsub.result() or []
+    weather = _fw.result()
     active_contracts = [c for c in contracts if c['status'] == 'active']
     upcoming_tasks = [t for t in tasks if t['status'] in ('soon', 'upcoming')][:3]
     overdue_tasks = [t for t in tasks if t['status'] == 'overdue']
@@ -171,7 +245,7 @@ def dashboard():
         user=user, plots=plots, contracts=active_contracts,
         tasks=upcoming_tasks, overdue_tasks=overdue_tasks, prices=prices[:4],
         has_plots=len(plots) > 0, has_contracts=len(contracts) > 0,
-        has_active=len(active_contracts) > 0, subsidies=subsidies, lang=lang())
+        has_active=len(active_contracts) > 0, subsidies=subsidies, weather=weather, lang=lang())
 
 
 @app.route('/plots')

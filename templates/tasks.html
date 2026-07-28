@@ -74,6 +74,8 @@ body{background:var(--bg);color:var(--tx);}
     {% endfor %}
   </div>
 
+  {% set TT = {'Весенняя обрезка':'Көктемгі кесу','Обрезка деревьев':'Ағаштарды кесу','Обработка от вредителей':'Зиянкестерден өңдеу','Внесение удобрений':'Тыңайтқыш енгізу','Мониторинг болезней':'Ауруларды бақылау','Подготовка к сбору':'Жинауға дайындық','Полив сада':'Бақты суару'} %}
+  {% set TD = {'Санитарная и формирующая обрезка деревьев':'Ағаштарды санитарлық және қалыптастыру кесу','Опрыскивание от яблонной плодожорки':'Алма жеміс көбелегінен бүрку','Азотные удобрения под корень':'Тамырға азотты тыңайтқыш','Осмотр листьев на признаки парши':'Жапырақтарды таты белгілеріне тексеру','Проверка готовности плодов к сбору':'Жемістердің жинауға дайындығын тексеру'} %}
   {% if not tasks %}
   <div class="card empty">
     <div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
@@ -85,7 +87,7 @@ body{background:var(--bg);color:var(--tx);}
   <div class="card {% if t.status == 'overdue' %}overdue{% elif t.status == 'approved' %}approved{% endif %}" id="task-{{ t.id }}">
 
     <div class="rowtop">
-      <div class="card-title" style="flex:1;padding-right:8px">{{ t.title }}</div>
+      <div class="card-title" style="flex:1;padding-right:8px">{{ TT[t.title] if lang == 'kz' and t.title in TT else t.title }}</div>
       <span class="chip
         {% if t.status == 'upcoming' or t.status == 'in_progress' %}chip-blue
         {% elif t.status == 'soon' or t.status == 'review' %}chip-yellow
@@ -105,7 +107,7 @@ body{background:var(--bg);color:var(--tx);}
     <div class="task-plot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> {{ t.plot_name }}</div>
 
     {% if t.description %}
-    <div class="task-desc">{{ t.description }}</div>
+    <div class="task-desc">{{ TD[t.description] if lang == 'kz' and t.description in TD else t.description }}</div>
     {% endif %}
 
     <div class="task-foot">

@@ -131,13 +131,17 @@ body{background:var(--bg);color:var(--tx);}
   <div class="card weather">
     <div>
       <div class="w-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> {% if lang == 'kz' %}Алматы облысы{% else %}Алматинская область{% endif %}</div>
-      <div class="w-temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>+26°</div>
-      <div class="w-sub">{% if lang == 'kz' %}Ашық, жел 3 м/с{% else %}Ясно, ветер 3 м/с{% endif %}</div>
+      <div class="w-temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>{% if weather %}+{{ weather.temp }}°{% else %}+26°{% endif %}</div>
+      <div class="w-sub">{% if weather %}{% if lang == 'kz' %}{{ weather.label_kz }}, жел {{ weather.wind }} м/с{% else %}{{ weather.label_ru }}, ветер {{ weather.wind }} м/с{% endif %}{% else %}{% if lang == 'kz' %}Ашық, жел 3 м/с{% else %}Ясно, ветер 3 м/с{% endif %}{% endif %}</div>
     </div>
     <div class="w-fc">
+      {% if weather and weather.days %}{% for d in weather.days %}
+      <div><div class="d">{% if lang == 'kz' %}{{ d.kz }}{% else %}{{ d.ru }}{% endif %}</div><div class="t">+{{ d.temp }}°</div></div>
+      {% endfor %}{% else %}
       <div><div class="d">{% if lang == 'kz' %}Ерт{% else %}Зв{% endif %}</div><div class="t">+24°</div></div>
       <div><div class="d">{% if lang == 'kz' %}Бүрс{% else %}Пн{% endif %}</div><div class="t">+27°</div></div>
       <div><div class="d">{% if lang == 'kz' %}Сәрс{% else %}Вт{% endif %}</div><div class="t">+22°</div></div>
+      {% endif %}
     </div>
   </div>
 
@@ -269,13 +273,13 @@ body{background:var(--bg);color:var(--tx);}
   {% else %}
   <div class="card subs">
     <h4>{% if lang == 'kz' %}Бақ отырғызуға субсидия{% else %}Субсидия на закладку сада{% endif %}</h4>
-    <div class="org">{% if lang == 'kz' %}ҚР АШМ · шығынның 40%-ына дейін{% else %}МСХ РК · до 40% затрат{% endif %}</div>
-    <a href="https://egov.kz" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
+    <div class="org">{% if lang == 'kz' %}ҚР АШМ · шығынның 25%-ына дейін{% else %}МСХ РК · до 25% инвестзатрат{% endif %}</div>
+    <a href="https://egov.kz/cms/ru/services/pass406-6_msh" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
   </div>
   <div class="card subs">
     <h4>{% if lang == 'kz' %}Тамшылатып суару гранты{% else %}Грант на капельное орошение{% endif %}</h4>
-    <div class="org">{% if lang == 'kz' %}«Аграрлық несие корпорациясы»{% else %}АО «Аграрная кредитная корпорация»{% endif %}</div>
-    <a href="https://egov.kz" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
+    <div class="org">{% if lang == 'kz' %}Qoldau.kz порталы арқылы{% else %}Через портал Qoldau.kz{% endif %}</div>
+    <a href="https://qoldau.kz" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
   </div>
   {% endif %}
 </div>

@@ -114,16 +114,24 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(lmap);
 
 var marker = L.marker([43.2551, 76.9126], {draggable: true}).addTo(lmap);
+setTimeout(function(){ lmap.invalidateSize(); }, 250);
 
 function setCoords(lat, lng) {
   document.getElementById('lat').value = lat.toFixed(6);
   document.getElementById('lng').value = lng.toFixed(6);
+  var a = document.getElementById('address');
+  if (!a.value || a.dataset.auto) {
+    a.value = '{% if lang=="kz" %}Картадан таңдалды{% else %}Выбрано на карте{% endif %} (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')';
+    a.dataset.auto = '1';
+  }
+  a.style.borderColor = '#4ade80';
 }
 
 function reverseGeocode(lat, lng) {
-  fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lng+'&format=json&accept-language=ru')
+  fetch('/geocode?lat='+lat+'&lng='+lng)
     .then(r=>r.json()).then(d=>{
-      if(d.display_name) document.getElementById('address').value = d.display_name;
+      var a = document.getElementById('address');
+      if(d && d.display_name && a.dataset.auto){ a.value = d.display_name; delete a.dataset.auto; }
     }).catch(()=>{});
 }
 
@@ -142,14 +150,14 @@ marker.on('dragend', function(e) {
 function searchAddress() {
   var q = document.getElementById('address_search').value.trim();
   if (!q) return;
-  fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent(q)+'&format=json&limit=1&accept-language=ru')
+  fetch('/geocode?q='+encodeURIComponent(q))
     .then(r=>r.json()).then(d=>{
-      if(d.length > 0) {
+      if(d && d.length > 0) {
         var lat = parseFloat(d[0].lat), lng = parseFloat(d[0].lon);
-        lmap.setView([lat, lng], 13);
+        lmap.setView([lat, lng], 14);
         marker.setLatLng([lat, lng]);
-        setCoords(lat, lng);
-        document.getElementById('address').value = d[0].display_name;
+        var a = document.getElementById('address'); a.dataset.auto = '1'; setCoords(lat, lng);
+        a.value = d[0].display_name; delete a.dataset.auto; a.style.borderColor = '#4ade80';
       } else {
         alert('{% if lang=="kz" %}Мекенжай табылмады{% else %}Адрес не найден{% endif %}');
       }
