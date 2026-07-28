@@ -227,7 +227,7 @@ tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
     <tr>
       <td><strong>{{ t.title }}</strong>
         {% if t.report_note %}<div style="font-size:0.75rem;color:#6ee7b7;margin-top:3px"> {{ t.report_note }}</div>{% endif %}
-        {% if t.photo_url %}<a href="{{ t.photo_url }}" target="_blank" style="font-size:0.75rem;color:#60a5fa"> {% if lang=='kz' %}фото{% else %}фото{% endif %}</a>{% endif %}
+        {% if t.photo_url %}<a href="javascript:void(0)" onclick="showPhoto('{{ t.photo_url }}')" style="font-size:0.75rem;color:#60a5fa;cursor:pointer;text-decoration:underline">{% if lang=='kz' %}фото көру{% else %}смотреть фото{% endif %}</a>{% endif %}
       </td>
       <td>{{ t.farmer_name }}</td>
       <td>{{ t.plot_name }}</td>
@@ -623,6 +623,13 @@ function calc(){
     _r('{% if lang=="kz" %}Ұсынылатын көлем{% else %}Рекоменд. объём в договор{% endif %}',f(commKg)+' кг');
 }
 onVar();
+function showPhoto(src){
+  var o=document.createElement('div');
+  o.style.cssText='position:fixed;inset:0;background:rgba(5,7,10,.88);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:32px;cursor:zoom-out';
+  o.innerHTML='<img src="'+src+'" style="max-width:92vw;max-height:88vh;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.08)">';
+  o.onclick=function(){document.body.removeChild(o);};
+  document.body.appendChild(o);
+}
 </script>
 </body>
 </html>
