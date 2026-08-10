@@ -3,109 +3,114 @@
 
 {% block extra_styles %}
 :root{
-  --bg:#0F1117;--surface:#181C24;--surface2:#222836;
-  --accent:#B7FF3C;--accent2:#53E08B;
-  --tx:#FFFFFF;--muted:#9AA4B2;--bd:rgba(255,255,255,0.06);
-  --shadow:0 10px 30px rgba(0,0,0,0.35);
+  --bg:#EEF4E7;--surface:#FFFFFF;
+  --green:#15A34A;--green2:#22C55E;--lime:#8BD450;
+  --sun:#F59E0B;--sky:#38BDF8;
+  --tx:#15240F;--muted:#5E6B58;--bd:rgba(20,33,15,.09);
+  --shadow:0 8px 22px rgba(20,60,20,.09);
 }
 body{background:var(--bg);color:var(--tx);}
 .ic{width:20px;height:20px;display:block;flex:none}
 
 /* HEADER */
-.header{background:rgba(15,17,23,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
+.header{background:rgba(255,255,255,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
 .brand{display:flex;align-items:center;gap:9px;}
-.brand-mark{width:26px;height:26px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#0F1117;}
-.brand-mark .ic{width:15px;height:15px}
-.brand-name{font-size:.98rem;font-weight:700;letter-spacing:-.01em;color:var(--tx);}
+.brand-mark{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--lime));display:flex;align-items:center;justify-content:center;color:#fff;}
+.brand-mark .ic{width:16px;height:16px}
+.brand-name{font-size:1rem;font-weight:800;letter-spacing:-.01em;color:var(--tx);}
 .hicons{display:flex;align-items:center;gap:7px;}
-.iconbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:.15s;font-size:0;}
-.iconbtn:hover{color:var(--tx);border-color:rgba(255,255,255,.14);}
+.iconbtn{width:36px;height:36px;border-radius:11px;background:#F1F5EC;border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:.15s;font-size:0;}
+.iconbtn:hover{color:var(--green);border-color:rgba(21,163,74,.3);}
 .iconbtn .ic{width:18px;height:18px}
-.lang-switcher{gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:11px;padding:3px;}
-.lang-btn{padding:5px 8px;border-radius:8px;font-size:.68rem;border:none;}
-.lang-btn.active{background:var(--accent);color:#0F1117;}
+.lang-switcher{gap:2px;background:#F1F5EC;border:1px solid var(--bd);border-radius:11px;padding:3px;}
+.lang-btn{padding:5px 8px;border-radius:8px;font-size:.68rem;border:none;font-weight:700;}
+.lang-btn.active{background:var(--green);color:#fff;}
 .lang-btn:not(.active){color:var(--muted);background:transparent;}
 
-/* CONTENT + CARDS */
-.content{padding:20px 18px 104px;}
-.card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
-.section-title{font-size:.72rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:26px 4px 12px;}
+/* CONTENT */
+.content{padding:18px 16px 104px;}
+.section-title{font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:22px 4px 12px;}
 
-/* WEATHER */
-.weather{display:flex;justify-content:space-between;align-items:flex-start;}
-.w-loc{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.76rem;font-weight:500;}
-.w-loc .ic{width:14px;height:14px}
-.w-temp{font-size:2.6rem;font-weight:700;letter-spacing:-.02em;margin:12px 0 2px;display:flex;align-items:center;gap:12px;line-height:1;}
-.w-temp .ic{width:26px;height:26px;color:var(--accent);}
-.w-sub{color:var(--muted);font-size:.8rem;}
-.w-fc{display:flex;gap:18px;text-align:center;padding-top:4px;}
-.w-fc .d{font-size:.66rem;color:var(--muted);margin-bottom:8px;}
-.w-fc .t{font-size:.9rem;font-weight:600;color:var(--tx);}
+/* HERO — ЦЕЛЬ ДОХОДА */
+.goal{position:relative;overflow:hidden;border-radius:26px;padding:24px 22px;margin-bottom:16px;
+  background:linear-gradient(140deg,#15A34A 0%,#3FBE4E 55%,#8BD450 100%);
+  box-shadow:0 14px 34px rgba(21,120,45,.32);color:#fff;}
+.goal::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.12);}
+.goal-lbl{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.9);display:flex;align-items:center;gap:7px;position:relative;}
+.goal-lbl .ic{width:17px;height:17px}
+.goal-sum{font-size:3rem;font-weight:900;letter-spacing:-.02em;line-height:1;margin:10px 0 4px;position:relative;text-shadow:0 2px 8px rgba(0,0,0,.12);}
+.goal-sum small{font-size:1.3rem;font-weight:700;}
+.goal-note{font-size:.82rem;color:rgba(255,255,255,.92);position:relative;}
+.goal-bar{height:12px;border-radius:99px;background:rgba(255,255,255,.28);margin:18px 0 8px;overflow:hidden;position:relative;}
+.goal-bar span{display:block;height:100%;border-radius:99px;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.6);}
+.goal-foot{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;position:relative;}
 
-/* BONUS */
-.bonus{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:flex-start;}
-.bonus::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:linear-gradient(var(--accent),var(--accent2));}
-.bonus-lbl{color:var(--muted);font-size:.76rem;font-weight:500;}
-.bonus-num{font-size:2.6rem;font-weight:700;letter-spacing:-.02em;line-height:1.05;margin-top:6px;}
-.bonus-num small{font-size:1rem;font-weight:500;color:var(--muted);}
-.bonus-hint{color:var(--muted);font-size:.72rem;margin-top:6px;}
-.bonus-ic{width:46px;height:46px;border-radius:15px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--accent);}
-.bonus-ic .ic{width:22px;height:22px}
+/* TILES: погода + бонусы */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.tile{border-radius:20px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden;color:#fff;}
+.tile-w{background:linear-gradient(140deg,#38BDF8,#0EA5E9);}
+.tile-b{background:linear-gradient(140deg,#FBBF24,#F59E0B);}
+.tile-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.tile-ic{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;color:#fff;}
+.tile-ic .ic{width:20px;height:20px}
+.tile-lbl{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.92);}
+.tile-big{font-size:1.9rem;font-weight:900;letter-spacing:-.02em;line-height:1;margin-top:12px;}
+.tile-big small{font-size:.8rem;font-weight:700;}
+.tile-sub{font-size:.72rem;color:rgba(255,255,255,.9);margin-top:5px;}
+
+/* TASK OF DAY */
+.today{background:var(--surface);border:2px solid var(--green);border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
+.today-h{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:7px;}
+.today-h .ic{width:16px;height:16px}
+.today-title{font-size:1.35rem;font-weight:800;color:var(--tx);line-height:1.2;}
+.today-meta{font-size:.85rem;color:var(--muted);margin-top:6px;}
+.today-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:15px;border-radius:16px;background:var(--green);color:#fff;font-size:1.05rem;font-weight:800;text-decoration:none;box-shadow:0 8px 18px rgba(21,120,45,.28);}
+.today-btn .ic{width:20px;height:20px}
+.today-empty{font-size:1.05rem;font-weight:700;color:var(--tx);}
+.today-empty span{color:var(--green);}
 
 /* QUICK ACTIONS */
-.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px;}
-.qa{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 6px;background:var(--surface);border:1px solid var(--bd);border-radius:18px;text-decoration:none;transition:.15s;box-shadow:var(--shadow);}
-.qa:hover{border-color:rgba(255,255,255,.14);transform:translateY(-1px);}
-.qa-ic{width:42px;height:42px;border-radius:13px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--accent);}
-.qa-ic .ic{width:20px;height:20px}
-.qa-lbl{font-size:.66rem;color:var(--muted);font-weight:500;text-align:center;letter-spacing:.01em;}
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.qa{display:flex;flex-direction:column;align-items:center;gap:9px;padding:15px 5px;background:var(--surface);border:1px solid var(--bd);border-radius:18px;text-decoration:none;transition:.15s;box-shadow:var(--shadow);}
+.qa:active{transform:scale(.97);}
+.qa-ic{width:46px;height:46px;border-radius:14px;background:linear-gradient(140deg,#EAF7E4,#DDF0D0);display:flex;align-items:center;justify-content:center;color:var(--green);}
+.qa-ic .ic{width:22px;height:22px}
+.qa-lbl{font-size:.68rem;color:var(--tx);font-weight:700;text-align:center;}
 
-/* CHIPS */
-.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:.68rem;font-weight:600;white-space:nowrap;}
-.chip .chip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
-.chip-active{background:rgba(183,255,60,.12);color:var(--accent);}
-.chip-yellow{background:rgba(252,211,77,.12);color:#FCD34D;}
-.chip-blue{background:rgba(83,224,139,.12);color:var(--accent2);}
-.chip-red{background:rgba(248,113,113,.14);color:#F87171;}
-
-/* CONTRACT + TASK */
-.rowcard{display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.rowcard h4{font-size:.98rem;font-weight:600;color:var(--tx);}
-.rowcard .meta{font-size:.78rem;color:var(--muted);margin-top:5px;}
-.card.overdue{border-color:rgba(248,113,113,.3);}
-
-/* PRICES */
-.price-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd);}
-.price-row:first-child{padding-top:2px;}
-.price-row:last-child{border-bottom:none;padding-bottom:2px;}
-.price-row .v{font-weight:600;font-size:.95rem;}
-.price-row .f{font-size:.74rem;color:var(--muted);margin-top:3px;}
-.price-row .amt{font-size:1.45rem;font-weight:700;letter-spacing:-.02em;text-align:right;}
-.price-row .per{font-size:.66rem;color:var(--muted);text-align:right;margin-top:2px;}
-
-/* SUBSIDY */
-.subs h4{font-size:.98rem;font-weight:600;}
-.subs .org{font-size:.78rem;color:var(--muted);margin:7px 0 15px;line-height:1.4;}
-.btn-prem{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:14px;background:var(--surface2);border:1px solid var(--bd);color:var(--accent);font-size:.82rem;font-weight:600;text-decoration:none;transition:.15s;}
-.btn-prem:hover{background:#2a3140;border-color:rgba(183,255,60,.28);}
-.btn-prem .ic{width:15px;height:15px}
+/* ROW TASKS */
+.rowcard{background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:15px 16px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.rowcard h4{font-size:1rem;font-weight:700;color:var(--tx);}
+.rowcard .meta{font-size:.8rem;color:var(--muted);margin-top:4px;}
+.rowcard.overdue{border-color:rgba(239,68,68,.5);}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:.72rem;font-weight:800;white-space:nowrap;}
+.chip-yellow{background:#FEF3C7;color:#B45309;}
+.chip-blue{background:#DBEAFE;color:#1D4ED8;}
+.chip-red{background:#FEE2E2;color:#B91C1C;}
 
 /* ONBOARDING */
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .step{display:flex;align-items:center;gap:14px;}
 .step + .step{margin-top:18px;}
-.step-n{width:34px;height:34px;border-radius:11px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:var(--muted);flex:none;}
-.step.on .step-n{background:var(--accent);color:#0F1117;}
-.step.off{opacity:.4;}
-.step h4{font-weight:600;font-size:.95rem;}
-.step p{font-size:.78rem;color:var(--muted);margin-top:3px;}
-.step .go{margin-left:auto;background:var(--accent);color:#0F1117;padding:9px 16px;border-radius:12px;font-size:.8rem;font-weight:700;text-decoration:none;white-space:nowrap;}
+.step-n{width:36px;height:36px;border-radius:12px;background:#EAF7E4;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;color:var(--green);flex:none;}
+.step.on .step-n{background:var(--green);color:#fff;}
+.step.off{opacity:.45;}
+.step h4{font-weight:800;font-size:1rem;color:var(--tx);}
+.step p{font-size:.82rem;color:var(--muted);margin-top:3px;}
+.step .go{margin-left:auto;background:var(--green);color:#fff;padding:11px 18px;border-radius:13px;font-size:.85rem;font-weight:800;text-decoration:none;white-space:nowrap;}
+
+/* SUBSIDY */
+.subs h4{font-size:1rem;font-weight:700;color:var(--tx);}
+.subs .org{font-size:.8rem;color:var(--muted);margin:7px 0 14px;line-height:1.4;}
+.btn-prem{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:14px;background:#EAF7E4;border:1px solid rgba(21,163,74,.2);color:var(--green);font-size:.85rem;font-weight:800;text-decoration:none;transition:.15s;}
+.btn-prem:hover{background:#DDF0D0;}
+.btn-prem .ic{width:15px;height:15px}
 
 /* BOTTOM NAV */
-.bottom-nav{background:rgba(24,28,36,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);}
-.nav-item{color:var(--muted);gap:5px;font-size:.64rem;font-weight:500;padding:9px 4px;}
-.nav-item.active,.nav-item:hover{color:var(--accent);}
+.bottom-nav{background:rgba(255,255,255,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);}
+.nav-item{color:var(--muted);gap:5px;font-size:.66rem;font-weight:700;padding:9px 4px;}
+.nav-item.active,.nav-item:hover{color:var(--green);}
 .nav-item .icon{display:flex;align-items:center;justify-content:center;}
-.nav-item .icon .ic{width:22px;height:22px}
+.nav-item .icon .ic{width:23px;height:23px}
 {% endblock %}
 
 {% block body %}
@@ -127,35 +132,77 @@ body{background:var(--bg);color:var(--tx);}
 
 <div class="content">
 
-  <!-- Погода -->
-  <div class="card weather">
-    <div>
-      <div class="w-loc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> {% if lang == 'kz' %}Алматы облысы{% else %}Алматинская область{% endif %}</div>
-      <div class="w-temp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.947 12.65a4 4 0 0 0-5.925-4.128"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z"/></svg>{% if weather %}+{{ weather.temp }}°{% else %}+26°{% endif %}</div>
-      <div class="w-sub">{% if weather %}{% if lang == 'kz' %}{{ weather.label_kz }}, жел {{ weather.wind }} м/с{% else %}{{ weather.label_ru }}, ветер {{ weather.wind }} м/с{% endif %}{% else %}{% if lang == 'kz' %}Ашық, жел 3 м/с{% else %}Ясно, ветер 3 м/с{% endif %}{% endif %}</div>
-    </div>
-    <div class="w-fc">
-      {% if weather and weather.days %}{% for d in weather.days %}
-      <div><div class="d">{% if lang == 'kz' %}{{ d.kz }}{% else %}{{ d.ru }}{% endif %}</div><div class="t">+{{ d.temp }}°</div></div>
-      {% endfor %}{% else %}
-      <div><div class="d">{% if lang == 'kz' %}Ерт{% else %}Зв{% endif %}</div><div class="t">+24°</div></div>
-      <div><div class="d">{% if lang == 'kz' %}Бүрс{% else %}Пн{% endif %}</div><div class="t">+27°</div></div>
-      <div><div class="d">{% if lang == 'kz' %}Сәрс{% else %}Вт{% endif %}</div><div class="t">+22°</div></div>
-      {% endif %}
+  {% if has_active and goal_amount %}
+  <!-- ЦЕЛЬ ДОХОДА (главный элемент концепции) -->
+  <div class="goal">
+    <div class="goal-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{% if lang == 'kz' %}Шарт бойынша табысыңыз{% else %}Ваш доход по договору{% endif %}</div>
+    <div class="goal-sum">{{ '{:,.0f}'.format(goal_amount).replace(',',' ') }} <small>₸</small></div>
+    <div class="goal-note">{% if lang == 'kz' %}Осы мақсатқа күн сайын жақындайсыз{% else %}Вы идёте к этой сумме каждый день{% endif %}</div>
+    <div class="goal-bar"><span style="width:{{ goal_progress }}%"></span></div>
+    <div class="goal-foot">
+      <span>{{ goal_progress }}% {% if lang == 'kz' %}орындалды{% else %}выполнено{% endif %}</span>
+      <span>{% if lang == 'kz' %}Қалды: {{ tasks_total - tasks_done }} тапсырма{% else %}Осталось: {{ tasks_total - tasks_done }} задач{% endif %}</span>
     </div>
   </div>
 
-  <!-- Бонусный виджет -->
-  <div class="card bonus">
-    <div>
-      <div class="bonus-lbl">{% if lang == 'kz' %}Бонус балансы{% else %}Бонусный баланс{% endif %}</div>
-      <div class="bonus-num">{{ user.bonus_balance }} <small>{% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</small></div>
-      <div class="bonus-hint">1 {% if lang == 'kz' %}бонус{% else %}бонус{% endif %} = 1 ₸</div>
+  <!-- Погода + Бонусы -->
+  <div class="tiles">
+    <div class="tile tile-w">
+      <div class="tile-top">
+        <div><div class="tile-lbl">{% if lang == 'kz' %}Ауа райы{% else %}Погода{% endif %}</div></div>
+        <div class="tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg></div>
+      </div>
+      <div class="tile-big">{% if weather %}+{{ weather.temp }}°{% else %}+26°{% endif %}</div>
+      <div class="tile-sub">{% if weather %}{% if lang == 'kz' %}{{ weather.label_kz }}{% else %}{{ weather.label_ru }}{% endif %}{% else %}{% if lang == 'kz' %}Ашық{% else %}Ясно{% endif %}{% endif %} · {% if lang == 'kz' %}суаруға болады{% else %}можно поливать{% endif %}</div>
     </div>
-    <div class="bonus-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
+    <div class="tile tile-b">
+      <div class="tile-top">
+        <div><div class="tile-lbl">{% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}</div></div>
+        <div class="tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
+      </div>
+      <div class="tile-big">{{ user.bonus_balance }} <small>{% if lang == 'kz' %}балл{% else %}баллов{% endif %}</small></div>
+      <div class="tile-sub">{% if lang == 'kz' %}қабылдау пунктінде жұмсаңыз{% else %}тратьте в пункте приёмки{% endif %}</div>
+    </div>
   </div>
+
+  <!-- ЧТО СДЕЛАТЬ СЕГОДНЯ -->
+  <div class="today">
+    <div class="today-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>{% if lang == 'kz' %}Бүгін не істеу керек{% else %}Что сделать сегодня{% endif %}</div>
+    {% if today_task %}
+    <div class="today-title">{{ today_task.title }}</div>
+    <div class="today-meta">{{ today_task.plot_name }} · +{{ today_task.bonus_amount }} {% if lang == 'kz' %}балл{% else %}баллов{% endif %}</div>
+    <a href="/tasks" class="today-btn">{% if lang == 'kz' %}Тапсырманы ашу{% else %}Открыть задачу{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    {% else %}
+    <div class="today-empty">{% if lang == 'kz' %}Бүгінге <span>бәрі орындалды</span> — керемет!{% else %}На сегодня <span>всё выполнено</span> — отлично!{% endif %}</div>
+    {% endif %}
+  </div>
+
+  {% else %}
+  <!-- Онбординг: нет активного договора -->
+  <div class="section-title">{% if lang == 'kz' %}Жұмысты бастаңыз{% else %}Начните работу{% endif %}</div>
+  <div class="card">
+    <div class="step on">
+      <div class="step-n">1</div>
+      <div><h4>{% if lang == 'kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</h4>
+        <p>{% if lang == 'kz' %}Бақшаңызды тіркеңіз{% else %}Зарегистрируйте свой сад{% endif %}</p></div>
+      <a href="/plots/create" class="go">{% if lang == 'kz' %}Қосу{% else %}Добавить{% endif %}</a>
+    </div>
+    <div class="step {% if has_plots %}on{% else %}off{% endif %}">
+      <div class="step-n">2</div>
+      <div><h4>{% if lang == 'kz' %}Шарт жасасу{% else %}Заключить договор{% endif %}</h4>
+        <p>{% if lang == 'kz' %}Сатып алу шартын жасасыңыз{% else %}Заключите договор закупки{% endif %}</p></div>
+      {% if has_plots %}<a href="/contracts" class="go">{% if lang == 'kz' %}Ашу{% else %}Открыть{% endif %}</a>{% endif %}
+    </div>
+    <div class="step off">
+      <div class="step-n">3</div>
+      <div><h4>{% if lang == 'kz' %}Күтім жоспарын алыңыз{% else %}Получите план ухода{% endif %}</h4>
+        <p>{% if lang == 'kz' %}Шартқа қол қойыңыз{% else %}Подпишите договор{% endif %}</p></div>
+    </div>
+  </div>
+  {% endif %}
 
   <!-- Быстрые действия -->
+  <div class="section-title">{% if lang == 'kz' %}Тез әрекеттер{% else %}Быстрые действия{% endif %}</div>
   <div class="qa-grid">
     <a href="/agro-support" class="qa">
       <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
@@ -175,92 +222,30 @@ body{background:var(--bg);color:var(--tx);}
     </a>
   </div>
 
-  {% if not has_plots %}
-  <!-- Онбординг -->
-  <div class="section-title">{% if lang == 'kz' %}Жұмысты бастаңыз{% else %}Начните работу{% endif %}</div>
-  <div class="card">
-    <div class="step on">
-      <div class="step-n">1</div>
-      <div>
-        <h4>{% if lang == 'kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</h4>
-        <p>{% if lang == 'kz' %}Бақшаңызды тіркеңіз{% else %}Зарегистрируйте свой сад{% endif %}</p>
-      </div>
-      <a href="/plots/create" class="go">{% if lang == 'kz' %}Қосу{% else %}Добавить{% endif %}</a>
-    </div>
-    <div class="step off">
-      <div class="step-n">2</div>
-      <div>
-        <h4>{% if lang == 'kz' %}Шарт жасасу{% else %}Создать договор{% endif %}</h4>
-        <p>{% if lang == 'kz' %}Сатып алу шартын жасасыңыз{% else %}Заключите договор закупки{% endif %}</p>
-      </div>
-    </div>
-    <div class="step off">
-      <div class="step-n">3</div>
-      <div>
-        <h4>{% if lang == 'kz' %}Күтім жоспарын алыңыз{% else %}Получите план ухода{% endif %}</h4>
-        <p>{% if lang == 'kz' %}Шартқа қол қойыңыз{% else %}Подпишите договор{% endif %}</p>
-      </div>
-    </div>
-  </div>
-  {% else %}
-
-  {% if contracts %}
-  <div class="section-title">{% if lang == 'kz' %}Белсенді шарттар{% else %}Активные договоры{% endif %}</div>
-  {% for c in contracts %}
-  <div class="card rowcard">
-    <div>
-      <h4>{{ c.plot_name }}</h4>
-      <div class="meta">{{ c.contract_items|length }} {% if lang == 'kz' %}сорт{% else %}сорта{% endif %} · {{ '{:,.0f}'.format(c.total_amount) }} ₸</div>
-    </div>
-    <span class="chip chip-active"><span class="chip-dot"></span>{% if lang == 'kz' %}Белсенді{% else %}Активен{% endif %}</span>
-  </div>
-  {% endfor %}
-  {% endif %}
-
-  {% if tasks or overdue_tasks %}
-  <div class="section-title">{% if lang == 'kz' %}Жақындағы тапсырмалар{% else %}Ближайшие задачи{% endif %}</div>
+  {% if has_active %}
+  {% if overdue_tasks %}
+  <div class="section-title">{% if lang == 'kz' %}Мерзімі өткен{% else %}Просроченные{% endif %}</div>
   {% for t in overdue_tasks %}
-  <div class="card overdue rowcard">
-    <div>
-      <h4>{{ t.title }}</h4>
-      <div class="meta">{{ t.plot_name }}</div>
-    </div>
+  <div class="rowcard overdue">
+    <div><h4>{{ t.title }}</h4><div class="meta">{{ t.plot_name }}</div></div>
     <span class="chip chip-red">{% if lang == 'kz' %}Мерзімі өтті{% else %}Просрочена{% endif %}</span>
   </div>
   {% endfor %}
+  {% endif %}
+  {% if tasks %}
+  <div class="section-title">{% if lang == 'kz' %}Жақындағы тапсырмалар{% else %}Ближайшие задачи{% endif %}</div>
   {% for t in tasks %}
-  <div class="card rowcard">
-    <div>
-      <h4>{{ t.title }}</h4>
-      <div class="meta">{{ t.plot_name }} · +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
-    </div>
+  <div class="rowcard">
+    <div><h4>{{ t.title }}</h4><div class="meta">{{ t.plot_name }} · +{{ t.bonus_amount }} {% if lang == 'kz' %}балл{% else %}баллов{% endif %}</div></div>
     <span class="chip {% if t.status == 'soon' %}chip-yellow{% else %}chip-blue{% endif %}">
-      {% if t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро срок{% endif %}{% else %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}{% endif %}
+      {% if t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро{% endif %}{% else %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}{% endif %}
     </span>
   </div>
   {% endfor %}
   {% endif %}
-
   {% endif %}
 
-  <!-- Цены -->
-  <div class="section-title">{% if lang == 'kz' %}Ағымдағы бағалар{% else %}Актуальные цены{% endif %}</div>
-  <div class="card">
-    {% for p in prices %}
-    <div class="price-row">
-      <div>
-        <div class="v">{{ p.variety_name }}</div>
-        <div class="f">{% if lang == 'kz' %}Жерге түскен: {{ p.price_fallen }} ₸/кг{% else %}Падалица: {{ p.price_fallen }} ₸/кг{% endif %}</div>
-      </div>
-      <div>
-        <div class="amt">{{ p.price_commercial }} ₸</div>
-        <div class="per">{% if lang == 'kz' %}кг үшін{% else %}за кг{% endif %}</div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-
-  <!-- Субсидии и гранты (ТЗ 4.11) -->
+  <!-- Субсидии и гранты -->
   <div class="section-title">{% if lang == 'kz' %}Субсидиялар мен гранттар{% else %}Субсидии и гранты{% endif %}</div>
   {% if subsidies %}
   {% for s in subsidies %}
@@ -275,11 +260,6 @@ body{background:var(--bg);color:var(--tx);}
     <h4>{% if lang == 'kz' %}Бақ отырғызуға субсидия{% else %}Субсидия на закладку сада{% endif %}</h4>
     <div class="org">{% if lang == 'kz' %}ҚР АШМ · шығынның 25%-ына дейін{% else %}МСХ РК · до 25% инвестзатрат{% endif %}</div>
     <a href="https://egov.kz/cms/ru/services/pass406-6_msh" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
-  </div>
-  <div class="card subs">
-    <h4>{% if lang == 'kz' %}Тамшылатып суару гранты{% else %}Грант на капельное орошение{% endif %}</h4>
-    <div class="org">{% if lang == 'kz' %}Qoldau.kz порталы арқылы{% else %}Через портал Qoldau.kz{% endif %}</div>
-    <a href="https://qoldau.kz" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
   </div>
   {% endif %}
 </div>
