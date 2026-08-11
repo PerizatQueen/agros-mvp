@@ -5,15 +5,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <div class="header">
   <div style="display:flex;align-items:center;gap:12px">
-    <a href="/plots" style="color:#94a3b8;text-decoration:none">←</a>
+    <a href="/plots" style="color:#6B7A63;text-decoration:none">←</a>
     <div class="header-title">{% if lang=='kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</div>
   </div>
-  <div style="font-size:0.85rem;color:#64748b">{% if lang=='kz' %}Қадам{% else %}Шаг{% endif %} {{ step }}/3</div>
+  <div style="font-size:0.85rem;color:#6B7A63">{% if lang=='kz' %}Қадам{% else %}Шаг{% endif %} {{ step }}/3</div>
 </div>
 <div class="content">
   <div style="display:flex;gap:8px;margin-bottom:24px">
     {% for i in [1,2,3] %}
-    <div style="flex:1;height:4px;border-radius:2px;background:{% if i <= step %}#4ade80{% else %}#2d3748{% endif %}"></div>
+    <div style="flex:1;height:4px;border-radius:2px;background:{% if i <= step %}#2FA048{% else %}#DDE6D6{% endif %}"></div>
     {% endfor %}
   </div>
 
@@ -41,13 +41,13 @@
     <div class="input-group">
       <label>🗺️ {% if lang=='kz' %}Картада нүктені таңдаңыз немесе мекенжай енгізіңіз{% else %}Нажмите на карте или введите адрес{% endif %}</label>
       <div style="display:flex;gap:8px;margin-bottom:8px">
-        <input type="text" id="address_search" placeholder="{% if lang=='kz' %}Мекенжай іздеу...{% else %}Поиск адреса...{% endif %}" style="flex:1;background:#1e2433;border:1.5px solid #2d3748;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem;outline:none">
-        <button type="button" onclick="searchAddress()" style="background:#4ade80;color:#0f1117;border:none;border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer">🔍</button>
+        <input type="text" id="address_search" placeholder="{% if lang=='kz' %}Мекенжай іздеу...{% else %}Поиск адреса...{% endif %}" style="flex:1;background:#F4F7F0;border:1.5px solid #DDE6D6;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem;outline:none">
+        <button type="button" onclick="searchAddress()" style="background:#2FA048;color:#FFFFFF;border:none;border-radius:8px;padding:9px 14px;font-weight:700;cursor:pointer">🔍</button>
       </div>
-      <div id="map" style="width:100%;height:220px;border-radius:10px;border:1.5px solid #2d3748;margin-bottom:8px;overflow:hidden"></div>
+      <div id="map" style="width:100%;height:220px;border-radius:10px;border:1.5px solid #DDE6D6;margin-bottom:8px;overflow:hidden"></div>
       <input type="hidden" name="lat" id="lat" value="43.2551">
       <input type="hidden" name="lng" id="lng" value="76.9126">
-      <input type="text" name="address" id="address" placeholder="{% if lang=='kz' %}Мекенжай автоматты анықталады{% else %}Адрес определится автоматически{% endif %}" style="background:#1e2433;border:1.5px solid #2d3748;border-radius:8px;padding:9px 12px;color:#6ee7b7;font-size:0.85rem;width:100%;outline:none">
+      <input type="text" name="address" id="address" placeholder="{% if lang=='kz' %}Мекенжай автоматты анықталады{% else %}Адрес определится автоматически{% endif %}" style="background:#F4F7F0;border:1.5px solid #DDE6D6;border-radius:8px;padding:9px 12px;color:#2F5E1C;font-size:0.85rem;width:100%;outline:none">
     </div>
     <button type="submit" class="btn btn-primary btn-full">{% if lang=='kz' %}Келесі →{% else %}Далее →{% endif %}</button>
   </form>
@@ -90,8 +90,8 @@
   <div class="section-title">✅ {% if lang=='kz' %}Растау{% else %}Подтверждение{% endif %}</div>
   <div class="card">
     <div class="card-title">{{ form_data.name }}</div>
-    <div style="color:#64748b;font-size:0.9rem">{{ form_data.area_ha }} га · {{ form_data.garden_type }}</div>
-    {% if form_data.address %}<div style="font-size:0.85rem;color:#475569;margin-top:6px">📍 {{ form_data.address }}</div>{% endif %}
+    <div style="color:#6B7A63;font-size:0.9rem">{{ form_data.area_ha }} га · {{ form_data.garden_type }}</div>
+    {% if form_data.address %}<div style="font-size:0.85rem;color:#6B7A63;margin-top:6px">📍 {{ form_data.address }}</div>{% endif %}
     {% if form_data.lat and form_data.lng %}<div style="font-size:0.78rem;color:#2d6a4f;margin-top:4px">📌 {{ form_data.lat }}, {{ form_data.lng }}</div>{% endif %}
   </div>
   <div class="info-box">🏆 {% if lang=='kz' %}Учаске қосқаныңыз үшін <strong>+100 бонус</strong> есептеледі!{% else %}За добавление участка вам будет начислено <strong>+100 бонусов</strong>!{% endif %}</div>
@@ -124,7 +124,7 @@ function setCoords(lat, lng) {
     a.value = '{% if lang=="kz" %}Картадан таңдалды{% else %}Выбрано на карте{% endif %} (' + lat.toFixed(4) + ', ' + lng.toFixed(4) + ')';
     a.dataset.auto = '1';
   }
-  a.style.borderColor = '#4ade80';
+  a.style.borderColor = '#2FA048';
 }
 
 function reverseGeocode(lat, lng) {
@@ -157,7 +157,7 @@ function searchAddress() {
         lmap.setView([lat, lng], 14);
         marker.setLatLng([lat, lng]);
         var a = document.getElementById('address'); a.dataset.auto = '1'; setCoords(lat, lng);
-        a.value = d[0].display_name; delete a.dataset.auto; a.style.borderColor = '#4ade80';
+        a.value = d[0].display_name; delete a.dataset.auto; a.style.borderColor = '#2FA048';
       } else {
         alert('{% if lang=="kz" %}Мекенжай табылмады{% else %}Адрес не найден{% endif %}');
       }
@@ -179,7 +179,7 @@ function addVariety() {
   document.getElementById('varieties_json').value = JSON.stringify(varieties);
   document.getElementById('varieties_list').innerHTML = varieties.map(v =>
     `<div class="card" style="margin-bottom:8px;display:flex;justify-content:space-between">
-      <span>🍎 ${v.name}</span><span style="color:#64748b">${v.area_ha}га · ${v.expected_yield}т</span>
+      <span>🍎 ${v.name}</span><span style="color:#6B7A63">${v.area_ha}га · ${v.expected_yield}т</span>
     </div>`
   ).join('');
 }
