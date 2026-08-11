@@ -1,89 +1,88 @@
 {% extends 'base.html' %}
-{% block title %}— Магазин бонусов{% endblock %}
+{% block title %}— {% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}{% endblock %}
+
+{% block extra_styles %}
+:root{
+  --bg:#EEF1EC;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
+  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 6px 18px rgba(18,58,30,.07);
+}
+body{background:var(--bg);color:var(--tx);}
+.ic{width:20px;height:20px;display:block;flex:none}
+.header{background:var(--bg);border-bottom:none;padding:16px 18px 6px;}
+.header-title{color:var(--tx);font-size:1.35rem;font-weight:800;}
+.header-sub{color:var(--muted);font-size:.82rem;font-weight:600;margin-top:2px;}
+.content{padding:12px 16px 100px;}
+.balance{background:var(--forest);border-radius:22px;padding:22px;margin-bottom:20px;position:relative;overflow:hidden;}
+.balance::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.06);}
+.balance-lbl{font-size:.68rem;font-weight:800;letter-spacing:.09em;color:var(--lime);position:relative;}
+.balance-num{font-size:2.4rem;font-weight:900;color:#fff;line-height:1;margin:8px 0 12px;position:relative;}
+.balance-num small{font-size:1.1rem;font-weight:700;color:rgba(255,255,255,.7);}
+.balance-note{font-size:.82rem;color:rgba(255,255,255,.8);line-height:1.45;position:relative;}
+.section-title{font-size:.9rem;font-weight:800;color:var(--tx);margin:8px 4px 12px;}
+.item{display:flex;align-items:center;gap:13px;background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:13px 15px;margin-bottom:10px;box-shadow:var(--shadow);width:100%;text-align:left;border:1px solid var(--bd);cursor:pointer;}
+.item:disabled{opacity:.55;cursor:default;}
+.item-ic{width:44px;height:44px;border-radius:13px;background:#F2F5EE;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex:none;}
+.item-body{flex:1;min-width:0;}
+.item-name{font-size:1rem;font-weight:800;color:var(--tx);}
+.item-sub{font-size:.76rem;color:var(--muted);margin-top:2px;}
+.item-price{text-align:right;flex:none;}
+.item-price .p{font-size:1.15rem;font-weight:900;color:var(--forest);}
+.item-price .u{font-size:.66rem;color:var(--muted);font-weight:700;}
+.item-lack{font-size:.72rem;color:#B91C1C;font-weight:700;margin-top:2px;}
+.bottom-nav{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--bd);}
+.nav-item{color:var(--muted);gap:5px;font-size:.66rem;font-weight:700;padding:9px 4px;}
+.nav-item.active{color:var(--forest);}
+.nav-item .icon{display:flex;align-items:center;justify-content:center;}.nav-item .icon .ic{width:23px;height:23px}
+{% endblock %}
+
 {% block body %}
 <div class="header">
-  <div style="display:flex;align-items:center;gap:12px">
-    <a href="/dashboard" style="color:#94a3b8;text-decoration:none">←</a>
-    <div class="header-title">🎪 Магазин бонусов</div>
-  </div>
+  <div class="header-title">{% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}</div>
+  <div class="header-sub">{% if lang == 'kz' %}Орындалған тапсырмалар үшін жиналады{% else %}Копятся за выполненные задачи{% endif %}</div>
 </div>
 <div class="content">
   <!-- Баланс -->
-  <div class="card" style="background:linear-gradient(135deg,#14532d,#166534);border-color:#4ade80;margin-bottom:20px">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="font-size:0.8rem;color:#86efac">Ваш баланс</div>
-        <div style="font-size:2rem;font-weight:900;color:#fff">{{ user.bonus_balance }} <span style="font-size:1rem">бонусов</span></div>
-        <div style="font-size:0.75rem;color:#86efac">1 бонус = 1 ₸</div>
-      </div>
-      <div style="font-size:2.5rem">🏆</div>
-    </div>
+  <div class="balance">
+    <div class="balance-lbl">{% if lang == 'kz' %}ШОТТА{% else %}НА СЧЕТУ{% endif %}</div>
+    <div class="balance-num">{{ user.bonus_balance }} <small>{% if lang == 'kz' %}балл{% else %}баллов{% endif %}</small></div>
+    <div class="balance-note">{% if lang == 'kz' %}AgrOS қабылдау пунктінде айырбастауға болады — сол жерде кофейня мен дүкен{% else %}Обменять можно в пункте приёмки AgrOS — там же кофейня и магазин{% endif %}</div>
   </div>
 
-  <div class="section-title">🛍️ Каталог товаров</div>
+  <div class="section-title">{% if lang == 'kz' %}Нені алуға болады{% else %}Что можно получить{% endif %}</div>
 
   {% for item in shop_items %}
-  <div class="card" style="margin-bottom:12px">
-    <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:10px">
-      <div style="flex:1">
-        <div class="card-title">{{ item.icon }} {{ item.name }}</div>
-        <div style="font-size:0.82rem;color:#64748b;margin-top:4px">{{ item.description }}</div>
-        <div style="font-size:0.78rem;color:#475569;margin-top:4px">📍 Пункт приёма</div>
-      </div>
-      <div style="text-align:right;margin-left:12px">
-        <div style="font-size:1.2rem;font-weight:800;color:#4ade80">{{ item.price }}</div>
-        <div style="font-size:0.72rem;color:#64748b">бонусов</div>
-      </div>
+  <button class="item" {% if user.bonus_balance < item.price %}disabled{% endif %} {% if user.bonus_balance >= item.price %}onclick="buyItem('{{ item.id }}', '{{ item.name }}', {{ item.price }})"{% endif %}>
+    <div class="item-ic">{{ item.icon or '🎁' }}</div>
+    <div class="item-body">
+      <div class="item-name">{{ item.name }}</div>
+      <div class="item-sub">{{ item.description or ('Қабылдау пунктінде' if lang=='kz' else 'В пункте приёмки') }}</div>
+      {% if user.bonus_balance < item.price %}<div class="item-lack">{% if lang == 'kz' %}Жетпейді: {{ item.price - user.bonus_balance }}{% else %}Не хватает {{ item.price - user.bonus_balance }}{% endif %}</div>{% endif %}
     </div>
-    {% if user.bonus_balance >= item.price %}
-    <button onclick="buyItem('{{ item.id }}', '{{ item.name }}', {{ item.price }})" class="btn btn-primary btn-full" style="font-size:0.85rem">🛒 Купить за {{ item.price }} бонусов</button>
-    {% else %}
-    <div style="text-align:center;padding:10px;background:#1e2433;border-radius:8px;font-size:0.82rem;color:#475569">
-      Не хватает {{ item.price - user.bonus_balance }} бонусов
+    <div class="item-price">
+      <div class="p">{{ item.price }}</div>
+      <div class="u">{% if lang == 'kz' %}балл{% else %}баллов{% endif %}</div>
     </div>
-    {% endif %}
-  </div>
+  </button>
   {% endfor %}
-
-  <!-- Как накопить бонусы -->
-  <div class="section-title">⭐ Как накопить бонусы</div>
-  <div class="card">
-    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d3748">
-      <span style="font-size:1.2rem">🌱</span>
-      <div><div style="font-weight:600">Добавить участок</div><div style="font-size:0.8rem;color:#64748b">+100 бонусов</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d3748">
-      <span style="font-size:1.2rem">✅</span>
-      <div><div style="font-weight:600">Выполнить задачу</div><div style="font-size:0.8rem;color:#64748b">+20–50 бонусов</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #2d3748">
-      <span style="font-size:1.2rem">📄</span>
-      <div><div style="font-weight:600">Создать договор</div><div style="font-size:0.8rem;color:#64748b">+50 бонусов</div></div>
-    </div>
-    <div style="display:flex;align-items:center;gap:12px;padding:8px 0">
-      <span style="font-size:1.2rem">🚚</span>
-      <div><div style="font-weight:600">Сдать урожай</div><div style="font-size:0.8rem;color:#64748b">+200 бонусов</div></div>
-    </div>
-  </div>
 </div>
 
 <!-- Модал подтверждения -->
-<div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#1e2433;border-radius:16px;padding:28px;width:100%;max-width:360px;border:1px solid #4ade80">
-    <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">🛒 Подтвердите покупку</div>
-    <div id="confirmText" style="color:#94a3b8;margin-bottom:20px;font-size:0.9rem"></div>
+<div id="confirmModal" style="display:none;position:fixed;inset:0;background:rgba(10,20,10,0.55);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:22px;padding:26px;width:100%;max-width:360px;border:1px solid rgba(18,58,30,.1);box-shadow:0 20px 50px rgba(18,58,30,.25)">
+    <div style="font-size:1.1rem;font-weight:800;margin-bottom:8px;color:#12210D">{% if lang == 'kz' %}Айырбасты растаңыз{% else %}Подтвердите обмен{% endif %}</div>
+    <div id="confirmText" style="color:#6B7669;margin-bottom:20px;font-size:0.9rem"></div>
     <div style="display:flex;gap:10px">
-      <button onclick="closeModal()" class="btn btn-outline" style="flex:1">Отмена</button>
-      <button onclick="confirmBuy()" class="btn btn-primary" style="flex:1">Купить</button>
+      <button onclick="closeModal()" style="flex:1;background:#EEF0EC;color:#6B7669;border:1px solid rgba(18,58,30,.1);border-radius:14px;padding:13px;font-weight:700;cursor:pointer">{% if lang == 'kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+      <button onclick="confirmBuy()" style="flex:1;background:#123A1E;color:#fff;border:none;border-radius:14px;padding:13px;font-weight:800;cursor:pointer">{% if lang == 'kz' %}Алу{% else %}Получить{% endif %}</button>
     </div>
   </div>
 </div>
 
 <nav class="bottom-nav">
-  <a href="/dashboard" class="nav-item"><span class="icon">🏠</span>Главная</a>
-  <a href="/contracts" class="nav-item"><span class="icon">📄</span>Договоры</a>
-  <a href="/plots" class="nav-item"><span class="icon">🌱</span>Участки</a>
-  <a href="/tasks" class="nav-item"><span class="icon">✅</span>План</a>
+  <a href="/dashboard" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/tasks" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m19 10-2 2 2 2"/></svg></span><span>{% if lang == 'kz' %}Тапсырмалар{% else %}Задачи{% endif %}</span></a>
+  <a href="/chat" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span>{% if lang == 'kz' %}Чат{% else %}Чат{% endif %}</span></a>
+  <a href="/bonus-shop" class="nav-item active"><span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span><span>{% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}</span></a>
 </nav>
 
 {% block scripts %}
@@ -91,30 +90,15 @@
 let currentItem = null;
 function buyItem(id, name, price) {
   currentItem = {id, name, price};
-  document.getElementById('confirmText').innerHTML = `Товар: <strong>${name}</strong><br>Стоимость: <strong style="color:#4ade80">${price} бонусов</strong><br><br>Товар будет готов к выдаче в пункте приёма.`;
+  document.getElementById('confirmText').innerHTML = `{% if lang == 'kz' %}Тауар{% else %}Товар{% endif %}: <strong>${name}</strong><br>{% if lang == 'kz' %}Құны{% else %}Стоимость{% endif %}: <strong style="color:#16A34A">${price} {% if lang == 'kz' %}балл{% else %}баллов{% endif %}</strong><br><br>{% if lang == 'kz' %}Тауарды қабылдау пунктінен алуға болады.{% else %}Товар будет готов к выдаче в пункте приёмки.{% endif %}`;
   document.getElementById('confirmModal').style.display = 'flex';
 }
-function closeModal() {
-  document.getElementById('confirmModal').style.display = 'none';
-  currentItem = null;
-}
+function closeModal() { document.getElementById('confirmModal').style.display = 'none'; currentItem = null; }
 function confirmBuy() {
   if (!currentItem) return;
-  fetch('/bonus-shop/buy', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(currentItem)
-  })
+  fetch('/bonus-shop/buy', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(currentItem) })
   .then(r => r.json())
-  .then(data => {
-    closeModal();
-    if (data.status === 'success') {
-      showBonus(-currentItem.price);
-      setTimeout(() => location.reload(), 3000);
-    } else {
-      alert(data.message || 'Ошибка');
-    }
-  });
+  .then(data => { closeModal(); if (data.status === 'success') { location.reload(); } else { alert(data.message || 'Ошибка'); } });
 }
 </script>
 {% endblock %}

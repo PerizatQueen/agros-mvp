@@ -1,140 +1,72 @@
 {% extends 'base.html' %}
 {% block title %}— {% if lang=='kz' %}Чат{% else %}Чат{% endif %}{% endblock %}
 {% block extra_styles %}
-:root{--bg:#0F1117;--surface:#181C24;--surface2:#222836;--accent:#B7FF3C;--accent2:#53E08B;--tx:#FFFFFF;--muted:#9AA4B2;--bd:rgba(255,255,255,0.06);--shadow:0 10px 30px rgba(0,0,0,0.35);}
+:root{
+  --bg:#E9ECE6;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
+  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);
+}
 body{background:var(--bg);color:var(--tx);}
 .ic{width:20px;height:20px;display:block;flex:none}
-.header{background:rgba(15,17,23,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
-.header-title{color:var(--tx);font-size:1rem;font-weight:700;}
-.backbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;}
-.backbtn .ic{width:18px;height:18px}
-.content{padding:20px 18px 28px;}
-.chat-tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:5px;}
-.chat-tab{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 6px;border-radius:12px;border:none;background:transparent;color:var(--muted);font-weight:600;font-size:.78rem;cursor:pointer;}
-.chat-tab.active{background:var(--accent);color:#0F1117;}
-.chat-tab .ic{width:15px;height:15px}
-.pane{display:none}.pane.active{display:block}
-.messages{min-height:300px;max-height:56vh;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:10px;padding:4px 0}
-.msg{max-width:86%;padding:11px 15px;border-radius:16px;font-size:.9rem;line-height:1.5}
-.msg-user{background:rgba(183,255,60,.13);color:#E9FFC6;align-self:flex-end;border-bottom-right-radius:5px}
-.msg-bot{background:var(--surface2);color:var(--tx);align-self:flex-start;border-bottom-left-radius:5px}
-.msg-typing{background:var(--surface2);color:var(--muted);align-self:flex-start;font-style:italic;font-size:.85rem}
-.chat-input-row{display:flex;gap:10px}
-.chat-input-row input{flex:1;background:var(--surface2);border:1px solid var(--bd);border-radius:16px;padding:14px 16px;color:var(--tx);font-size:.92rem;outline:none}
-.chat-input-row input:focus{border-color:var(--accent)}
-.chat-input-row button{background:var(--accent);color:#0F1117;border:none;border-radius:16px;padding:0 18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;min-width:54px}
-.chat-input-row button:disabled{background:var(--surface2);color:var(--muted);cursor:not-allowed}
-.chat-input-row button .ic{width:19px;height:19px}
-.chat-hint{font-size:.74rem;color:var(--muted);margin-top:10px;text-align:center}
+.header{background:var(--surface);border-bottom:1px solid var(--bd);padding:10px 14px;display:flex;align-items:center;gap:11px;position:sticky;top:0;z-index:100;}
+.backbtn{color:var(--muted);display:flex;align-items:center;text-decoration:none;}
+.backbtn .ic{width:22px;height:22px}
+.chat-ava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#8BD450,#C6F24E);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--forest);font-size:.85rem;}
+.chat-who{font-size:1rem;font-weight:800;color:var(--tx);line-height:1.15;}
+.chat-online{font-size:.74rem;color:var(--green);font-weight:600;}
+.content{padding:0;}
+.messages{padding:16px 14px 92px;display:flex;flex-direction:column;gap:8px;min-height:calc(100vh - 60px);}
+.daydiv{align-self:center;background:rgba(18,58,30,.08);color:var(--muted);font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:99px;margin:4px 0 8px;}
+.msg{max-width:80%;padding:9px 13px;border-radius:16px;font-size:.92rem;line-height:1.4;position:relative;box-shadow:0 1px 2px rgba(18,58,30,.08);}
+.msg .t{display:block;font-size:.62rem;margin-top:4px;opacity:.6;text-align:right;}
+.msg-bot{background:var(--surface);color:var(--tx);align-self:flex-start;border-bottom-left-radius:5px;}
+.msg-user{background:var(--forest);color:#fff;align-self:flex-end;border-bottom-right-radius:5px;}
+.msg-user .t{color:rgba(255,255,255,.7);}
+.inbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--bd);padding:10px 12px;display:flex;gap:9px;align-items:center;z-index:100;}
+.inbar input{flex:1;background:#F1F4EE;border:1px solid var(--bd);border-radius:22px;padding:12px 16px;color:var(--tx);font-size:.92rem;outline:none;}
+.inbar button{width:46px;height:46px;border-radius:50%;background:var(--forest);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none;}
+.inbar button .ic{width:20px;height:20px}
 {% endblock %}
 {% block body %}
 <div class="header">
-  <div style="display:flex;align-items:center;gap:10px">
-    <a href="/dashboard" class="backbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></a>
-    <div class="header-title">{% if lang=='kz' %}Чат{% else %}Чат{% endif %}</div>
+  <a href="/dashboard" class="backbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m15 18-6-6 6-6"/></svg></a>
+  <div class="chat-ava">{% if lang=='kz' %}АГ{% else %}АГ{% endif %}</div>
+  <div>
+    <div class="chat-who">{% if lang=='kz' %}Айгүл, агроном{% else %}Айгуль, агроном{% endif %}</div>
+    <div class="chat-online">{% if lang=='kz' %}желіде{% else %}в сети{% endif %}</div>
   </div>
 </div>
 <div class="content">
-  <div class="chat-tabs">
-    <button class="chat-tab active" id="tab-ai" onclick="switchTab('ai')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></svg> {% if lang=='kz' %}AI-көмекші{% else %}AI-ассистент{% endif %}</button>
-    <button class="chat-tab" id="tab-agro" onclick="switchTab('agro')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg> {% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</button>
-    <button class="chat-tab" id="tab-support" onclick="switchTab('support')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" x2="9.17" y1="4.93" y2="9.17"/><line x1="14.83" x2="19.07" y1="14.83" y2="19.07"/><line x1="14.83" x2="19.07" y1="9.17" y2="4.93"/><line x1="4.93" x2="9.17" y1="19.07" y2="14.83"/></svg> {% if lang=='kz' %}Қолдау{% else %}Поддержка{% endif %}</button>
+  <div class="messages" id="agroMessages">
+    <div class="daydiv">{% if lang=='kz' %}Бүгін{% else %}Сегодня{% endif %}</div>
+    {% for m in agro_messages %}
+    <div class="msg {% if m.sender == 'farmer' %}msg-user{% else %}msg-bot{% endif %}">{{ m.body }}</div>
+    {% else %}
+    <div class="msg msg-bot">{% if lang=='kz' %}Сәлеметсіз бе! Бақ бойынша сұрақтарыңызды жазыңыз — көмектесемін.{% else %}Здравствуйте! Пишите вопросы по саду — помогу.{% endif %}</div>
+    {% endfor %}
   </div>
-
-  <!-- AI -->
-  <div class="pane active" id="pane-ai">
-    <div class="messages" id="messages">
-      <div class="msg msg-bot">
-        {% if lang=='kz' %}Сәлеметсіз бе! Мен — AgrOS AI-агрономыңыз. Қалай көмектесе аламын?
-        {% else %}Здравствуйте! Я — AI-агроном AgrOS. Чем могу помочь?{% endif %}
-      </div>
-    </div>
-    <div class="chat-input-row">
-      <input type="text" id="chatInput" placeholder="{% if lang=='kz' %}Сұрақ қоюыңыз...{% else %}Напишите вопрос...{% endif %}" onkeydown="if(event.key==='Enter')sendMsg()">
-      <button onclick="sendMsg()" id="sendBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
-    </div>
-    <div class="chat-hint">{% if lang=='kz' %}Жауаптар білім қорына негізделген.{% else %}Ответы основаны на базе знаний. Конкретные решения — с агрономом.{% endif %}</div>
-  </div>
-
-  <!-- АГРОНОМ -->
-  <div class="pane" id="pane-agro">
-    <div class="messages" id="agroMessages">
-      {% for m in agro_messages %}
-      <div class="msg {% if m.sender == 'farmer' %}msg-user{% else %}msg-bot{% endif %}">{{ m.body }}</div>
-      {% else %}
-      <div class="msg msg-bot">{% if lang=='kz' %}Агрономға тікелей жазыңыз — ол жауап береді.{% else %}Напишите агроному напрямую — он ответит.{% endif %}</div>
-      {% endfor %}
-    </div>
-    <div class="chat-input-row">
-      <input type="text" id="agroInput" placeholder="{% if lang=='kz' %}Агрономға хабарлама...{% else %}Сообщение агроному...{% endif %}" onkeydown="if(event.key==='Enter')sendAgro()">
-      <button onclick="sendAgro()" id="agroBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
-    </div>
-    <div class="chat-hint">{% if lang=='kz' %}Агроном жауабы бетті жаңартқанда көрінеді.{% else %}Ответ агронома появится при обновлении страницы.{% endif %}</div>
-  </div>
-
-  <!-- ПОДДЕРЖКА -->
-  <div class="pane" id="pane-support">
-    <div class="messages" id="supportMessages">
-      {% for m in support_messages %}
-      <div class="msg {% if m.sender == 'farmer' %}msg-user{% else %}msg-bot{% endif %}">{{ m.body }}</div>
-      {% else %}
-      <div class="msg msg-bot">{% if lang=='kz' %}Мәселеңізді сипаттаңыз — қолдау қызметі жауап береді (шарт/рейс/тапсырыс бойынша).{% else %}Опишите проблему — поддержка ответит (по договору, рейсу или заказу).{% endif %}</div>
-      {% endfor %}
-    </div>
-    <div class="chat-input-row">
-      <input type="text" id="supportInput" placeholder="{% if lang=='kz' %}Мәселені сипаттаңыз...{% else %}Опишите проблему...{% endif %}" onkeydown="if(event.key==='Enter')sendSupport()">
-      <button onclick="sendSupport()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
-    </div>
-  </div>
+</div>
+<div class="inbar">
+  <input type="text" id="agroInput" placeholder="{% if lang=='kz' %}Хабарлама...{% else %}Сообщение...{% endif %}" onkeydown="if(event.key==='Enter')sendAgro()">
+  <button onclick="sendAgro()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
 </div>
 {% block scripts %}
 <script>
-function switchTab(t){
-  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.chat-tab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('pane-'+t).classList.add('active');
-  document.getElementById('tab-'+t).classList.add('active');
-}
-function addMsg(text, cls, containerId) {
-  const msgs = document.getElementById(containerId || 'messages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + cls;
-  div.textContent = text;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-  return div;
-}
-function sendMsg() {
-  const input = document.getElementById('chatInput');
-  const btn = document.getElementById('sendBtn');
-  const text = input.value.trim();
-  if (!text) return;
-  addMsg(text, 'msg-user');
-  input.value = '';
-  btn.disabled = true;
-  const typing = addMsg('{% if lang=="kz" %}Жазылуда...{% else %}Печатает...{% endif %}', 'msg-typing');
-  fetch('/chat/message', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: text, type: 'ai'})})
-  .then(r => r.json())
-  .then(data => { typing.remove(); addMsg(data.reply || 'Ошибка', 'msg-bot'); btn.disabled = false; })
-  .catch(() => { typing.remove(); addMsg('{% if lang=="kz" %}Торап қатесі.{% else %}Ошибка сети.{% endif %}', 'msg-bot'); btn.disabled = false; });
-}
+const mbox = document.getElementById('agroMessages');
+mbox.scrollTop = mbox.scrollHeight;
+window.scrollTo(0, document.body.scrollHeight);
 function sendAgro() {
   const input = document.getElementById('agroInput');
   const text = input.value.trim();
   if (!text) return;
-  addMsg(text, 'msg-user', 'agroMessages');
+  const div = document.createElement('div');
+  div.className = 'msg msg-user';
+  div.textContent = text;
+  mbox.appendChild(div);
   input.value = '';
+  mbox.scrollTop = mbox.scrollHeight;
+  window.scrollTo(0, document.body.scrollHeight);
   fetch('/chat/agronomist/send', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: text})})
   .then(r => r.json()).then(d => { if(d.status!=='success') alert('Ошибка отправки'); });
-}
-function sendSupport() {
-  const input = document.getElementById('supportInput');
-  const text = input.value.trim();
-  if (!text) return;
-  addMsg(text, 'msg-user', 'supportMessages');
-  input.value = '';
-  fetch('/chat/support/send', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({message: text})})
-  .then(r => r.json()).then(d => { if(d.status!=='success') alert(d.message || 'Ошибка отправки'); });
 }
 </script>
 {% endblock %}
