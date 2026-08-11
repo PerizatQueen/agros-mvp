@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% block title %}- {% if lang == 'kz' %}Прогресс{% else %}Мой прогресс{% endif %}{% endblock %}
+
+{% block extra_styles %}
+:root{
+  --bg:#EEF1EC;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
+  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 6px 18px rgba(18,58,30,.07);
+}
+body{background:var(--bg);color:var(--tx);}
+.ic{width:20px;height:20px;display:block;flex:none}
+.header{background:var(--bg);border-bottom:none;padding:16px 18px 6px;}
+.header-title{color:var(--tx);font-size:1.35rem;font-weight:800;}
+.header-sub{color:var(--muted);font-size:.82rem;font-weight:600;margin-top:2px;}
+.content{padding:14px 16px 100px;}
+/* Карточка цели с кольцом */
+.pcard{border-radius:22px;padding:20px;margin-bottom:14px;display:flex;align-items:center;gap:18px;
+  background:linear-gradient(120deg,#DDF3B4,#EAF8CE);box-shadow:0 10px 24px rgba(90,150,40,.18);}
+.ring{width:92px;height:92px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+  background:conic-gradient(var(--forest) calc({{ goal_progress }}% ), rgba(18,58,30,.14) 0);}
+.ring-in{width:70px;height:70px;border-radius:50%;background:#EAF8CE;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-in b{font-size:1.4rem;font-weight:900;color:#0E2A0F;line-height:1;}
+.ring-in span{font-size:.66rem;color:#2F5E1C;font-weight:700;}
+.pgoal-lbl{font-size:.78rem;font-weight:700;color:#2F5E1C;}
+.pgoal-sum{font-size:1.7rem;font-weight:900;color:#0E2A0F;line-height:1.05;margin:3px 0 5px;}
+.pgoal-sum small{font-size:1rem;}
+.pgoal-note{font-size:.78rem;color:#2F5E1C;font-weight:600;}
+/* График недели */
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card-h{font-size:1rem;font-weight:800;color:var(--tx);}
+.card-sub{font-size:.78rem;color:var(--green);font-weight:700;margin-top:2px;margin-bottom:16px;}
+.bars{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;height:130px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end;}
+.bar{width:100%;max-width:26px;border-radius:8px 8px 4px 4px;background:#DDEFCF;}
+.bar.today{background:var(--green);}
+.bar-lbl{font-size:.68rem;color:var(--muted);font-weight:700;}
+/* Серия дней */
+.streak{display:flex;align-items:center;gap:12px;border-radius:18px;padding:15px 18px;
+  background:linear-gradient(120deg,#DDF3B4,#EAF8CE);}
+.streak-ic{width:40px;height:40px;border-radius:12px;background:rgba(18,58,30,.1);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex:none;}
+.streak b{font-size:1rem;font-weight:900;color:#0E2A0F;}
+.streak span{display:block;font-size:.76rem;color:#2F5E1C;font-weight:600;margin-top:1px;}
+.bottom-nav{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--bd);}
+.nav-item{color:var(--muted);gap:5px;font-size:.66rem;font-weight:700;padding:9px 4px;}
+.nav-item.active{color:var(--forest);}
+.nav-item .icon{display:flex;align-items:center;justify-content:center;}.nav-item .icon .ic{width:23px;height:23px}
+{% endblock %}
+
+{% block body %}
+<div class="header">
+  <div class="header-title">{% if lang == 'kz' %}Менің прогресім{% else %}Мой прогресс{% endif %}</div>
+  <div class="header-sub">{% if lang == 'kz' %}Шарт бойынша мақсатқа{% else %}Движение к цели по договору{% endif %}</div>
+</div>
+<div class="content">
+
+  <!-- Кольцо + заработано к цели -->
+  <div class="pcard">
+    <div class="ring"><div class="ring-in"><b>{{ goal_progress }}%</b><span>{% if lang == 'kz' %}мақсат{% else %}цели{% endif %}</span></div></div>
+    <div>
+      <div class="pgoal-lbl">{% if lang == 'kz' %}Мақсатқа жиналды{% else %}Заработано к цели{% endif %}</div>
+      <div class="pgoal-sum">{{ '{:,.0f}'.format(goal_earned).replace(',',' ') }} <small>₸</small></div>
+      <div class="pgoal-note">{% if lang == 'kz' %}{{ '{:,.0f}'.format(goal_display).replace(',',' ') }} ₸-ға дейін {{ tasks_left }} тапсырма қалды{% else %}осталось {{ tasks_left }} задач до {{ '{:,.0f}'.format(goal_display).replace(',',' ') }} ₸{% endif %}</div>
+    </div>
+  </div>
+
+  <!-- График недели -->
+  <div class="card">
+    <div class="card-h">{% if lang == 'kz' %}Апта ішінде орындалды{% else %}Выполнено задач за неделю{% endif %}</div>
+    <div class="card-sub">{% if lang == 'kz' %}Кестедесіз — осылай ұстаңыз{% else %}Ты в графике — так держать{% endif %}</div>
+    <div class="bars">
+      {% set days_ru = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'] %}
+      {% set days_kz = ['Дс','Сс','Ср','Бс','Жм','Сб','Жс'] %}
+      {% for v in week %}
+      <div class="bar-col">
+        <div class="bar {% if loop.index0 == today_idx %}today{% endif %}" style="height:{{ v }}%"></div>
+        <div class="bar-lbl">{{ days_kz[loop.index0] if lang == 'kz' else days_ru[loop.index0] }}</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Серия дней -->
+  <div class="streak">
+    <div class="streak-ic">🌙</div>
+    <div>
+      <b>{{ streak }} {% if lang == 'kz' %}күн қатарынан{% else %}дней подряд{% endif %}</b>
+      <span>{% if lang == 'kz' %}Күн сайын кіресіз — мақсат жақынырақ{% else %}Заходишь каждый день — цель ближе{% endif %}</span>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="/dashboard" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
+  <a href="/progress" class="nav-item active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="11" width="3" height="7" rx="1"/><rect x="12" y="7" width="3" height="11" rx="1"/><rect x="17" y="13" width="3" height="5" rx="1"/></svg></span><span>{% if lang == 'kz' %}Прогресс{% else %}Прогресс{% endif %}</span></a>
+  <a href="/chat" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span>{% if lang == 'kz' %}Чат{% else %}Чат{% endif %}</span></a>
+  <a href="/bonus-shop" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span><span>{% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}</span></a>
+</nav>
+{% endblock %}

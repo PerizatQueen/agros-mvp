@@ -257,6 +257,32 @@ def dashboard():
         has_active=len(active_contracts) > 0, subsidies=subsidies, weather=weather, lang=lang())
 
 
+@app.route('/progress')
+@farmer_required
+def progress():
+    uid = session['user_id']
+    user = db.get_user_by_id(uid)
+    contracts = db.get_contracts(uid)
+    tasks = db.get_tasks(uid)
+    active_contracts = [c for c in contracts if c['status'] == 'active']
+    goal_amount = sum((c.get('total_amount') or 0) for c in active_contracts)
+    goal_display = goal_amount if goal_amount else 2000000
+    tasks_total = len(tasks)
+    tasks_done = len([t for t in tasks if t['status'] in ('approved', 'done')])
+    goal_progress = round(tasks_done / tasks_total * 100) if tasks_total else 0
+    goal_earned = round(goal_display * goal_progress / 100)
+    tasks_left = max(tasks_total - tasks_done, 0)
+    # Недельный график активности (демо-представление: доля выполненных задач по дням)
+    week = [40, 55, 45, 82, 60, 35, 50]
+    today_idx = 3
+    streak = 6
+    return render_template('progress.html',
+        user=user, goal_display=goal_display, goal_earned=goal_earned,
+        goal_progress=goal_progress, tasks_done=tasks_done, tasks_total=tasks_total,
+        tasks_left=tasks_left, week=week, today_idx=today_idx, streak=streak,
+        has_active=len(active_contracts) > 0, lang=lang())
+
+
 @app.route('/plots')
 @farmer_required
 def plots():
