@@ -80,14 +80,14 @@ tbody tr:hover{background:#FAFBF8;cursor:pointer;}
 <aside class="sidebar">
   <div class="logo"><div class="logo-mark">A</div><div class="logo-name">AgrOS</div></div>
   <nav class="nav">
-    <a href="#" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg> {{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</a>
-    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {{ 'Тексеруге есептер' if lang=='kz' else 'Отчёты на проверку' }} {% if agro_stats.reports %}<span class="badge">{{ agro_stats.reports }}</span>{% endif %}</a>
-    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> {{ 'Тапсырмалар мен жоспар' if lang=='kz' else 'Задачи и план' }}</a>
-    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg> {{ 'Шарттар' if lang=='kz' else 'Договоры' }}</a>
-    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> {{ 'Хабарламалар' if lang=='kz' else 'Сообщения' }}</a>
+    <a href="/agronomist" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg> {{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</a>
+    <a href="/agronomist?f=review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {{ 'Тексеруге есептер' if lang=='kz' else 'Отчёты на проверку' }} {% if agro_stats.reports %}<span class="badge">{{ agro_stats.reports }}</span>{% endif %}</a>
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> {{ 'Тапсырмалар мен жоспар' if lang=='kz' else 'Задачи и план' }}</a>
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg> {{ 'Шарттар' if lang=='kz' else 'Договоры' }}</a>
+    <a href="/agronomist/chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> {{ 'Хабарламалар' if lang=='kz' else 'Сообщения' }}</a>
     <div class="nav-cat">{{ 'АНЫҚТАМАЛАР' if lang=='kz' else 'СПРАВОЧНИКИ' }}</div>
-    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> {{ 'Дақыл тех. карталары' if lang=='kz' else 'Тех. карты культур' }}</a>
-    <a href="#"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg> {{ 'Бонустар мен тауарлар' if lang=='kz' else 'Бонусы и товары' }}</a>
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> {{ 'Дақыл тех. карталары' if lang=='kz' else 'Тех. карты культур' }}</a>
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg> {{ 'Бонустар мен тауарлар' if lang=='kz' else 'Бонусы и товары' }}</a>
   </nav>
   <div class="side-foot"><a href="/logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> {{ 'Шығу' if lang=='kz' else 'Выйти' }}</a></div>
 </aside>
@@ -144,7 +144,7 @@ tbody tr:hover{background:#FAFBF8;cursor:pointer;}
           {% elif f.status == 'ready' %}<span class="st st-ready">{{ 'Тапсыруға дайын' if lang=='kz' else 'Готов к сдаче' }}</span>
           {% else %}<span class="st st-work">{{ 'Жұмыста' if lang=='kz' else 'В работе' }}</span>{% endif %}
         </td>
-        <td><span class="prob {% if f.probability < 60 %}low{% elif f.probability < 80 %}mid{% else %}hi{% endif %}">{{ f.probability }}%</span></td>
+        <td><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span class="prob {% if f.probability < 60 %}low{% elif f.probability < 80 %}mid{% else %}hi{% endif %}">{{ f.probability }}%</span><svg viewBox="0 0 24 24" fill="none" stroke="#B9C7B2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex:none"><path d="m9 18 6-6-6-6"/></svg></div></td>
       </tr>
       {% endfor %}
       </tbody>
@@ -172,6 +172,13 @@ function applyFilters(){
     r.style.display = ok ? '' : 'none';
   });
 }
+(function(){
+  var f = new URLSearchParams(location.search).get('f');
+  if(f==='review'){
+    var btn = Array.prototype.slice.call(document.querySelectorAll('.fchip')).filter(function(b){var t=b.textContent.trim();return t.indexOf('провер')>-1||t.indexOf('Тексер')>-1;})[0];
+    if(btn) setFilter(btn,'review');
+  }
+})();
 </script>
 </body>
 </html>
