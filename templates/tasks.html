@@ -1,72 +1,72 @@
 {% extends 'base.html' %}
-{% block title %}- {% if lang == 'kz' %}Жоспар{% else %}План ухода{% endif %}{% endblock %}
+{% block title %}- {% if lang == 'kz' %}Тапсырмалар{% else %}Задачи{% endif %}{% endblock %}
 
 {% block extra_styles %}
-:root{--bg:#0F1117;--surface:#181C24;--surface2:#222836;--accent:#B7FF3C;--accent2:#53E08B;--tx:#FFFFFF;--muted:#9AA4B2;--bd:rgba(255,255,255,0.06);--shadow:0 10px 30px rgba(0,0,0,0.35);}
+:root{
+  --bg:#EEF1EC;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
+  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 6px 18px rgba(18,58,30,.07);
+}
 body{background:var(--bg);color:var(--tx);}
 .ic{width:20px;height:20px;display:block;flex:none}
-.header{background:rgba(15,17,23,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
-.header-title{color:var(--tx);font-size:1rem;font-weight:700;display:flex;align-items:center;gap:10px;}
-.htitle-mark{width:28px;height:28px;border-radius:9px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--accent);flex:none;}
-.htitle-mark .ic{width:16px;height:16px}
-.header-icons{display:flex;gap:8px;align-items:center;}
-.iconbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:0;}
-.iconbtn .ic{width:18px;height:18px}.iconbtn:hover{color:var(--tx);}
+.header{background:var(--bg);border-bottom:none;padding:16px 18px 6px;}
+.header-title{color:var(--tx);font-size:1.35rem;font-weight:800;}
+.header-sub{color:var(--muted);font-size:.82rem;font-weight:600;margin-top:2px;}
+.header-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.hicons{display:flex;gap:7px;align-items:center;}
 .lang-switcher{gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:11px;padding:3px;}
-.lang-btn{padding:5px 8px;border-radius:8px;font-size:.68rem;border:none;}
-.lang-btn.active{background:var(--accent);color:#0F1117;}.lang-btn:not(.active){color:var(--muted);background:transparent;}
-.content{padding:20px 18px 104px;}
-.card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
-.card-title{color:var(--tx);font-weight:600;font-size:1rem;}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:.68rem;font-weight:600;white-space:nowrap;}
-.chip-green{background:rgba(183,255,60,.12);color:var(--accent);}
-.chip-yellow{background:rgba(252,211,77,.12);color:#FCD34D;}
-.chip-blue{background:rgba(83,224,139,.12);color:var(--accent2);}
-.chip-red{background:rgba(248,113,113,.14);color:#F87171;}
-.chip-gray{background:rgba(154,164,178,.12);color:var(--muted);}
-.empty{text-align:center;padding:44px 20px;}
-.empty-ic{width:56px;height:56px;border-radius:18px;background:var(--surface2);color:var(--muted);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
-.empty-ic .ic{width:26px;height:26px}.empty h4{font-weight:600;font-size:1rem;color:var(--tx);}.empty p{color:var(--muted);font-size:.82rem;margin-top:6px;}
+.lang-btn{padding:5px 8px;border-radius:8px;font-size:.66rem;border:none;font-weight:800;text-decoration:none;}
+.lang-btn.active{background:var(--forest);color:#fff;}.lang-btn:not(.active){color:var(--muted);background:transparent;}
+.iconbtn{width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px solid var(--bd);color:var(--tx);display:flex;align-items:center;justify-content:center;text-decoration:none;}
+.iconbtn .ic{width:19px;height:19px}
+.content{padding:14px 16px 100px;}
+.mfilter{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px;-webkit-overflow-scrolling:touch;}
+.mchip{padding:8px 15px;border-radius:12px;font-size:.78rem;font-weight:800;text-decoration:none;white-space:nowrap;background:var(--surface);border:1px solid var(--bd);color:var(--muted);}
+.mchip.active{background:var(--forest);color:#fff;border-color:transparent;}
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);}
+.card.overdue{border-color:rgba(239,68,68,.45);}.card.approved{opacity:.62;}
+.card-title{color:var(--tx);font-weight:800;font-size:1.05rem;}
 .rowtop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
-.bottom-nav{background:rgba(24,28,36,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);}
-.nav-item{color:var(--muted);gap:5px;font-size:.64rem;font-weight:500;padding:9px 4px;}
-.nav-item.active,.nav-item:hover{color:var(--accent);}
-.nav-item .icon{display:flex;align-items:center;justify-content:center;}.nav-item .icon .ic{width:22px;height:22px}
-.mfilter{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:8px;-webkit-overflow-scrolling:touch;}
-.mchip{padding:8px 15px;border-radius:12px;font-size:.76rem;font-weight:600;text-decoration:none;white-space:nowrap;background:var(--surface);border:1px solid var(--bd);color:var(--muted);}
-.mchip.active{background:var(--accent);color:#0F1117;border-color:transparent;}
-.task-plot{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted);margin:10px 0;}
-.task-plot .ic{width:14px;height:14px}
-.task-desc{font-size:.83rem;color:var(--muted);line-height:1.55;margin-bottom:4px;}
-.task-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid var(--bd);}
-.task-bonus{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--accent);font-weight:600;}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;font-size:.7rem;font-weight:800;white-space:nowrap;}
+.chip-blue{background:#DBEAFE;color:#1D4ED8;}.chip-yellow{background:#FEF3C7;color:#B45309;}
+.chip-green{background:#DCFCE7;color:#15803D;}.chip-red{background:#FEE2E2;color:#B91C1C;}.chip-gray{background:#EEF0EC;color:#6B7669;}
+.task-plot{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);font-weight:600;margin:9px 0;}
+.task-plot .ic{width:14px;height:14px;color:var(--green);}
+.task-desc{font-size:.85rem;color:var(--muted);line-height:1.5;margin-bottom:4px;}
+.task-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:1px solid var(--bd);}
+.task-bonus{display:flex;align-items:center;gap:6px;font-size:.88rem;color:var(--green);font-weight:800;}
 .task-bonus .ic{width:15px;height:15px}
-.btn-report{display:inline-flex;align-items:center;gap:6px;background:var(--accent);color:#0F1117;font-weight:700;font-size:.8rem;padding:10px 16px;border-radius:12px;border:none;cursor:pointer;}
-.btn-report .ic{width:15px;height:15px}
-.stat-inline{display:flex;align-items:center;gap:6px;font-size:.82rem;font-weight:600;}
-.stat-inline.review{color:#FCD34D;}.stat-inline.done{color:var(--accent);}
-.stat-inline .ic{width:15px;height:15px}
-.card.approved{opacity:.55;}.card.overdue{border-color:rgba(248,113,113,.32);}
+.btn-report{display:inline-flex;align-items:center;gap:7px;background:var(--forest);color:#fff;font-weight:800;font-size:.85rem;padding:11px 18px;border-radius:13px;border:none;cursor:pointer;}
+.btn-report .ic{width:16px;height:16px}
+.stat-inline{display:flex;align-items:center;gap:6px;font-size:.85rem;font-weight:800;}
+.stat-inline.review{color:#B45309;}.stat-inline.done{color:var(--green);}
+.stat-inline .ic{width:16px;height:16px}
+.empty{text-align:center;padding:44px 20px;}
+.empty-ic{width:60px;height:60px;border-radius:20px;background:#EAF7E0;color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.empty-ic .ic{width:28px;height:28px}.empty h4{font-weight:800;font-size:1.05rem;color:var(--tx);}.empty p{color:var(--muted);font-size:.85rem;margin-top:6px;}
+.bottom-nav{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--bd);}
+.nav-item{color:var(--muted);gap:5px;font-size:.66rem;font-weight:700;padding:9px 4px;}
+.nav-item.active{color:var(--forest);}
+.nav-item .icon{display:flex;align-items:center;justify-content:center;}.nav-item .icon .ic{width:23px;height:23px}
 {% endblock %}
 
 {% block body %}
 <div class="header">
-  <div class="header-title">
-    <span class="htitle-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span>
-    {% if lang == 'kz' %}Күтім жоспары{% else %}План ухода{% endif %}
-  </div>
-  <div class="header-icons">
-    <div class="lang-switcher">
-      <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
-      <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+  <div class="header-top">
+    <div>
+      <div class="header-title">{% if lang == 'kz' %}Тапсырмалар{% else %}Задачи{% endif %}</div>
+      <div class="header-sub">{% if lang == 'kz' %}Күтім жоспары бойынша{% else %}По плану ухода за садом{% endif %}</div>
     </div>
-    <a href="/chat" class="iconbtn" title="Чат"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></a>
-    <a href="/logout" class="iconbtn" title="{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></a>
+    <div class="hicons">
+      <div class="lang-switcher">
+        <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
+        <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+      </div>
+      <a href="/logout" class="iconbtn" title="{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></a>
+    </div>
   </div>
 </div>
 <div class="content">
 
-  <!-- Фильтр по месяцам -->
   <div class="mfilter">
     <a href="/tasks" class="mchip {% if not current_month %}active{% endif %}">{% if lang == 'kz' %}Барлығы{% else %}Все{% endif %}</a>
     {% for m in [('7','Шіл','Июл'),('8','Там','Авг'),('9','Қыр','Сен'),('10','Қаз','Окт'),('11','Қар','Ноя'),('12','Жел','Дек')] %}
@@ -78,14 +78,13 @@ body{background:var(--bg);color:var(--tx);}
   {% set TD = {'Санитарная и формирующая обрезка деревьев':'Ағаштарды санитарлық және қалыптастыру кесу','Опрыскивание от яблонной плодожорки':'Алма жеміс көбелегінен бүрку','Азотные удобрения под корень':'Тамырға азотты тыңайтқыш','Осмотр листьев на признаки парши':'Жапырақтарды таты белгілеріне тексеру','Проверка готовности плодов к сбору':'Жемістердің жинауға дайындығын тексеру'} %}
   {% if not tasks %}
   <div class="card empty">
-    <div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
+    <div class="empty-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
     <h4>{% if lang == 'kz' %}Тапсырмалар жоқ{% else %}Задач нет{% endif %}</h4>
     <p>{% if lang == 'kz' %}Тапсырмалар шарт қол қойылғаннан кейін пайда болады{% else %}Задачи появятся после подписания договора{% endif %}</p>
   </div>
   {% else %}
   {% for t in tasks %}
   <div class="card {% if t.status == 'overdue' %}overdue{% elif t.status == 'approved' %}approved{% endif %}" id="task-{{ t.id }}">
-
     <div class="rowtop">
       <div class="card-title" style="flex:1;padding-right:8px">{{ TT[t.title] if lang == 'kz' and t.title in TT else t.title }}</div>
       <span class="chip
@@ -95,7 +94,7 @@ body{background:var(--bg);color:var(--tx);}
         {% elif t.status == 'overdue' %}chip-red
         {% else %}chip-gray{% endif %}">
         {% if t.status == 'upcoming' %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}
-        {% elif t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро срок{% endif %}
+        {% elif t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро{% endif %}
         {% elif t.status == 'in_progress' %}{% if lang == 'kz' %}Орындалуда{% else %}В работе{% endif %}
         {% elif t.status == 'review' %}{% if lang == 'kz' %}Тексеруде{% else %}На проверке{% endif %}
         {% elif t.status == 'approved' %}{% if lang == 'kz' %}Бекітілді{% else %}Одобрена{% endif %}
@@ -103,15 +102,12 @@ body{background:var(--bg);color:var(--tx);}
         {% else %}{{ t.status }}{% endif %}
       </span>
     </div>
-
-    <div class="task-plot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> {{ t.plot_name }}</div>
-
+    <div class="task-plot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> {{ t.plot_name }} · {% if lang == 'kz' %}фото керек{% else %}нужно фото{% endif %}</div>
     {% if t.description %}
     <div class="task-desc">{{ TD[t.description] if lang == 'kz' and t.description in TD else t.description }}</div>
     {% endif %}
-
     <div class="task-foot">
-      <div class="task-bonus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg> +{{ t.bonus_amount }} {% if lang == 'kz' %}бонус{% else %}бонусов{% endif %}</div>
+      <div class="task-bonus"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg> +{{ t.bonus_amount }} {% if lang == 'kz' %}балл{% else %}баллов{% endif %}</div>
       {% if t.status == 'review' %}
       <span class="stat-inline review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> {% if lang == 'kz' %}Тексеруде{% else %}На проверке{% endif %}</span>
       {% elif t.status != 'approved' %}
@@ -127,21 +123,21 @@ body{background:var(--bg);color:var(--tx);}
 
 <nav class="bottom-nav">
   <a href="/dashboard" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span></a>
-  <a href="/contracts" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
-  <a href="/plots" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
-  <a href="/tasks" class="nav-item active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span><span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span></a>
+  <a href="/tasks" class="nav-item active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m19 10-2 2 2 2"/></svg></span><span>{% if lang == 'kz' %}Тапсырмалар{% else %}Задачи{% endif %}</span></a>
+  <a href="/chat" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span>{% if lang == 'kz' %}Чат{% else %}Чат{% endif %}</span></a>
+  <a href="/bonus-shop" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span><span>{% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}</span></a>
 </nav>
 
 {% block scripts %}
-<div id="reportModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:200;align-items:center;justify-content:center;padding:20px">
-  <div style="background:#181C24;border-radius:20px;padding:24px;width:100%;max-width:400px;border:1px solid rgba(255,255,255,0.06);box-shadow:0 10px 30px rgba(0,0,0,0.35)">
-    <div style="font-size:1.05rem;font-weight:700;margin-bottom:14px;color:#fff">{% if lang == 'kz' %}Тапсырма бойынша есеп{% else %}Отчёт по задаче{% endif %}</div>
-    <textarea id="rep_note" placeholder="{% if lang == 'kz' %}Не істелді...{% else %}Что сделано...{% endif %}" style="width:100%;min-height:84px;background:#222836;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:12px;color:#fff;margin-bottom:14px;font-family:inherit;font-size:0.9rem;outline:none"></textarea>
-    <label style="font-size:0.82rem;color:#9AA4B2">{% if lang == 'kz' %}Фото (міндетті емес){% else %}Фото (необязательно){% endif %}</label>
-    <input type="file" id="rep_photo" accept="image/*" style="width:100%;margin:8px 0 16px;color:#9AA4B2;font-size:0.8rem">
+<div id="reportModal" style="display:none;position:fixed;inset:0;background:rgba(10,20,10,0.55);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:22px;padding:24px;width:100%;max-width:400px;border:1px solid rgba(18,58,30,.1);box-shadow:0 20px 50px rgba(18,58,30,.25)">
+    <div style="font-size:1.1rem;font-weight:800;margin-bottom:14px;color:#12210D">{% if lang == 'kz' %}Тапсырма бойынша есеп{% else %}Отчёт по задаче{% endif %}</div>
+    <textarea id="rep_note" placeholder="{% if lang == 'kz' %}Не істелді...{% else %}Что сделано...{% endif %}" style="width:100%;min-height:84px;background:#F4F7F0;border:1px solid rgba(18,58,30,.1);border-radius:14px;padding:12px;color:#12210D;margin-bottom:14px;font-family:inherit;font-size:0.9rem;outline:none"></textarea>
+    <label style="font-size:0.82rem;color:#6B7669;font-weight:600">{% if lang == 'kz' %}Фото (міндетті емес){% else %}Фото (необязательно){% endif %}</label>
+    <input type="file" id="rep_photo" accept="image/*" style="width:100%;margin:8px 0 16px;color:#6B7669;font-size:0.8rem">
     <div style="display:flex;gap:10px">
-      <button onclick="closeReport()" style="flex:1;background:#222836;color:#9AA4B2;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:13px;font-weight:600;cursor:pointer">{% if lang == 'kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
-      <button onclick="submitReport()" style="flex:1;background:#B7FF3C;color:#0F1117;border:none;border-radius:14px;padding:13px;font-weight:700;cursor:pointer">{% if lang == 'kz' %}Тексеруге жіберу{% else %}На проверку{% endif %}</button>
+      <button onclick="closeReport()" style="flex:1;background:#EEF0EC;color:#6B7669;border:1px solid rgba(18,58,30,.1);border-radius:14px;padding:13px;font-weight:700;cursor:pointer">{% if lang == 'kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
+      <button onclick="submitReport()" style="flex:1;background:#123A1E;color:#fff;border:none;border-radius:14px;padding:13px;font-weight:800;cursor:pointer">{% if lang == 'kz' %}Тексеруге жіберу{% else %}На проверку{% endif %}</button>
     </div>
   </div>
 </div>

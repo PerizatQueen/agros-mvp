@@ -111,12 +111,14 @@ body{background:var(--bg);color:var(--tx);}
 
 <div class="content">
 
-  {% if has_active and goal_amount %}
+  {% if has_active %}
   <!-- ЦЕЛЬ ПО ДОГОВОРУ -->
+  {% set goal_display = goal_amount if goal_amount else 2000000 %}
+  {% set earned_display = goal_earned if goal_amount else (goal_display * goal_progress / 100)|round|int %}
   <div class="goal">
     <div class="goal-lbl">{% if lang == 'kz' %}ШАРТ БОЙЫНША МАҚСАТЫҢЫЗ{% else %}ВАША ЦЕЛЬ ПО ДОГОВОРУ{% endif %}</div>
-    <div class="goal-sum">{{ '{:,.0f}'.format(goal_earned).replace(',',' ') }} <small>₸</small></div>
-    <div class="goal-note">{% if lang == 'kz' %}{{ '{:,.0f}'.format(goal_amount).replace(',',' ') }} ₸-дан · {{ goal_progress }}%{% else %}из {{ '{:,.0f}'.format(goal_amount).replace(',',' ') }} ₸ · {{ goal_progress }}%{% endif %}</div>
+    <div class="goal-sum">{{ '{:,.0f}'.format(earned_display).replace(',',' ') }} <small>₸</small></div>
+    <div class="goal-note">{% if lang == 'kz' %}{{ '{:,.0f}'.format(goal_display).replace(',',' ') }} ₸-дан · {{ goal_progress }}%{% else %}из {{ '{:,.0f}'.format(goal_display).replace(',',' ') }} ₸ · {{ goal_progress }}%{% endif %}</div>
     <div class="goal-bar"><span style="width:{{ goal_progress }}%"></span></div>
   </div>
 
