@@ -3,183 +3,166 @@
 
 {% block extra_styles %}
 :root{
-  --bg:#EEF4E7;--surface:#FFFFFF;
-  --green:#15A34A;--green2:#22C55E;--lime:#8BD450;
-  --sun:#F59E0B;--sky:#38BDF8;
-  --tx:#15240F;--muted:#5E6B58;--bd:rgba(20,33,15,.09);
-  --shadow:0 8px 22px rgba(20,60,20,.09);
+  --bg:#EEF1EC;--surface:#FFFFFF;
+  --forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
+  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);
+  --shadow:0 6px 18px rgba(18,58,30,.07);
 }
 body{background:var(--bg);color:var(--tx);}
 .ic{width:20px;height:20px;display:block;flex:none}
 
-/* HEADER */
-.header{background:rgba(255,255,255,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
-.brand{display:flex;align-items:center;gap:9px;}
-.brand-mark{width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--lime));display:flex;align-items:center;justify-content:center;color:#fff;}
-.brand-mark .ic{width:16px;height:16px}
-.brand-name{font-size:1rem;font-weight:800;letter-spacing:-.01em;color:var(--tx);}
+/* HEADER — приветствие */
+.header{background:var(--bg);border-bottom:none;padding:16px 18px 8px;}
+.greet{display:flex;align-items:center;gap:11px;}
+.ava{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#8BD450,#C6F24E);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;color:var(--forest);flex:none;}
+.greet-sub{font-size:.72rem;color:var(--muted);font-weight:600;}
+.greet-name{font-size:1.02rem;font-weight:800;color:var(--tx);line-height:1.15;}
 .hicons{display:flex;align-items:center;gap:7px;}
-.iconbtn{width:36px;height:36px;border-radius:11px;background:#F1F5EC;border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;transition:.15s;font-size:0;}
-.iconbtn:hover{color:var(--green);border-color:rgba(21,163,74,.3);}
-.iconbtn .ic{width:18px;height:18px}
-.lang-switcher{gap:2px;background:#F1F5EC;border:1px solid var(--bd);border-radius:11px;padding:3px;}
-.lang-btn{padding:5px 8px;border-radius:8px;font-size:.68rem;border:none;font-weight:700;}
-.lang-btn.active{background:var(--green);color:#fff;}
+.lang-switcher{gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:11px;padding:3px;}
+.lang-btn{padding:5px 8px;border-radius:8px;font-size:.66rem;border:none;font-weight:800;text-decoration:none;}
+.lang-btn.active{background:var(--forest);color:#fff;}
 .lang-btn:not(.active){color:var(--muted);background:transparent;}
+.iconbtn{width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px solid var(--bd);color:var(--tx);display:flex;align-items:center;justify-content:center;text-decoration:none;}
+.iconbtn .ic{width:19px;height:19px}
 
-/* CONTENT */
-.content{padding:18px 16px 104px;}
-.section-title{font-size:.74rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:22px 4px 12px;}
+.content{padding:8px 16px 100px;}
 
-/* HERO — ЦЕЛЬ ДОХОДА */
-.goal{position:relative;overflow:hidden;border-radius:26px;padding:24px 22px;margin-bottom:16px;
-  background:linear-gradient(140deg,#15A34A 0%,#3FBE4E 55%,#8BD450 100%);
-  box-shadow:0 14px 34px rgba(21,120,45,.32);color:#fff;}
-.goal::after{content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.12);}
-.goal-lbl{font-size:.8rem;font-weight:600;color:rgba(255,255,255,.9);display:flex;align-items:center;gap:7px;position:relative;}
-.goal-lbl .ic{width:17px;height:17px}
-.goal-sum{font-size:3rem;font-weight:900;letter-spacing:-.02em;line-height:1;margin:10px 0 4px;position:relative;text-shadow:0 2px 8px rgba(0,0,0,.12);}
-.goal-sum small{font-size:1.3rem;font-weight:700;}
-.goal-note{font-size:.82rem;color:rgba(255,255,255,.92);position:relative;}
-.goal-bar{height:12px;border-radius:99px;background:rgba(255,255,255,.28);margin:18px 0 8px;overflow:hidden;position:relative;}
-.goal-bar span{display:block;height:100%;border-radius:99px;background:#fff;box-shadow:0 0 12px rgba(255,255,255,.6);}
-.goal-foot{display:flex;justify-content:space-between;font-size:.8rem;font-weight:700;position:relative;}
+/* ЦЕЛЬ ПО ДОГОВОРУ */
+.goal{border-radius:22px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden;
+  background:linear-gradient(115deg,#CDEEA6 0%,#DCF3B8 45%,#EAF8CE 100%);
+  box-shadow:0 10px 26px rgba(90,150,40,.22);}
+.goal::after{content:"";position:absolute;right:-30px;top:-30px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.28);}
+.goal-lbl{font-size:.68rem;font-weight:800;letter-spacing:.08em;color:#2F5E1C;position:relative;}
+.goal-sum{font-size:2.4rem;font-weight:900;letter-spacing:-.02em;color:#0E2A0F;line-height:1;margin:8px 0 6px;position:relative;}
+.goal-sum small{font-size:1.2rem;font-weight:800;}
+.goal-note{font-size:.82rem;font-weight:600;color:#2F5E1C;position:relative;}
+.goal-bar{height:9px;border-radius:99px;background:rgba(18,58,30,.14);margin-top:12px;overflow:hidden;position:relative;}
+.goal-bar span{display:block;height:100%;border-radius:99px;background:var(--forest);}
 
-/* TILES: погода + бонусы */
-.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
-.tile{border-radius:20px;padding:16px;box-shadow:var(--shadow);position:relative;overflow:hidden;color:#fff;}
-.tile-w{background:linear-gradient(140deg,#38BDF8,#0EA5E9);}
-.tile-b{background:linear-gradient(140deg,#FBBF24,#F59E0B);}
-.tile-top{display:flex;justify-content:space-between;align-items:flex-start;}
-.tile-ic{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;color:#fff;}
-.tile-ic .ic{width:20px;height:20px}
-.tile-lbl{font-size:.72rem;font-weight:600;color:rgba(255,255,255,.92);}
-.tile-big{font-size:1.9rem;font-weight:900;letter-spacing:-.02em;line-height:1;margin-top:12px;}
-.tile-big small{font-size:.8rem;font-weight:700;}
-.tile-sub{font-size:.72rem;color:rgba(255,255,255,.9);margin-top:5px;}
+/* ПЛИТКИ */
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px;}
+.tile{border-radius:18px;padding:15px;box-shadow:var(--shadow);min-height:104px;display:flex;flex-direction:column;justify-content:space-between;}
+.tile-w{background:var(--surface);border:1px solid var(--bd);}
+.tile-b{background:var(--forest);}
+.tile-ic{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.tile-w .tile-ic{background:#FFF4E0;color:#F59E0B;}
+.tile-b .tile-ic{background:rgba(255,255,255,.12);color:var(--lime);}
+.tile-ic .ic{width:19px;height:19px}
+.tile-w .tile-big{font-size:1.7rem;font-weight:900;color:var(--tx);line-height:1;}
+.tile-w .tile-sub{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:3px;}
+.tile-b .tile-big{font-size:1.7rem;font-weight:900;color:#fff;line-height:1;}
+.tile-b .tile-big small{font-size:.8rem;font-weight:700;color:rgba(255,255,255,.75);}
+.tile-b .tile-sub{font-size:.72rem;color:rgba(255,255,255,.7);font-weight:600;margin-top:3px;}
 
-/* TASK OF DAY */
-.today{background:var(--surface);border:2px solid var(--green);border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
-.today-h{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:7px;}
-.today-h .ic{width:16px;height:16px}
-.today-title{font-size:1.35rem;font-weight:800;color:var(--tx);line-height:1.2;}
-.today-meta{font-size:.85rem;color:var(--muted);margin-top:6px;}
-.today-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:16px;padding:15px;border-radius:16px;background:var(--green);color:#fff;font-size:1.05rem;font-weight:800;text-decoration:none;box-shadow:0 8px 18px rgba(21,120,45,.28);}
-.today-btn .ic{width:20px;height:20px}
-.today-empty{font-size:1.05rem;font-weight:700;color:var(--tx);}
+/* ЧТО СДЕЛАТЬ СЕГОДНЯ */
+.today-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.today-head b{font-size:1.02rem;font-weight:800;color:var(--tx);}
+.today-head a{font-size:.8rem;font-weight:700;color:var(--green);text-decoration:none;}
+.task{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:12px 12px;margin-bottom:10px;box-shadow:var(--shadow);text-decoration:none;}
+.task-ic{width:40px;height:40px;border-radius:12px;background:#EAF7E0;color:var(--green);display:flex;align-items:center;justify-content:center;flex:none;}
+.task-ic.gray{background:#EEF0EC;color:#8A968A;}
+.task-ic .ic{width:20px;height:20px}
+.task-body{flex:1;min-width:0;}
+.task-title{font-size:.98rem;font-weight:700;color:var(--tx);}
+.task-meta{font-size:.75rem;color:var(--muted);margin-top:2px;}
+.task-go{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;}
+.task-go.on{background:var(--forest);color:#fff;}
+.task-go.off{background:#EEF0EC;color:#8A968A;}
+.task-go .ic{width:17px;height:17px}
+.today-empty{background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:20px;text-align:center;font-size:1rem;font-weight:700;color:var(--tx);box-shadow:var(--shadow);}
 .today-empty span{color:var(--green);}
 
-/* QUICK ACTIONS */
-.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.qa{display:flex;flex-direction:column;align-items:center;gap:9px;padding:15px 5px;background:var(--surface);border:1px solid var(--bd);border-radius:18px;text-decoration:none;transition:.15s;box-shadow:var(--shadow);}
-.qa:active{transform:scale(.97);}
-.qa-ic{width:46px;height:46px;border-radius:14px;background:linear-gradient(140deg,#EAF7E4,#DDF0D0);display:flex;align-items:center;justify-content:center;color:var(--green);}
-.qa-ic .ic{width:22px;height:22px}
-.qa-lbl{font-size:.68rem;color:var(--tx);font-weight:700;text-align:center;}
-
-/* ROW TASKS */
-.rowcard{background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:15px 16px;margin-bottom:10px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;gap:12px;}
-.rowcard h4{font-size:1rem;font-weight:700;color:var(--tx);}
-.rowcard .meta{font-size:.8rem;color:var(--muted);margin-top:4px;}
-.rowcard.overdue{border-color:rgba(239,68,68,.5);}
-.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:.72rem;font-weight:800;white-space:nowrap;}
-.chip-yellow{background:#FEF3C7;color:#B45309;}
-.chip-blue{background:#DBEAFE;color:#1D4ED8;}
-.chip-red{background:#FEE2E2;color:#B91C1C;}
-
-/* ONBOARDING */
+/* ОНБОРДИНГ */
 .card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:14px;box-shadow:var(--shadow);}
 .step{display:flex;align-items:center;gap:14px;}
 .step + .step{margin-top:18px;}
-.step-n{width:36px;height:36px;border-radius:12px;background:#EAF7E4;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;color:var(--green);flex:none;}
-.step.on .step-n{background:var(--green);color:#fff;}
+.step-n{width:36px;height:36px;border-radius:12px;background:#EAF7E0;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--green);flex:none;}
+.step.on .step-n{background:var(--forest);color:#fff;}
 .step.off{opacity:.45;}
 .step h4{font-weight:800;font-size:1rem;color:var(--tx);}
 .step p{font-size:.82rem;color:var(--muted);margin-top:3px;}
-.step .go{margin-left:auto;background:var(--green);color:#fff;padding:11px 18px;border-radius:13px;font-size:.85rem;font-weight:800;text-decoration:none;white-space:nowrap;}
-
-/* SUBSIDY */
-.subs h4{font-size:1rem;font-weight:700;color:var(--tx);}
-.subs .org{font-size:.8rem;color:var(--muted);margin:7px 0 14px;line-height:1.4;}
-.btn-prem{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:14px;background:#EAF7E4;border:1px solid rgba(21,163,74,.2);color:var(--green);font-size:.85rem;font-weight:800;text-decoration:none;transition:.15s;}
-.btn-prem:hover{background:#DDF0D0;}
-.btn-prem .ic{width:15px;height:15px}
+.step .go{margin-left:auto;background:var(--forest);color:#fff;padding:11px 18px;border-radius:13px;font-size:.85rem;font-weight:800;text-decoration:none;white-space:nowrap;}
 
 /* BOTTOM NAV */
-.bottom-nav{background:rgba(255,255,255,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);}
+.bottom-nav{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--bd);}
 .nav-item{color:var(--muted);gap:5px;font-size:.66rem;font-weight:700;padding:9px 4px;}
-.nav-item.active,.nav-item:hover{color:var(--green);}
+.nav-item.active{color:var(--forest);}
 .nav-item .icon{display:flex;align-items:center;justify-content:center;}
 .nav-item .icon .ic{width:23px;height:23px}
 {% endblock %}
 
 {% block body %}
 <div class="header">
-  <div class="brand">
-    <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
-    <div class="brand-name">AgrOS</div>
-  </div>
-  <div class="header-icons hicons">
-    <div class="lang-switcher">
-      <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
-      <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+  <div class="greet">
+    <div class="ava">{{ user.name.split()[0][:1] }}{{ user.name.split()[1][:1] if user.name.split()|length > 1 else '' }}</div>
+    <div>
+      <div class="greet-sub">{% if lang == 'kz' %}Қайырлы таң!{% else %}Доброе утро!{% endif %}</div>
+      <div class="greet-name">{{ user.name }}</div>
     </div>
-    <a href="/chat" class="iconbtn" title="Чат"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></a>
-    <a href="/profile" class="iconbtn" title="Профиль"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></a>
-    <a href="/logout" class="iconbtn" title="{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></a>
+    <div class="hicons" style="margin-left:auto">
+      <div class="lang-switcher">
+        <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
+        <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
+      </div>
+      <a href="/logout" class="iconbtn" title="{% if lang == 'kz' %}Шығу{% else %}Выйти{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg></a>
+    </div>
   </div>
 </div>
 
 <div class="content">
 
   {% if has_active and goal_amount %}
-  <!-- ЦЕЛЬ ДОХОДА (главный элемент концепции) -->
+  <!-- ЦЕЛЬ ПО ДОГОВОРУ -->
   <div class="goal">
-    <div class="goal-lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{% if lang == 'kz' %}Шарт бойынша табысыңыз{% else %}Ваш доход по договору{% endif %}</div>
-    <div class="goal-sum">{{ '{:,.0f}'.format(goal_amount).replace(',',' ') }} <small>₸</small></div>
-    <div class="goal-note">{% if lang == 'kz' %}Осы мақсатқа күн сайын жақындайсыз{% else %}Вы идёте к этой сумме каждый день{% endif %}</div>
+    <div class="goal-lbl">{% if lang == 'kz' %}ШАРТ БОЙЫНША МАҚСАТЫҢЫЗ{% else %}ВАША ЦЕЛЬ ПО ДОГОВОРУ{% endif %}</div>
+    <div class="goal-sum">{{ '{:,.0f}'.format(goal_earned).replace(',',' ') }} <small>₸</small></div>
+    <div class="goal-note">{% if lang == 'kz' %}{{ '{:,.0f}'.format(goal_amount).replace(',',' ') }} ₸-дан · {{ goal_progress }}%{% else %}из {{ '{:,.0f}'.format(goal_amount).replace(',',' ') }} ₸ · {{ goal_progress }}%{% endif %}</div>
     <div class="goal-bar"><span style="width:{{ goal_progress }}%"></span></div>
-    <div class="goal-foot">
-      <span>{{ goal_progress }}% {% if lang == 'kz' %}орындалды{% else %}выполнено{% endif %}</span>
-      <span>{% if lang == 'kz' %}Қалды: {{ tasks_total - tasks_done }} тапсырма{% else %}Осталось: {{ tasks_total - tasks_done }} задач{% endif %}</span>
-    </div>
   </div>
 
   <!-- Погода + Бонусы -->
   <div class="tiles">
     <div class="tile tile-w">
-      <div class="tile-top">
-        <div><div class="tile-lbl">{% if lang == 'kz' %}Ауа райы{% else %}Погода{% endif %}</div></div>
-        <div class="tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg></div>
+      <div class="tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.9 4.9 1.4 1.4"/><path d="m17.7 17.7 1.4 1.4"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.3 17.7-1.4 1.4"/><path d="m19.1 4.9-1.4 1.4"/></svg></div>
+      <div>
+        <div class="tile-big">{% if weather %}+{{ weather.temp }}°{% else %}+28°{% endif %}</div>
+        <div class="tile-sub">{% if lang == 'kz' %}суаруға болады{% else %}полив можно{% endif %}</div>
       </div>
-      <div class="tile-big">{% if weather %}+{{ weather.temp }}°{% else %}+26°{% endif %}</div>
-      <div class="tile-sub">{% if weather %}{% if lang == 'kz' %}{{ weather.label_kz }}{% else %}{{ weather.label_ru }}{% endif %}{% else %}{% if lang == 'kz' %}Ашық{% else %}Ясно{% endif %}{% endif %} · {% if lang == 'kz' %}суаруға болады{% else %}можно поливать{% endif %}</div>
     </div>
     <div class="tile tile-b">
-      <div class="tile-top">
-        <div><div class="tile-lbl">{% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}</div></div>
-        <div class="tile-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg></div>
+      <div class="tile-ic"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></div>
+      <div>
+        <div class="tile-big">{{ user.bonus_balance }} <small>{% if lang == 'kz' %}балл{% else %}бонусов{% endif %}</small></div>
+        <div class="tile-sub">{% if lang == 'kz' %}қабылдау пунктінде{% else %}в пункте приёмки{% endif %}</div>
       </div>
-      <div class="tile-big">{{ user.bonus_balance }} <small>{% if lang == 'kz' %}балл{% else %}баллов{% endif %}</small></div>
-      <div class="tile-sub">{% if lang == 'kz' %}қабылдау пунктінде жұмсаңыз{% else %}тратьте в пункте приёмки{% endif %}</div>
     </div>
   </div>
 
   <!-- ЧТО СДЕЛАТЬ СЕГОДНЯ -->
-  <div class="today">
-    <div class="today-h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>{% if lang == 'kz' %}Бүгін не істеу керек{% else %}Что сделать сегодня{% endif %}</div>
-    {% if today_task %}
-    <div class="today-title">{{ today_task.title }}</div>
-    <div class="today-meta">{{ today_task.plot_name }} · +{{ today_task.bonus_amount }} {% if lang == 'kz' %}балл{% else %}баллов{% endif %}</div>
-    <a href="/tasks" class="today-btn">{% if lang == 'kz' %}Тапсырманы ашу{% else %}Открыть задачу{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
-    {% else %}
-    <div class="today-empty">{% if lang == 'kz' %}Бүгінге <span>бәрі орындалды</span> — керемет!{% else %}На сегодня <span>всё выполнено</span> — отлично!{% endif %}</div>
-    {% endif %}
+  <div class="today-head">
+    <b>{% if lang == 'kz' %}Бүгін не істеу керек{% else %}Что сделать сегодня{% endif %}</b>
+    <a href="/tasks">{% if lang == 'kz' %}Барлығы{% else %}Все задачи{% endif %}</a>
   </div>
+  {% set day_tasks = overdue_tasks + tasks %}
+  {% if day_tasks %}
+  {% for t in day_tasks[:3] %}
+  <a href="/tasks" class="task">
+    <div class="task-ic {% if not loop.first %}gray{% endif %}">
+      {% if loop.first %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/></svg>{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.674C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>{% endif %}
+    </div>
+    <div class="task-body">
+      <div class="task-title">{{ t.title }}</div>
+      <div class="task-meta">{{ t.plot_name }} · {% if lang == 'kz' %}фото керек{% else %}нужно фото{% endif %}</div>
+    </div>
+    <div class="task-go {% if loop.first %}on{% else %}off{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m9 18 6-6-6-6"/></svg></div>
+  </a>
+  {% endfor %}
+  {% else %}
+  <div class="today-empty">{% if lang == 'kz' %}Бүгінге <span>бәрі орындалды</span> 🎉{% else %}На сегодня <span>всё выполнено</span> 🎉{% endif %}</div>
+  {% endif %}
 
   {% else %}
   <!-- Онбординг: нет активного договора -->
-  <div class="section-title">{% if lang == 'kz' %}Жұмысты бастаңыз{% else %}Начните работу{% endif %}</div>
   <div class="card">
     <div class="step on">
       <div class="step-n">1</div>
@@ -200,68 +183,6 @@ body{background:var(--bg);color:var(--tx);}
     </div>
   </div>
   {% endif %}
-
-  <!-- Быстрые действия -->
-  <div class="section-title">{% if lang == 'kz' %}Тез әрекеттер{% else %}Быстрые действия{% endif %}</div>
-  <div class="qa-grid">
-    <a href="/agro-support" class="qa">
-      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/></svg></div>
-      <div class="qa-lbl">{% if lang == 'kz' %}Агросүйем.{% else %}Агросопр.{% endif %}</div>
-    </a>
-    <a href="/harvest" class="qa">
-      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg></div>
-      <div class="qa-lbl">{% if lang == 'kz' %}Егін{% else %}Урожай{% endif %}</div>
-    </a>
-    <a href="/trips" class="qa">
-      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg></div>
-      <div class="qa-lbl">{% if lang == 'kz' %}Рейстер{% else %}Рейсы{% endif %}</div>
-    </a>
-    <a href="/bonus-shop" class="qa">
-      <div class="qa-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div>
-      <div class="qa-lbl">{% if lang == 'kz' %}Дүкен{% else %}Магазин{% endif %}</div>
-    </a>
-  </div>
-
-  {% if has_active %}
-  {% if overdue_tasks %}
-  <div class="section-title">{% if lang == 'kz' %}Мерзімі өткен{% else %}Просроченные{% endif %}</div>
-  {% for t in overdue_tasks %}
-  <div class="rowcard overdue">
-    <div><h4>{{ t.title }}</h4><div class="meta">{{ t.plot_name }}</div></div>
-    <span class="chip chip-red">{% if lang == 'kz' %}Мерзімі өтті{% else %}Просрочена{% endif %}</span>
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% if tasks %}
-  <div class="section-title">{% if lang == 'kz' %}Жақындағы тапсырмалар{% else %}Ближайшие задачи{% endif %}</div>
-  {% for t in tasks %}
-  <div class="rowcard">
-    <div><h4>{{ t.title }}</h4><div class="meta">{{ t.plot_name }} · +{{ t.bonus_amount }} {% if lang == 'kz' %}балл{% else %}баллов{% endif %}</div></div>
-    <span class="chip {% if t.status == 'soon' %}chip-yellow{% else %}chip-blue{% endif %}">
-      {% if t.status == 'soon' %}{% if lang == 'kz' %}Жақында{% else %}Скоро{% endif %}{% else %}{% if lang == 'kz' %}Алдағы{% else %}Предстоит{% endif %}{% endif %}
-    </span>
-  </div>
-  {% endfor %}
-  {% endif %}
-  {% endif %}
-
-  <!-- Субсидии и гранты -->
-  <div class="section-title">{% if lang == 'kz' %}Субсидиялар мен гранттар{% else %}Субсидии и гранты{% endif %}</div>
-  {% if subsidies %}
-  {% for s in subsidies %}
-  <div class="card subs">
-    <h4>{{ s.title }}</h4>
-    <div class="org">{{ s.org }}{% if s.description %} · {{ s.description }}{% endif %}</div>
-    <a href="{{ s.url or 'https://egov.kz' }}" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
-  </div>
-  {% endfor %}
-  {% else %}
-  <div class="card subs">
-    <h4>{% if lang == 'kz' %}Бақ отырғызуға субсидия{% else %}Субсидия на закладку сада{% endif %}</h4>
-    <div class="org">{% if lang == 'kz' %}ҚР АШМ · шығынның 25%-ына дейін{% else %}МСХ РК · до 25% инвестзатрат{% endif %}</div>
-    <a href="https://egov.kz/cms/ru/services/pass406-6_msh" target="_blank" rel="noopener" class="btn-prem">{% if lang == 'kz' %}Өтініш беру{% else %}Подать заявку{% endif %} <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg></a>
-  </div>
-  {% endif %}
 </div>
 
 <nav class="bottom-nav">
@@ -269,17 +190,17 @@ body{background:var(--bg);color:var(--tx);}
     <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span>
     <span>{% if lang == 'kz' %}Басты{% else %}Главная{% endif %}</span>
   </a>
-  <a href="/contracts" class="nav-item">
-    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
-    <span>{% if lang == 'kz' %}Шарттар{% else %}Договоры{% endif %}</span>
-  </a>
-  <a href="/plots" class="nav-item">
-    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
-    <span>{% if lang == 'kz' %}Учаскелер{% else %}Участки{% endif %}</span>
-  </a>
   <a href="/tasks" class="nav-item">
-    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span>
-    <span>{% if lang == 'kz' %}Жоспар{% else %}План{% endif %}</span>
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m19 10-2 2 2 2"/></svg></span>
+    <span>{% if lang == 'kz' %}Тапсырмалар{% else %}Задачи{% endif %}</span>
+  </a>
+  <a href="/chat" class="nav-item">
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span>
+    <span>{% if lang == 'kz' %}Чат{% else %}Чат{% endif %}</span>
+  </a>
+  <a href="/bonus-shop" class="nav-item">
+    <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span>
+    <span>{% if lang == 'kz' %}Бонустар{% else %}Бонусы{% endif %}</span>
   </a>
 </nav>
 {% endblock %}

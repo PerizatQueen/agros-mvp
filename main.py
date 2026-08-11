@@ -246,11 +246,12 @@ def dashboard():
     tasks_total = len(tasks)
     tasks_done = len([t for t in tasks if t['status'] in ('approved', 'done')])
     goal_progress = round(tasks_done / tasks_total * 100) if tasks_total else 0
+    goal_earned = round(goal_amount * goal_progress / 100)
     today_task = (upcoming_tasks + overdue_tasks)[0] if (upcoming_tasks or overdue_tasks) else None
     return render_template('dashboard.html',
         user=user, plots=plots, contracts=active_contracts,
         tasks=upcoming_tasks, overdue_tasks=overdue_tasks, prices=prices[:4],
-        goal_amount=goal_amount, tasks_done=tasks_done, tasks_total=tasks_total,
+        goal_amount=goal_amount, goal_earned=goal_earned, tasks_done=tasks_done, tasks_total=tasks_total,
         goal_progress=goal_progress, today_task=today_task,
         has_plots=len(plots) > 0, has_contracts=len(contracts) > 0,
         has_active=len(active_contracts) > 0, subsidies=subsidies, weather=weather, lang=lang())
