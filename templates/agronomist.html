@@ -1,634 +1,176 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ 'kk' if lang=='kz' else 'ru' }}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AgrOS — {% if lang=='kz' %}Агроном панелі{% else %}Панель агронома{% endif %}</title>
+<title>AgrOS — {{ 'Агроном панелі' if lang=='kz' else 'Панель агронома' }}</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0A0C10;--panel:#0C0E13;--surface:#141821;--surface2:#1B212C;--accent:#B7FF3C;--accent2:#6EE7A8;--tx:#F3F5F8;--muted:#868F9E;--bd:rgba(255,255,255,0.06);--glow:0 0 30px rgba(183,255,60,0.15);--shadow:0 10px 34px rgba(0,0,0,0.45)}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased}
-::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#20262f;border-radius:8px}::-webkit-scrollbar-track{background:transparent}
-svg{flex:none}
-.sidebar{width:250px;background:var(--panel);height:100vh;position:fixed;left:0;top:0;border-right:1px solid var(--bd);display:flex;flex-direction:column;padding:6px}
-.sidebar-header{padding:16px 14px 6px}
-.sidebar-logo{display:flex;align-items:center;gap:10px;font-size:1.05rem;font-weight:700;color:var(--tx);letter-spacing:-.01em}
-.sidebar-logo .lm{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;color:#0A0C10}
-.sidebar-logo .lm svg{width:17px;height:17px}
-.sidebar-role{font-size:.6rem;color:var(--muted);margin-top:14px;text-transform:uppercase;letter-spacing:.14em;padding-left:2px}
-.sidebar-user{font-size:.8rem;color:var(--muted);margin-top:8px;padding:10px 12px;background:var(--surface);border:1px solid var(--bd);border-radius:12px;display:flex;align-items:center;gap:8px}
-.sidebar-user svg{width:15px;height:15px}
-.lang-bar{padding:12px 8px 6px;display:flex;gap:5px;align-items:center}
-.lang-btn{padding:5px 11px;border-radius:9px;font-size:.7rem;font-weight:700;border:1px solid var(--bd);text-decoration:none;transition:.15s;color:var(--muted);background:var(--surface)}
-.lang-btn.active{background:var(--accent);color:#0A0C10;border-color:transparent}
-.nav-section{padding:14px 14px 6px;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font-weight:600}
-.nav-link{display:flex;align-items:center;gap:11px;padding:10px 12px;margin:2px 6px;border-radius:11px;color:var(--muted);text-decoration:none;font-size:.86rem;font-weight:500;cursor:pointer;border:1px solid transparent;background:none;width:calc(100% - 12px);text-align:left;transition:.15s;position:relative}
-.nav-link svg{width:18px;height:18px}
-.nav-link:hover{background:var(--surface);color:var(--tx)}
-.nav-link.active{background:linear-gradient(90deg,rgba(183,255,60,.14),rgba(183,255,60,.03));color:var(--accent);font-weight:600;border-color:rgba(183,255,60,.14);box-shadow:var(--glow)}
-.nav-link.active::before{content:'';position:absolute;left:-6px;top:9px;bottom:9px;width:3px;border-radius:3px;background:var(--accent)}
-.nav-link.danger:hover{background:rgba(248,113,113,.08);color:#f87171}
-.sidebar-bottom{margin-top:auto;padding:8px 0 6px;border-top:1px solid var(--bd)}
-.main{margin-left:250px;padding:34px 40px;min-height:100vh;max-width:1440px}
-.page{display:none}.page.active{display:block;animation:fade .25s ease}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-.page-title{font-size:1.55rem;font-weight:700;color:var(--tx);letter-spacing:-.02em}
-.page-sub{font-size:.84rem;color:var(--muted);margin-top:4px}
-.topbar-badge{background:rgba(183,255,60,.1);color:var(--accent);padding:7px 15px;border-radius:999px;font-size:.76rem;font-weight:600;border:1px solid rgba(183,255,60,.18)}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;margin-bottom:30px}
-.stat-card{background:linear-gradient(160deg,var(--surface),#0F131A);border-radius:18px;padding:22px;border:1px solid var(--bd);position:relative;overflow:hidden;box-shadow:var(--shadow)}
-.stat-card::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(183,255,60,.14),transparent 70%)}
-.stat-card.blue::before{background:radial-gradient(circle,rgba(110,231,168,.14),transparent 70%)}
-.stat-val{font-size:2.4rem;font-weight:700;color:var(--tx);line-height:1;letter-spacing:-.03em}
-.stat-val.green{color:var(--accent)}.stat-val.blue{color:var(--accent2)}.stat-val.yellow{color:#FCD34D}.stat-val.red{color:#F87171}
-.stat-lbl{font-size:.76rem;color:var(--muted);margin-top:10px}
-.card{background:linear-gradient(160deg,var(--surface),#10141B);border-radius:18px;padding:22px;border:1px solid var(--bd);margin-bottom:16px;box-shadow:var(--shadow)}
-.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.card-title{font-weight:600;color:var(--tx);font-size:.98rem}
-.card-count{font-size:.72rem;color:var(--muted);background:var(--surface2);padding:3px 11px;border-radius:999px}
-table{width:100%;border-collapse:collapse}
-th{color:var(--muted);padding:0 14px 12px;text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;font-weight:600;border-bottom:1px solid var(--bd)}
-td{padding:14px;border-bottom:1px solid var(--bd);font-size:.86rem;color:#D7DCE3;vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tbody tr{transition:.12s}tbody tr:hover td{background:rgba(255,255,255,.02)}
-.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:999px;font-size:.7rem;font-weight:600}
-.badge-green{background:rgba(183,255,60,.12);color:var(--accent)}
-.badge-yellow{background:rgba(252,211,77,.12);color:#FCD34D}
-.badge-red{background:rgba(248,113,113,.13);color:#F87171}
-.badge-blue{background:rgba(110,231,168,.12);color:var(--accent2)}
-.badge-gray{background:rgba(134,143,158,.12);color:var(--muted)}
-.btn{padding:9px 16px;border-radius:11px;font-weight:600;font-size:.8rem;border:none;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
-.btn svg{width:15px;height:15px}
-.btn-approve,.btn-primary,.btn-green{background:var(--accent);color:#0A0C10}
-.btn-approve:hover,.btn-primary:hover,.btn-green:hover{box-shadow:var(--glow);opacity:.95}
-.btn-save{background:var(--accent);color:#0A0C10;font-weight:700;letter-spacing:.01em}.btn-save:hover{box-shadow:var(--glow);opacity:.95}
-.btn-reject,.btn-danger{background:rgba(248,113,113,.12);color:#F87171;border:1px solid rgba(248,113,113,.28)}
-.btn-reject:hover,.btn-danger:hover{background:rgba(248,113,113,.18)}
-.ig label{display:block;font-size:.74rem;color:var(--muted);margin-bottom:6px}
-.ig input,.ig select,.ig textarea{width:100%;background:var(--surface2);border:1px solid var(--bd);border-radius:12px;padding:11px 13px;color:var(--tx);font-size:.9rem;outline:none;transition:.15s}
-.ig input:focus,.ig select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(183,255,60,.1)}
-.ftabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-.ftab{padding:8px 15px;border-radius:11px;border:1px solid var(--bd);color:var(--muted);background:var(--surface);cursor:pointer;font-size:.8rem;font-weight:500;transition:.15s}
-.ftab:hover{color:var(--tx)}
-.ftab.active{background:var(--accent);color:#0A0C10;border-color:transparent;font-weight:600}
-.alert-success{background:rgba(183,255,60,.08);border:1px solid rgba(183,255,60,.25);border-radius:12px;padding:12px 16px;color:var(--accent);margin-bottom:16px;display:none;font-size:.85rem}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.bonus-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--bd)}.bonus-item:last-child{border-bottom:none}
-.empty-state{text-align:center;padding:48px 20px;color:var(--muted);font-size:.9rem}
-.logout-link{margin-left:auto;font-size:.72rem;color:#F87171;text-decoration:none;border:1px solid rgba(248,113,113,.3);padding:5px 10px;border-radius:9px}
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F3F5F1;--surface:#FFFFFF;--forest:#123A1E;--forest2:#1B4D2A;--green:#16A34A;--lime:#C6F24E;
+  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 4px 14px rgba(18,58,30,.06);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh;}
+.ic{width:20px;height:20px;display:block;flex:none;stroke-width:2;}
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--forest);color:#fff;flex:none;display:flex;flex-direction:column;padding:18px 14px;position:sticky;top:0;height:100vh;}
+.logo{display:flex;align-items:center;gap:10px;padding:6px 8px 20px;}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--lime));display:flex;align-items:center;justify-content:center;color:var(--forest);font-weight:900;font-size:1.05rem;}
+.logo-name{font-size:1.05rem;font-weight:800;}
+.nav{display:flex;flex-direction:column;gap:3px;}
+.nav a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;color:rgba(255,255,255,.72);text-decoration:none;font-size:.88rem;font-weight:600;transition:.15s;}
+.nav a:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav a.active{background:rgba(255,255,255,.1);color:#fff;}
+.nav a .ic{width:18px;height:18px;}
+.nav a .badge{margin-left:auto;background:var(--lime);color:var(--forest);font-size:.68rem;font-weight:800;padding:1px 8px;border-radius:99px;}
+.nav-cat{font-size:.66rem;font-weight:800;letter-spacing:.08em;color:rgba(255,255,255,.4);padding:16px 12px 6px;}
+.side-foot{margin-top:auto;padding-top:12px;}
+.side-foot a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:9px;padding:10px 12px;}
+/* MAIN */
+.main{flex:1;min-width:0;padding:22px 26px;}
+.topbar{display:flex;align-items:center;gap:16px;margin-bottom:22px;}
+.topbar h1{font-size:1.5rem;font-weight:800;flex:none;}
+.search{flex:1;max-width:360px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:10px 14px;color:var(--muted);}
+.search .ic{width:16px;height:16px;}
+.search input{border:none;outline:none;background:transparent;flex:1;font-size:.9rem;color:var(--tx);}
+.me{margin-left:auto;display:flex;align-items:center;gap:9px;}
+.me .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#8BD450,#C6F24E);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--forest);font-size:.78rem;}
+.me span{font-size:.88rem;font-weight:700;}
+.me a{color:var(--muted);text-decoration:none;font-size:.8rem;font-weight:600;margin-left:6px;}
+.lang{display:flex;gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:10px;padding:3px;margin-left:6px;}
+.lang a{padding:4px 8px;border-radius:7px;font-size:.68rem;font-weight:800;text-decoration:none;color:var(--muted);}
+.lang a.active{background:var(--forest);color:#fff;}
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.stat{background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);}
+.stat-top{display:flex;justify-content:space-between;align-items:flex-start;}
+.stat-lbl{font-size:.78rem;color:var(--muted);font-weight:600;}
+.stat-ic{width:32px;height:32px;border-radius:10px;background:#EAF7E0;color:var(--green);display:flex;align-items:center;justify-content:center;}
+.stat-ic .ic{width:17px;height:17px;}
+.stat-num{font-size:1.9rem;font-weight:900;margin:10px 0 3px;}
+.stat-note{font-size:.74rem;color:var(--muted);font-weight:600;}
+.stat-note.warn{color:#B45309;}.stat-note.up{color:var(--green);}
+/* TABLE CARD */
+.tcard{background:var(--surface);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;}
+.tcard-head{display:flex;align-items:center;gap:12px;padding:18px 20px;flex-wrap:wrap;}
+.tcard-head h2{font-size:1.1rem;font-weight:800;flex:none;}
+.chips{display:flex;gap:7px;margin-left:auto;flex-wrap:wrap;}
+.fchip{padding:6px 13px;border-radius:99px;font-size:.76rem;font-weight:700;border:1px solid var(--bd);background:var(--bg);color:var(--muted);cursor:pointer;}
+.fchip.active{background:var(--forest);color:#fff;border-color:transparent;}
+table{width:100%;border-collapse:collapse;}
+thead th{text-align:left;font-size:.68rem;font-weight:800;letter-spacing:.05em;color:var(--muted);padding:10px 20px;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);text-transform:uppercase;}
+tbody td{padding:14px 20px;border-bottom:1px solid var(--bd);font-size:.9rem;vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:#FAFBF8;cursor:pointer;}
+.f-cell{display:flex;align-items:center;gap:11px;}
+.f-ava{width:36px;height:36px;border-radius:50%;background:#EAF7E0;color:var(--forest);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.76rem;flex:none;}
+.f-name{font-weight:700;}.f-sub{font-size:.74rem;color:var(--muted);}
+.prog{display:flex;align-items:center;gap:9px;}
+.prog-bar{width:90px;height:7px;border-radius:99px;background:#E7ECE2;overflow:hidden;}
+.prog-bar span{display:block;height:100%;border-radius:99px;background:var(--green);}
+.prog-v{font-size:.82rem;font-weight:700;color:var(--muted);}
+.st{display:inline-block;padding:5px 11px;border-radius:99px;font-size:.72rem;font-weight:800;}
+.st-review{background:#FEF3C7;color:#B45309;}.st-work{background:#DCFCE7;color:#15803D;}
+.st-overdue{background:#FEE2E2;color:#B91C1C;}.st-ready{background:#E7ECE2;color:#3F5340;}
+.prob{font-weight:800;}.prob.low{color:#B91C1C;}.prob.mid{color:#B45309;}.prob.hi{color:#15803D;}
+@media(max-width:860px){.sidebar{display:none;}.stats{grid-template-columns:1fr 1fr;}.main{padding:16px;}table{font-size:.82rem;}}
 </style>
 </head>
 <body>
+<aside class="sidebar">
+  <div class="logo"><div class="logo-mark">A</div><div class="logo-name">AgrOS</div></div>
+  <nav class="nav">
+    <a href="#" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg> {{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {{ 'Тексеруге есептер' if lang=='kz' else 'Отчёты на проверку' }} {% if agro_stats.reports %}<span class="badge">{{ agro_stats.reports }}</span>{% endif %}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> {{ 'Тапсырмалар мен жоспар' if lang=='kz' else 'Задачи и план' }}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg> {{ 'Шарттар' if lang=='kz' else 'Договоры' }}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> {{ 'Хабарламалар' if lang=='kz' else 'Сообщения' }}</a>
+    <div class="nav-cat">{{ 'АНЫҚТАМАЛАР' if lang=='kz' else 'СПРАВОЧНИКИ' }}</div>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> {{ 'Дақыл тех. карталары' if lang=='kz' else 'Тех. карты культур' }}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg> {{ 'Бонустар мен тауарлар' if lang=='kz' else 'Бонусы и товары' }}</a>
+  </nav>
+  <div class="side-foot"><a href="/logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> {{ 'Шығу' if lang=='kz' else 'Выйти' }}</a></div>
+</aside>
 
-<div class="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-logo"><span class="lm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span> AgrOS</div>
-    <div class="sidebar-role">{% if lang=='kz' %}Агроном панелі{% else %}Панель агронома{% endif %}</div>
-    <div class="sidebar-user"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> {{ user_name }}</div>
-  </div>
-
-  <div class="lang-bar">
-    <a href="/set-lang/ru" class="lang-btn {% if lang!='kz' %}active{% endif %}">RU</a>
-    <a href="/set-lang/kz" class="lang-btn {% if lang=='kz' %}active{% endif %}">ҚАЗ</a>
-  </div>
-
-  <div class="nav-section">{% if lang=='kz' %}Жұмыс{% else %}Работа{% endif %}</div>
-  <button class="nav-link active" onclick="showPage('dashboard',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg> {% if lang=='kz' %}Шолу{% else %}Обзор{% endif %}</button>
-  <button class="nav-link" onclick="showPage('contracts',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg> {% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</button>
-  <button class="nav-link" onclick="showPage('tasks',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg> {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</button>
-  <button class="nav-link" onclick="showPage('farmers',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</button>
-  <button class="nav-link" onclick="showPage('create',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg> {% if lang=='kz' %}Құру{% else %}Создать{% endif %}</button>
-  <button class="nav-link" onclick="showPage('templates',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg> {% if lang=='kz' %}Шаблондар{% else %}Шаблоны{% endif %}</button>
-  <button class="nav-link" onclick="showPage('trips',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg> {% if lang=='kz' %}Рейстер{% else %}Рейсы{% endif %}</button>
-  <button class="nav-link" onclick="showPage('orders',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5"/><path d="M12 22V12"/></svg> {% if lang=='kz' %}Тапсырыстар{% else %}Заказы{% endif %}</button>
-  <button class="nav-link" onclick="showPage('journal',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg> {% if lang=='kz' %}Журнал{% else %}Журнал{% endif %}</button>
-  <a href="/agronomist/chat" class="nav-link"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> {% if lang=='kz' %}Чат{% else %}Чат{% endif %}</a>
-
-  <div class="nav-section">{% if lang=='kz' %}Баға{% else %}Цены{% endif %}</div>
-  <button class="nav-link" onclick="showPage('prices',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg> {% if lang=='kz' %}Бағалар{% else %}Цены{% endif %}</button>
-
-  <div class="nav-section">{% if lang=='kz' %}Құралдар{% else %}Инструменты{% endif %}</div>
-  <button class="nav-link" onclick="showPage('calc',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg> {% if lang=='kz' %}Калькулятор{% else %}Калькулятор{% endif %}</button>
-
-  <div class="sidebar-bottom">
-    <a href="/logout" class="nav-link danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> {% if lang=='kz' %}Шығу{% else %}Выйти{% endif %}</a>
-  </div>
-</div>
-
-<div class="main">
-
-<!-- DASHBOARD -->
-<div id="page-dashboard" class="page active">
+<main class="main">
   <div class="topbar">
-    <div>
-      <div class="page-title">{% if lang=='kz' %}Жалпы шолу{% else %}Общий обзор{% endif %}</div>
-      <div class="page-sub">{% if lang=='kz' %}Фермерлердің ағымдағы жағдайы{% else %}Текущее состояние фермеров{% endif %}</div>
-    </div>
-    <div class="topbar-badge"> {% if lang=='kz' %}Агроном{% else %}Агроном{% endif %}</div>
-  </div>
-  <div class="stats-grid">
-    <div class="stat-card"><div class="stat-val">{{ stats.farmers }}</div><div class="stat-lbl"> {% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div></div>
-    <div class="stat-card"><div class="stat-val">{{ stats.plots }}</div><div class="stat-lbl"> {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</div></div>
-    <div class="stat-card blue"><div class="stat-val blue">{{ stats.active_contracts }}</div><div class="stat-lbl"> {% if lang=='kz' %}Белсенді шарттар{% else %}Активных договоров{% endif %}</div></div>
-    <div class="stat-card yellow"><div class="stat-val yellow">{{ stats.pending_contracts }}</div><div class="stat-lbl"> {% if lang=='kz' %}Бекітуді күтуде{% else %}На рассмотрении{% endif %}</div></div>
-    <div class="stat-card"><div class="stat-val">{{ stats.pending_tasks }}</div><div class="stat-lbl"> {% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</div></div>
-  </div>
-
-  {% if pending_contracts %}
-  <div class="card">
-    <div class="card-header">
-      <div class="card-title"> {% if lang=='kz' %}Бекітуді күтетін шарттар{% else %}Договоры на рассмотрении{% endif %}</div>
-      <div class="card-count">{{ pending_contracts|length }}</div>
-    </div>
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-      <th>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</th>
-      <th>{% if lang=='kz' %}Сомасы{% else %}Сумма{% endif %}</th>
-      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-    </tr></thead><tbody>
-    {% for c in pending_contracts %}
-    <tr>
-      <td><strong>{{ c.farmer_name }}</strong></td>
-      <td>{{ c.plot_name }}</td>
-      <td><strong>{{ '{:,.0f}'.format(c.total_amount) }} ₸</strong></td>
-      <td style="display:flex;gap:8px">
-        <button class="btn btn-approve" onclick="approveContract('{{ c.id }}')"> {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>
-        <button class="btn btn-reject" onclick="rejectContract('{{ c.id }}')"> {% if lang=='kz' %}Қабылдамау{% else %}Отклонить{% endif %}</button>
-      </td>
-    </tr>
-    {% endfor %}
-    </tbody></table>
-  </div>
-  {% else %}
-  <div class="card"><div class="empty-state"> {% if lang=='kz' %}Күтудегі шарттар жоқ{% else %}Нет договоров на рассмотрении{% endif %}</div></div>
-  {% endif %}
-</div>
-
-<!-- CONTRACTS -->
-<div id="page-contracts" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">{% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Барлық сатып алу шарттары{% else %}Все договоры закупки{% endif %}</div>
-  </div></div>
-  <div class="ftabs">
-    <button class="ftab active" onclick="filterC('all',this)">{% if lang=='kz' %}Барлығы{% else %}Все{% endif %}</button>
-    <button class="ftab" onclick="filterC('pending',this)"> {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}</button>
-    <button class="ftab" onclick="filterC('active',this)"> {% if lang=='kz' %}Белсенді{% else %}Активные{% endif %}</button>
-    <button class="ftab" onclick="filterC('rejected',this)"> {% if lang=='kz' %}Қабылданбаған{% else %}Отклонённые{% endif %}</button>
-  </div>
-  <div class="card">
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-      <th>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</th>
-      <th>{% if lang=='kz' %}Сомасы{% else %}Сумма{% endif %}</th>
-      <th>{% if lang=='kz' %}Күні{% else %}Дата{% endif %}</th>
-      <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
-      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-    </tr></thead>
-    <tbody id="ctable">
-    {% for c in all_contracts %}
-    <tr data-status="{{ c.status }}">
-      <td><strong>{{ c.farmer_name }}</strong></td>
-      <td>{{ c.plot_name }}</td>
-      <td>{{ '{:,.0f}'.format(c.total_amount) }} ₸</td>
-      <td style="color:#2d6a4f">{{ c.created_at[:10] if c.created_at else '' }}</td>
-      <td><span class="badge {% if c.status=='active' %}badge-green{% elif c.status=='pending' %}badge-yellow{% elif c.status=='awaiting_sign' %}badge-blue{% else %}badge-red{% endif %}">
-        {% if c.status=='active' %} {% if lang=='kz' %}Белсенді{% else %}Активный{% endif %}
-        {% elif c.status=='pending' %} {% if lang=='kz' %}Күтуде{% else %}На рассмотрении{% endif %}
-        {% elif c.status=='awaiting_sign' %} {% if lang=='kz' %}Қол күтуде{% else %}Ожидает подписи{% endif %}
-        {% elif c.status=='rejected' %} {% if lang=='kz' %}Қабылданбаған{% else %}Отклонён{% endif %}
-        {% else %}{{ c.status }}{% endif %}
-      </span></td>
-      <td>{% if c.status=='pending' %}<button class="btn btn-approve" onclick="approveContract('{{ c.id }}')"> {% if lang=='kz' %}Бекіту{% else %}Одобрить{% endif %}</button>{% endif %}</td>
-    </tr>
-    {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Шарттар жоқ{% else %}Нет договоров{% endif %}</div></td></tr>{% endfor %}
-    </tbody></table>
-  </div>
-</div>
-
-<!-- TASKS -->
-<div id="page-tasks" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">{% if lang=='kz' %}Тапсырмалар{% else %}Задачи{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Агротехникалық тапсырмаларды бекіту{% else %}Подтверждение агротехнических задач{% endif %}</div>
-  </div></div>
-  <div class="card">
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Тапсырма{% else %}Задача{% endif %}</th>
-      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-      <th>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</th>
-      <th>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</th>
-      <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
-      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-    </tr></thead>
-    <tbody>
-    {% for t in all_tasks %}
-    <tr>
-      <td><strong>{{ t.title }}</strong>
-        {% if t.report_note %}<div style="font-size:0.75rem;color:#6ee7b7;margin-top:3px"> {{ t.report_note }}</div>{% endif %}
-        {% if t.photo_url %}<a href="javascript:void(0)" onclick="showPhoto('{{ t.photo_url }}')" style="font-size:0.75rem;color:#60a5fa;cursor:pointer;text-decoration:underline">{% if lang=='kz' %}фото көру{% else %}смотреть фото{% endif %}</a>{% endif %}
-      </td>
-      <td>{{ t.farmer_name }}</td>
-      <td>{{ t.plot_name }}</td>
-      <td style="color:#4ade80;font-weight:700">+{{ t.bonus_amount }} </td>
-      <td><span class="badge {% if t.status=='approved' %}badge-green{% elif t.status=='overdue' %}badge-red{% elif t.status in ['soon','review'] %}badge-yellow{% else %}badge-blue{% endif %}">
-        {% if t.status=='approved' %} {% if lang=='kz' %}Бекітілді{% else %}Подтверждено{% endif %}
-        {% elif t.status=='review' %} {% if lang=='kz' %}Тексеруде{% else %}На проверке{% endif %}
-        {% elif t.status=='overdue' %} {% if lang=='kz' %}Мерзімі өтті{% else %}Просрочено{% endif %}
-        {% elif t.status=='soon' %} {% if lang=='kz' %}Жақында{% else %}Скоро{% endif %}
-        {% elif t.status=='upcoming' %} {% if lang=='kz' %}Алдағы{% else %}Предстоит{% endif %}
-        {% else %}{{ t.status }}{% endif %}
-      </span></td>
-      <td>{% if t.status!='approved' %}<button class="btn btn-approve" onclick="approveTask('{{ t.id }}')"> {% if lang=='kz' %}Бекіту{% else %}Подтвердить{% endif %}</button>{% else %}<span style="color:#4ade80"></span>{% endif %}</td>
-    </tr>
-    {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Тапсырмалар жоқ{% else %}Нет задач{% endif %}</div></td></tr>{% endfor %}
-    </tbody></table>
-  </div>
-</div>
-
-<!-- FARMERS -->
-<div id="page-farmers" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">{% if lang=='kz' %}Фермерлер{% else %}Фермеры{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Тіркелген пайдаланушылар{% else %}Зарегистрированные пользователи{% endif %}</div>
-  </div></div>
-  <div class="card">
-    <div class="card-header"><div class="card-title"> {% if lang=='kz' %}Барлық фермерлер{% else %}Все фермеры{% endif %}</div><div class="card-count">{{ farmers|length }}</div></div>
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</th>
-      <th>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</th>
-      <th>{% if lang=='kz' %}Бонустар{% else %}Бонусы{% endif %}</th>
-      <th>{% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</th>
-      <th>{% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</th>
-    </tr></thead>
-    <tbody>
-    {% for f in farmers %}
-    <tr>
-      <td><strong>{{ f.name }}</strong></td>
-      <td style="color:#6ee7b7">+7{{ f.phone }}</td>
-      <td><span style="color:#4ade80;font-weight:700">{{ f.bonus_balance }} </span></td>
-      <td>{{ f.plots_count }}</td>
-      <td>{{ f.contracts_count }}</td>
-    </tr>
-    {% else %}<tr><td colspan="5"><div class="empty-state">{% if lang=='kz' %}Фермерлер жоқ{% else %}Нет фермеров{% endif %}</div></td></tr>{% endfor %}
-    </tbody></table>
-  </div>
-</div>
-
-<!-- CREATE (онбординг от имени фермера) -->
-<div id="page-create" class="page">
-  <div class="topbar"><div>
-    <div class="page-title"> {% if lang=='kz' %}Фермер атынан құру{% else %}Создание от имени фермера{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Офлайн-онбординг{% else %}Офлайн-онбординг фермеров{% endif %}</div>
-  </div></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
-    <div class="card">
-      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Жаңа фермер{% else %}Новый фермер{% endif %}</div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Аты-жөні{% else %}ФИО{% endif %}</label><input id="nf_name"></div>
-      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Телефон{% else %}Телефон{% endif %}</label><input id="nf_phone" placeholder="7001234567"></div>
-      <button class="btn btn-approve" style="width:100%" onclick="agroCreateFarmer()">{% if lang=='kz' %}Фермер құру{% else %}Создать фермера{% endif %}</button>
-    </div>
-    <div class="card">
-      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Участок{% else %}Участок{% endif %}</div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
-        <select id="pl_farmer" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Атауы{% else %}Название{% endif %}</label><input id="pl_name"></div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Аудан (га){% else %}Площадь (га){% endif %}</label><input id="pl_area" type="number"></div>
-      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Бақ түрі{% else %}Тип сада{% endif %}</label>
-        <select id="pl_garden" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">
-          <option value="экстенсивный">{% if lang=='kz' %}Экстенсивті{% else %}Экстенсивный{% endif %}</option>
-          <option value="полуинтенсивный">{% if lang=='kz' %}Жартылай{% else %}Полуинтенсивный{% endif %}</option>
-          <option value="интенсивный" selected>{% if lang=='kz' %}Интенсивті{% else %}Интенсивный{% endif %}</option>
-          <option value="суперинтенсивный">{% if lang=='kz' %}Супер{% else %}Суперинтенсивный{% endif %}</option>
-        </select></div>
-      <button class="btn btn-approve" style="width:100%" onclick="agroCreatePlot()">{% if lang=='kz' %}Участок құру{% else %}Создать участок{% endif %}</button>
-    </div>
-    <div class="card">
-      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Шарт{% else %}Договор{% endif %}</div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
-        <select id="ct_farmer" onchange="fillPlots()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Участок{% else %}Участок{% endif %}</label><select id="ct_plot" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0"></select></div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</label><input id="ct_variety" placeholder="Гала"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div class="ig"><label>{% if lang=='kz' %}Көлемі (кг){% else %}Объём (кг){% endif %}</label><input id="ct_vol" type="number"></div>
-        <div class="ig"><label>{% if lang=='kz' %}Баға ₸/кг{% else %}Цена ₸/кг{% endif %}</label><input id="ct_price" type="number"></div>
-      </div>
-      <button class="btn btn-approve" style="width:100%" onclick="agroCreateContract()">{% if lang=='kz' %}Шарт құру{% else %}Создать договор{% endif %}</button>
-    </div>
-    <div class="card">
-      <div class="card-title" style="margin-bottom:14px"> {% if lang=='kz' %}Тапсырма{% else %}Задача фермеру{% endif %}</div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</label>
-        <select id="tk_farmer" onchange="fillTaskPlots()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0">{% for f in farmers %}<option value="{{ f.id }}">{{ f.name }}</option>{% endfor %}</select></div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Учаске{% else %}Участок{% endif %}</label><select id="tk_plot" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0"></select></div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Тапсырма{% else %}Название задачи{% endif %}</label><input id="tk_title" placeholder="{% if lang=='kz' %}Суару{% else %}Полив сада{% endif %}"></div>
-      <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Сипаттама{% else %}Описание{% endif %}</label><input id="tk_desc"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div class="ig"><label>{% if lang=='kz' %}Ай (7–12){% else %}Месяц (7–12){% endif %}</label><input id="tk_month" type="number" value="7"></div>
-        <div class="ig"><label>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</label><input id="tk_bonus" type="number" value="20"></div>
-      </div>
-      <button class="btn btn-approve" style="width:100%" onclick="agroCreateTask()">{% if lang=='kz' %}Тапсырма құру{% else %}Создать задачу{% endif %}</button>
+    <h1>{{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</h1>
+    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="fsearch" oninput="filterFarmers()" placeholder="{{ 'Аты немесе дақыл бойынша іздеу…' if lang=='kz' else 'Поиск по имени или культуре…' }}"></div>
+    <div class="me">
+      <div class="lang"><a href="/set-lang/ru" class="{% if lang!='kz' %}active{% endif %}">RU</a><a href="/set-lang/kz" class="{% if lang=='kz' %}active{% endif %}">ҚАЗ</a></div>
+      <div class="ava">{{ (user_name or 'АГ')[:2]|upper }}</div>
+      <span>{{ user_name or ('Агроном' if lang!='kz' else 'Агроном') }}</span>
     </div>
   </div>
-</div>
 
-<!-- CARE TEMPLATES -->
-<div id="page-templates" class="page">
-  <div class="topbar">
-    <div>
-      <div class="page-title"> {% if lang=='kz' %}Күтім жоспарының шаблондары{% else %}Шаблоны плана ухода{% endif %}</div>
-      <div class="page-sub">{% if lang=='kz' %}Шарт қол қойылғанда осы тапсырмалар автоматты құрылады{% else %}Эти задачи автоматически создаются при подписании договора{% endif %}</div>
-    </div>
-    <button class="btn btn-approve" onclick="document.getElementById('addTpl').style.display='block'">+ {% if lang=='kz' %}Қосу{% else %}Добавить{% endif %}</button>
+  <div class="stats">
+    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Бақылаудағы фермерлер' if lang=='kz' else 'Фермеров под контролем' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/></svg></div></div><div class="stat-num">{{ agro_stats.farmers }}</div><div class="stat-note up">{{ 'осы аптада бақылауда' if lang=='kz' else 'все под контролем' }}</div></div>
+    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Тексеруге есептер' if lang=='kz' else 'Отчётов на проверке' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div></div><div class="stat-num">{{ agro_stats.reports }}</div><div class="stat-note">{{ 'шешім күтуде' if lang=='kz' else 'ждут решения' }}</div></div>
+    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Мерзімі өткен тапсырмалар' if lang=='kz' else 'Просрочки задач' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div></div><div class="stat-num">{{ agro_stats.overdue }}</div><div class="stat-note warn">{{ 'назар аудару қажет' if lang=='kz' else 'требуют внимания' }}</div></div>
+    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Орташа жоспар прогресі' if lang=='kz' else 'Средний прогресс плана' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="11" width="3" height="7" rx="1"/><rect x="12" y="7" width="3" height="11" rx="1"/><rect x="17" y="13" width="3" height="5" rx="1"/></svg></div></div><div class="stat-num">{{ agro_stats.avg_progress }}%</div><div class="stat-note up">{{ 'жоспар бойынша' if lang=='kz' else 'по плану ухода' }}</div></div>
   </div>
-  <div id="addTpl" class="card" style="display:none">
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-bottom:10px">
-      <div class="ig"><label>{% if lang=='kz' %}Тапсырма{% else %}Название задачи{% endif %}</label><input id="tpl_title"></div>
-      <div class="ig"><label>{% if lang=='kz' %}Ай (7–12){% else %}Месяц (7–12){% endif %}</label><input id="tpl_month" type="number" value="7"></div>
-      <div class="ig"><label>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</label><input id="tpl_bonus" type="number" value="20"></div>
-    </div>
-    <div class="ig" style="margin-bottom:10px"><label>{% if lang=='kz' %}Сипаттама{% else %}Описание{% endif %}</label><input id="tpl_desc"></div>
-    <div style="display:flex;gap:10px">
-      <button class="btn btn-save" onclick="addTemplate()">{% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
-      <button class="btn btn-reject" onclick="document.getElementById('addTpl').style.display='none'">{% if lang=='kz' %}Болдырмау{% else %}Отмена{% endif %}</button>
-    </div>
-  </div>
-  <div class="card">
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Тапсырма{% else %}Задача{% endif %}</th>
-      <th>{% if lang=='kz' %}Ай{% else %}Месяц{% endif %}</th>
-      <th>{% if lang=='kz' %}Бонус{% else %}Бонус{% endif %}</th>
-      <th></th>
-    </tr></thead><tbody>
-    {% for t in care_templates %}
-    <tr>
-      <td><strong>{{ t.title }}</strong>{% if t.description %}<div style="font-size:0.75rem;color:#2d6a4f">{{ t.description }}</div>{% endif %}</td>
-      <td>{{ t.month }}</td>
-      <td style="color:#4ade80">+{{ t.bonus_amount }}</td>
-      <td><button class="btn btn-reject" onclick="delTemplate('{{ t.id }}')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg></button></td>
-    </tr>
-    {% else %}<tr><td colspan="4"><div class="empty-state">{% if lang=='kz' %}Шаблондар жоқ — стандартты жоспар қолданылады{% else %}Шаблонов нет — используется стандартный план (5 задач){% endif %}</div></td></tr>{% endfor %}
-    </tbody></table>
-  </div>
-</div>
 
-<!-- TRIPS -->
-<div id="page-trips" class="page">
-  <div class="topbar"><div>
-    <div class="page-title"> {% if lang=='kz' %}Рейстер / қабылдау{% else %}Рейсы / приёмка{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Егін тапсыруды бақылау{% else %}Контроль сдачи урожая{% endif %}</div>
-  </div></div>
-  <div class="card">
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-      <th>{% if lang=='kz' %}Жүк{% else %}Груз{% endif %}</th>
-      <th>{% if lang=='kz' %}Көлемі{% else %}Объём{% endif %}</th>
-      <th>{% if lang=='kz' %}Бағыт{% else %}Назначение{% endif %}</th>
-      <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
-      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-    </tr></thead><tbody>
-    {% for t in all_trips %}
-    <tr>
-      <td><strong>{{ t.farmer_name }}</strong></td>
-      <td>{% if t.cargo_type == 'commercial' %} {% if lang=='kz' %}Тауарлы{% else %}Товарные{% endif %}{% else %} {% if lang=='kz' %}Жерге түскен{% else %}Падалица{% endif %}{% endif %}</td>
-      <td>{{ '{:,.0f}'.format((t.volume_kg or 0)|float) }} кг</td>
-      <td>{% if t.destination=='warehouse' %} {% if lang=='kz' %}Қойма{% else %}Плодохран.{% endif %}{% elif t.destination=='factory' %} {% if lang=='kz' %}Зауыт{% else %}Завод{% endif %}{% else %} {% if lang=='kz' %}Пункт{% else %}Пункт приёма{% endif %}{% endif %}</td>
-      <td><span class="badge {% if t.status in ['paid','completed'] %}badge-green{% elif t.status=='received' %}badge-yellow{% elif t.status=='cancelled' %}badge-red{% else %}badge-blue{% endif %}">
-        {% if t.status=='planned' %}{% if lang=='kz' %}Жоспарланды{% else %}Запланирован{% endif %}
-        {% elif t.status=='confirmed' %}{% if lang=='kz' %}Расталды{% else %}Подтверждён{% endif %}
-        {% elif t.status=='received' %}{% if lang=='kz' %}Қабылданды{% else %}Приёмка завершена{% endif %}
-        {% elif t.status=='paid' %}{% if lang=='kz' %}Төлем{% else %}Оплата отправлена{% endif %}
-        {% elif t.status=='completed' %}{% if lang=='kz' %}Аяқталды{% else %}Завершён{% endif %}
-        {% else %}{{ t.status }}{% endif %}
-      </span></td>
-      <td>
-        {% if t.status == 'planned' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Растау{% else %}Подтвердить{% endif %}</button>
-        {% elif t.status == 'confirmed' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Қабылдау{% else %}Приёмка{% endif %}</button>
-        {% elif t.status == 'received' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Төлем{% else %}Оплата{% endif %}</button>
-        {% elif t.status == 'paid' %}<button class="btn btn-approve" onclick="advanceTrip('{{ t.id }}')"> {% if lang=='kz' %}Жабу{% else %}Завершить{% endif %}</button>
-        {% else %}<span style="color:#4ade80"></span>{% endif %}
-      </td>
-    </tr>
-    {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Рейстер жоқ{% else %}Нет рейсов{% endif %}</div></td></tr>{% endfor %}
-    </tbody></table>
-  </div>
-</div>
-
-<!-- ORDERS (агросопровождение) -->
-<div id="page-orders" class="page">
-  <div class="topbar"><div>
-    <div class="page-title"> {% if lang=='kz' %}Агросүйемелдеу тапсырыстары{% else %}Заказы агросопровождения{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Фермер тапсырыстарын бекіту{% else %}Одобрение заказов фермеров{% endif %}</div>
-  </div></div>
-  <div class="card">
-    <table><thead><tr>
-      <th>{% if lang=='kz' %}Фермер{% else %}Фермер{% endif %}</th>
-      <th>{% if lang=='kz' %}Тауар{% else %}Товар{% endif %}</th>
-      <th>{% if lang=='kz' %}Сомасы{% else %}Сумма{% endif %}</th>
-      <th>{% if lang=='kz' %}Төлем{% else %}Оплата{% endif %}</th>
-      <th>{% if lang=='kz' %}Мәртебесі{% else %}Статус{% endif %}</th>
-      <th>{% if lang=='kz' %}Іс-әрекет{% else %}Действие{% endif %}</th>
-    </tr></thead><tbody>
-    {% for o in all_orders %}
-    <tr>
-      <td><strong>{{ o.farmer_name }}</strong></td>
-      <td>{{ o.item_name }} × {{ o.quantity|int }}</td>
-      <td>{{ '{:,.0f}'.format((o.total_amount or 0)|float) }} ₸</td>
-      <td>{% if o.payment_method=='credit' %}<span class="badge badge-yellow">{% if lang=='kz' %}Несие{% else %}Кредит{% endif %}</span>{% else %}<span class="badge badge-blue">{% if lang=='kz' %}Қолма-қол{% else %}Наличные{% endif %}</span>{% endif %}</td>
-      <td><span class="badge {% if o.status=='confirmed' %}badge-green{% elif o.status=='rejected' %}badge-red{% else %}badge-yellow{% endif %}">
-        {% if o.status=='pending' %}{% if lang=='kz' %}Қаралуда{% else %}На рассмотрении{% endif %}
-        {% elif o.status=='confirmed' %}{% if lang=='kz' %}Расталды{% else %}Подтверждён{% endif %}
-        {% elif o.status=='rejected' %}{% if lang=='kz' %}Қабылданбады{% else %}Отклонён{% endif %}
-        {% else %}{{ o.status }}{% endif %}
-      </span></td>
-      <td>{% if o.status=='pending' %}<div style="display:flex;gap:6px">
-        <button class="btn btn-approve" onclick="decideOrder('{{ o.id }}','confirmed')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
-        <button class="btn btn-reject" onclick="decideOrder('{{ o.id }}','rejected')"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
-      </div>{% else %}<span style="color:#2d6a4f">—</span>{% endif %}</td>
-    </tr>
-    {% else %}<tr><td colspan="6"><div class="empty-state">{% if lang=='kz' %}Тапсырыстар жоқ{% else %}Нет заказов{% endif %}</div></td></tr>{% endfor %}
-    </tbody></table>
-  </div>
-</div>
-
-<!-- JOURNAL -->
-<div id="page-journal" class="page">
-  <div class="topbar"><div>
-    <div class="page-title"> {% if lang=='kz' %}Белсенділік журналы{% else %}Журнал активности{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Соңғы оқиғалар{% else %}Последние события платформы{% endif %}</div>
-  </div></div>
-  <div class="card">
-    {% for a in activity %}
-    <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #0d2e26">
-      <div style="width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:7px;flex:none;box-shadow:0 0 8px rgba(183,255,60,.5)"></div>
-      <div style="flex:1">
-        <div style="font-size:0.88rem;color:#e2e8f0">{{ a.text }}</div>
-        <div style="font-size:0.75rem;color:#2d6a4f">{{ a.who }}{% if a.when %} · {{ a.when[:16]|replace('T',' ') }}{% endif %}</div>
+  <div class="tcard">
+    <div class="tcard-head">
+      <h2>{{ 'Фермерлер тізімі' if lang=='kz' else 'Список фермеров' }}</h2>
+      <div class="chips">
+        <button class="fchip active" onclick="setFilter(this,'all')">{{ 'Барлығы' if lang=='kz' else 'Все' }}</button>
+        <button class="fchip" onclick="setFilter(this,'review')">{{ 'Тексеруде' if lang=='kz' else 'На проверке' }}</button>
+        <button class="fchip" onclick="setFilter(this,'overdue')">{{ 'Мерзімі өткен' if lang=='kz' else 'Просрочки' }}</button>
+        <button class="fchip" onclick="setFilter(this,'Помидор')">{{ 'Қызанақ' if lang=='kz' else 'Помидор' }}</button>
+        <button class="fchip" onclick="setFilter(this,'Морковь')">{{ 'Сәбіз' if lang=='kz' else 'Морковь' }}</button>
       </div>
     </div>
-    {% else %}<div class="empty-state">{% if lang=='kz' %}Оқиғалар жоқ{% else %}Событий нет{% endif %}</div>{% endfor %}
-  </div>
-</div>
-
-<!-- PRICES -->
-<div id="page-prices" class="page">
-  <div class="topbar"><div>
-    <div class="page-title">{% if lang=='kz' %}Бағаларды басқару{% else %}Управление ценами{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Алма сорттарының сатып алу бағалары{% else %}Закупочные цены на сорта яблок{% endif %}</div>
-  </div></div>
-  <div id="okMsg" class="alert-success"> {% if lang=='kz' %}Бағалар сәтті жаңартылды!{% else %}Цены успешно обновлены!{% endif %}</div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
-  {% for p in prices %}
-  <div class="card">
-    <div class="card-header"><div class="card-title" style="display:flex;align-items:center;gap:11px"><span style="width:34px;height:34px;border-radius:11px;background:var(--surface2);color:var(--accent);display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"/><circle cx="7.5" cy="7.5" r=".5" fill="currentColor"/></svg></span>{{ p.variety_name }}</div></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-      <div class="ig"><label>{% if lang=='kz' %}Тауарлы (₸/кг){% else %}Товарные (₸/кг){% endif %}</label><input type="number" id="pc_{{ p.id }}" value="{{ p.price_commercial }}"></div>
-      <div class="ig"><label>{% if lang=='kz' %}Жерге түскен (₸/кг){% else %}Падалые (₸/кг){% endif %}</label><input type="number" id="pf_{{ p.id }}" value="{{ p.price_fallen }}"></div>
-    </div>
-    <button class="btn btn-save" style="width:100%" onclick="updatePrice('{{ p.id }}')"> {% if lang=='kz' %}Сақтау{% else %}Сохранить{% endif %}</button>
-  </div>
-  {% endfor %}
-  </div>
-</div>
-
-<!-- CALCULATOR -->
-<div id="page-calc" class="page">
-  <div class="topbar"><div>
-    <div class="page-title"> {% if lang=='kz' %}Калькулятор{% else %}Калькулятор агронома{% endif %}</div>
-    <div class="page-sub">{% if lang=='kz' %}Күтілетін төлем мен шарт шарттарын есептеу{% else %}Расчёт ожидаемой выплаты и условий договора{% endif %}</div>
-  </div></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div class="card">
-      <div class="card-title" style="margin-bottom:16px"> {% if lang=='kz' %}Кіріс деректер{% else %}Входные данные{% endif %}</div>
-      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Сорт{% else %}Сорт{% endif %}</label>
-        <select id="c_variety" onchange="onVar()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem">
-        {% for p in prices %}<option value="{{ p.id }}">{{ p.variety_name }}</option>{% endfor %}
-        </select>
-      </div>
-      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Бақ түрі (өнімділік){% else %}Тип сада (урожайность){% endif %}</label>
-        <select id="c_garden" onchange="onGarden()" style="width:100%;background:#071a16;border:1.5px solid #0d2e26;border-radius:8px;padding:9px 12px;color:#e2e8f0;font-size:0.9rem">
-          <option value="15">{% if lang=='kz' %}Экстенсивті (10–20 т/га){% else %}Экстенсивный (10–20 т/га){% endif %}</option>
-          <option value="32">{% if lang=='kz' %}Жартылай интенсивті (25–40){% else %}Полуинтенсивный (25–40){% endif %}</option>
-          <option value="55">{% if lang=='kz' %}Интенсивті (40–70){% else %}Интенсивный (40–70){% endif %}</option>
-          <option value="90">{% if lang=='kz' %}Суперинтенсивті (80–100){% else %}Суперинтенсивный (80–100){% endif %}</option>
-        </select>
-      </div>
-      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Аудан (га){% else %}Площадь (га){% endif %}</label><input type="number" id="c_area" value="1" oninput="calc()"></div>
-      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Өнімділік (т/га){% else %}Урожайность (т/га){% endif %}</label><input type="number" id="c_yield" value="15" oninput="calc()"></div>
-      <div class="ig" style="margin-bottom:12px"><label>{% if lang=='kz' %}Тауарлы үлесі (%){% else %}Доля товарных (%){% endif %}</label><input type="number" id="c_comm" value="80" oninput="calc()"></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-        <div class="ig"><label>{% if lang=='kz' %}Тауарлы ₸/кг{% else %}Товарные ₸/кг{% endif %}</label><input type="number" id="c_pc" value="0" oninput="calc()"></div>
-        <div class="ig"><label>{% if lang=='kz' %}Жерге түскен ₸/кг{% else %}Падалица ₸/кг{% endif %}</label><input type="number" id="c_pf" value="0" oninput="calc()"></div>
-      </div>
-      <div class="ig"><label>{% if lang=='kz' %}Күтім + агросүйемелдеу (₸/га){% else %}Уход + агросопровождение (₸/га){% endif %}</label><input type="number" id="c_cost" value="0" oninput="calc()"></div>
-    </div>
-    <div class="card" style="background:#08160f">
-      <div class="card-title" style="margin-bottom:16px"> {% if lang=='kz' %}Есеп нәтижесі{% else %}Результат расчёта{% endif %}</div>
-      <div id="calcResult"></div>
-      <div style="margin-top:16px;font-size:0.72rem;color:#2d6a4f;line-height:1.5;border-top:1px solid #0d2e26;padding-top:12px">
-         {% if lang=='kz' %}Формула алдын ала — коэффициенттер клиентпен келісілуі керек.{% else %}Формула предварительная — коэффициенты требуют согласования с клиентом (в ТЗ это отмечено как блокер).{% endif %}
-      </div>
+    <div style="overflow-x:auto">
+    <table id="ftable">
+      <thead><tr>
+        <th>{{ 'ФЕРМЕР' if lang=='kz' else 'ФЕРМЕР' }}</th>
+        <th>{{ 'ДАҚЫЛ' if lang=='kz' else 'КУЛЬТУРА' }}</th>
+        <th>{{ 'КЕЗЕҢ' if lang=='kz' else 'ЭТАП' }}</th>
+        <th>{{ 'ЖОСПАР ПРОГРЕСІ' if lang=='kz' else 'ПРОГРЕСС ПЛАНА' }}</th>
+        <th>{{ 'МӘРТЕБЕ' if lang=='kz' else 'СТАТУС' }}</th>
+        <th>{{ 'ЕГІН ЫҚТИМАЛДЫҒЫ' if lang=='kz' else 'ВЕРОЯТНОСТЬ УРОЖАЯ' }}</th>
+      </tr></thead>
+      <tbody>
+      {% for f in farmers_view %}
+      <tr data-status="{{ f.status }}" data-culture="{{ f.culture }}" data-name="{{ f.name|lower }} {{ f.culture|lower }}">
+        <td><div class="f-cell"><div class="f-ava">{{ f.initials }}</div><div><div class="f-name">{{ f.name }}</div><div class="f-sub">{{ 'Шарт' if lang=='kz' else 'Договор' }} №{{ f.contract_no }}</div></div></div></td>
+        <td>{{ f.culture }}</td>
+        <td>{{ f.stage_kz if lang=='kz' else f.stage_ru }}</td>
+        <td><div class="prog"><div class="prog-bar"><span style="width:{{ f.progress }}%"></span></div><div class="prog-v">{{ f.progress }}%</div></div></td>
+        <td>
+          {% if f.status == 'review' %}<span class="st st-review">{{ 'Тексеруде' if lang=='kz' else 'На проверке' }}</span>
+          {% elif f.status == 'overdue' %}<span class="st st-overdue">{{ 'Мерзімі өтті' if lang=='kz' else 'Просрочка' }}</span>
+          {% elif f.status == 'ready' %}<span class="st st-ready">{{ 'Тапсыруға дайын' if lang=='kz' else 'Готов к сдаче' }}</span>
+          {% else %}<span class="st st-work">{{ 'Жұмыста' if lang=='kz' else 'В работе' }}</span>{% endif %}
+        </td>
+        <td><span class="prob {% if f.probability < 60 %}low{% elif f.probability < 80 %}mid{% else %}hi{% endif %}">{{ f.probability }}%</span></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
     </div>
   </div>
-</div>
-
-</div>
+</main>
 
 <script>
-function showPage(n,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
-  document.getElementById('page-'+n).classList.add('active');
+let curFilter = 'all';
+function setFilter(btn, f){
+  curFilter = f;
+  document.querySelectorAll('.fchip').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  applyFilters();
 }
-function approveContract(id){
-  if(!confirm('{% if lang=="kz" %}Шартты бекітесіз бе?{% else %}Одобрить договор?{% endif %}'))return;
-  fetch('/agronomist/contract/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})})
-  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
-}
-function rejectContract(id){
-  if(!confirm('{% if lang=="kz" %}Шартты қабылдамайсыз ба?{% else %}Отклонить договор?{% endif %}'))return;
-  fetch('/agronomist/contract/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contract_id:id})})
-  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
-}
-function approveTask(id){
-  fetch('/agronomist/task/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({task_id:id})})
-  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});
-}
-function advanceTrip(id){
-  fetch('/agronomist/trip/advance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({trip_id:id})})
-  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
-}
-function decideOrder(id,decision){
-  fetch('/agronomist/order/decide',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({order_id:id,decision:decision})})
-  .then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();else alert(d.message||'Ошибка');});
-}
-var FARMER_PLOTS = {{ farmer_plots|tojson }};
-function fillPlots(){
-  var el=document.getElementById('ct_farmer'); if(!el)return;
-  var sel=document.getElementById('ct_plot'); sel.innerHTML='';
-  (FARMER_PLOTS[el.value]||[]).forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);});
-}
-function _agroPost(url,data,okMsg){
-  fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
-  .then(r=>r.json()).then(d=>{if(d.status==='success'){alert(okMsg);location.reload();}else alert(d.message||'Ошибка');});
-}
-function agroCreateFarmer(){_agroPost('/agronomist/farmer/create',{name:document.getElementById('nf_name').value,phone:document.getElementById('nf_phone').value},'Фермер создан ');}
-function agroCreatePlot(){_agroPost('/agronomist/plot/create',{farmer_id:document.getElementById('pl_farmer').value,name:document.getElementById('pl_name').value,area_ha:document.getElementById('pl_area').value,garden_type:document.getElementById('pl_garden').value},'Участок создан ');}
-function agroCreateContract(){_agroPost('/agronomist/contract/create',{farmer_id:document.getElementById('ct_farmer').value,plot_id:document.getElementById('ct_plot').value,variety:document.getElementById('ct_variety').value,volume_kg:document.getElementById('ct_vol').value,price_per_kg:document.getElementById('ct_price').value},'Договор создан ');}
-function addTemplate(){_agroPost('/agronomist/template/add',{title:document.getElementById('tpl_title').value,description:document.getElementById('tpl_desc').value,month:document.getElementById('tpl_month').value,bonus_amount:document.getElementById('tpl_bonus').value},'Шаблон добавлен ');}
-function delTemplate(id){fetch('/agronomist/template/'+id+'/delete',{method:'POST'}).then(r=>r.json()).then(d=>{if(d.status==='success')location.reload();});}
-function fillTaskPlots(){
-  var el=document.getElementById('tk_farmer'); if(!el)return;
-  var sel=document.getElementById('tk_plot'); sel.innerHTML='';
-  var o0=document.createElement('option'); o0.value=''; o0.textContent='—'; sel.appendChild(o0);
-  (FARMER_PLOTS[el.value]||[]).forEach(function(p){var o=document.createElement('option');o.value=p.id;o.textContent=p.name;sel.appendChild(o);});
-}
-function agroCreateTask(){_agroPost('/agronomist/task/create',{farmer_id:document.getElementById('tk_farmer').value,plot_id:document.getElementById('tk_plot').value,title:document.getElementById('tk_title').value,description:document.getElementById('tk_desc').value,month:document.getElementById('tk_month').value,bonus_amount:document.getElementById('tk_bonus').value},'Задача создана ');}
-fillPlots(); fillTaskPlots();
-function updatePrice(id){
-  const c=document.getElementById('pc_'+id).value;
-  const f=document.getElementById('pf_'+id).value;
-  fetch('/agronomist/price/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({price_id:id,price_commercial:c,price_fallen:f})})
-  .then(r=>r.json()).then(d=>{
-    if(d.status==='success'){const m=document.getElementById('okMsg');m.style.display='block';setTimeout(()=>m.style.display='none',3000);}
+function filterFarmers(){ applyFilters(); }
+function applyFilters(){
+  const q = (document.getElementById('fsearch').value||'').toLowerCase();
+  document.querySelectorAll('#ftable tbody tr').forEach(r=>{
+    let ok = true;
+    if(curFilter==='review'||curFilter==='overdue') ok = r.dataset.status===curFilter;
+    else if(curFilter==='Помидор'||curFilter==='Морковь') ok = r.dataset.culture===curFilter;
+    if(ok && q) ok = (r.dataset.name||'').includes(q);
+    r.style.display = ok ? '' : 'none';
   });
-}
-function filterC(s,btn){
-  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('#ctable tr[data-status]').forEach(r=>{
-    r.style.display=(s==='all'||r.dataset.status===s)?'':'none';
-  });
-}
-var PRICES={ {% for p in prices %}"{{ p.id }}":{pc:{{ p.price_commercial or 0 }},pf:{{ p.price_fallen or 0 }}}{{ "," if not loop.last else "" }} {% endfor %} };
-function onVar(){var p=PRICES[document.getElementById('c_variety').value];if(p){document.getElementById('c_pc').value=p.pc;document.getElementById('c_pf').value=p.pf;}calc();}
-function onGarden(){document.getElementById('c_yield').value=document.getElementById('c_garden').value;calc();}
-function _r(l,v){return '<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:0.88rem"><span style="color:#6ee7b7">'+l+'</span><strong>'+v+'</strong></div>';}
-function calc(){
-  var g=function(id){return +document.getElementById(id).value||0;};
-  var area=g('c_area'),yld=g('c_yield'),comm=g('c_comm')/100,pc=g('c_pc'),pf=g('c_pf'),cost=g('c_cost');
-  var totalKg=area*yld*1000, commKg=totalKg*comm, fallKg=totalKg*(1-comm);
-  var gross=commKg*pc+fallKg*pf, totalCost=cost*area, net=gross-totalCost;
-  var f=function(x){return Math.round(x).toLocaleString('ru-RU');};
-  var el=document.getElementById('calcResult'); if(!el)return;
-  el.innerHTML=
-    _r('{% if lang=="kz" %}Жалпы өнім{% else %}Общий урожай{% endif %}',f(totalKg)+' кг')+
-    _r('{% if lang=="kz" %}Тауарлы{% else %}Товарных{% endif %}',f(commKg)+' кг')+
-    _r('{% if lang=="kz" %}Жерге түскен{% else %}Падалицы{% endif %}',f(fallKg)+' кг')+
-    _r('{% if lang=="kz" %}Жалпы түсім{% else %}Валовая выручка{% endif %}',f(gross)+' ₸')+
-    _r('{% if lang=="kz" %}Шығындар{% else %}Расходы{% endif %}','−'+f(totalCost)+' ₸')+
-    '<div style="border-top:1px solid #0d2e26;margin:8px 0"></div>'+
-    '<div style="display:flex;justify-content:space-between;padding:8px 0"><span style="color:#4ade80;font-weight:700">{% if lang=="kz" %}Күтілетін төлем{% else %}Ожидаемая выплата{% endif %}</span><strong style="color:#4ade80;font-size:1.2rem">'+f(net)+' ₸</strong></div>'+
-    _r('{% if lang=="kz" %}Ұсынылатын көлем{% else %}Рекоменд. объём в договор{% endif %}',f(commKg)+' кг');
-}
-onVar();
-function showPhoto(src){
-  var o=document.createElement('div');
-  o.style.cssText='position:fixed;inset:0;background:rgba(5,7,10,.88);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:32px;cursor:zoom-out';
-  o.innerHTML='<img src="'+src+'" style="max-width:92vw;max-height:88vh;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.08)">';
-  o.onclick=function(){document.body.removeChild(o);};
-  document.body.appendChild(o);
 }
 </script>
 </body>

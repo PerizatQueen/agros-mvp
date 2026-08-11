@@ -855,9 +855,65 @@ def _get_panel_data(template):
         'total_bonuses': sum((f.get('bonus_balance') or 0) for f in farmers),
     }
 
+    # Сводка по фермерам для панели агронома/продажника (слайды 10, 12)
+    _cultures = ['Помидор', 'Морковь', 'Яблоко', 'Помидор', 'Морковь']
+    _stages_ru = ['Посев', 'Обработка', 'Уход', 'Полив', 'Сбор']
+    _stages_kz = ['Егіс', 'Өңдеу', 'Күтім', 'Суару', 'Жинау']
+    tasks_by_user = _grp(all_tasks, 'user_id')
+    farmers_view = []
+    for i, f in enumerate(farmer_users):
+        ft = tasks_by_user.get(f.get('id'), [])
+        total = len(ft)
+        done = len([t for t in ft if t.get('status') in ('approved', 'done')])
+        prog = round(done / total * 100) if total else 0
+        has_review = any(t.get('status') == 'review' for t in ft)
+        has_overdue = any(t.get('status') == 'overdue' for t in ft)
+        if has_overdue:
+            status = 'overdue'
+        elif prog >= 90:
+            status = 'ready'
+        elif has_review:
+            status = 'review'
+        else:
+            status = 'work'
+        stage_idx = min(prog // 20, 4)
+        nm = (f.get('name') or 'Фермер').strip()
+        parts = nm.split()
+        initials = (parts[0][:1] + (parts[1][:1] if len(parts) > 1 else '')).upper()
+        farmers_view.append({
+            'name': nm, 'initials': initials,
+            'contract_no': 1030 + i,
+            'culture': _cultures[i % len(_cultures)],
+            'stage_ru': _stages_ru[stage_idx], 'stage_kz': _stages_kz[stage_idx],
+            'progress': prog,
+            'status': status,
+            'probability': min(97, 50 + round(prog * 0.47)),
+        })
+    _rev = len([t for t in all_tasks if t.get('status') == 'review'])
+    _ovd = len([t for t in all_tasks if t.get('status') == 'overdue'])
+    _avg = round(sum(fv['progress'] for fv in farmers_view) / len(farmers_view)) if farmers_view else 0
+    agro_stats = {'farmers': len(farmer_users), 'reports': _rev, 'overdue': _ovd, 'avg_progress': _avg}
+    # Прогноз объёма для продажника (слайд 12)
+    _crop_plan = {'Помидор': 520, 'Морковь': 410, 'Яблоко': 310}
+    _crop_prob = {'Помидор': 86, 'Морковь': 90, 'Яблоко': 74}
+    sales_crops = []
+    for c, plan in _crop_plan.items():
+        pr = _crop_prob[c]
+        sales_crops.append({'crop': c, 'plan': plan, 'prob': pr, 'forecast': round(plan * pr / 100)})
+    sales_stats = {
+        'contracted': sum(x['plan'] for x in sales_crops),
+        'forecast': sum(x['forecast'] for x in sales_crops),
+        'contracts': len([c for c in all_contracts if c.get('status') == 'active']),
+        'ready': 180, 'ready_farmers': _ovd + 10, 'risk': sum(x['plan'] - x['forecast'] for x in sales_crops),
+    }
+
     return render_template(template,
         all_users=all_users,
         farmers=farmer_users,
+        farmers_view=farmers_view,
+        agro_stats=agro_stats,
+        sales_crops=sales_crops,
+        sales_stats=sales_stats,
         farmer_plots=farmer_plots,
         all_trips=all_trips,
         all_orders=all_orders,
