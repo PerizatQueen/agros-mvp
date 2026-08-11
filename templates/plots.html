@@ -2,58 +2,53 @@
 {% block title %}— {% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}{% endblock %}
 
 {% block extra_styles %}
-:root{--bg:#0F1117;--surface:#181C24;--surface2:#222836;--accent:#B7FF3C;--accent2:#53E08B;--tx:#FFFFFF;--muted:#9AA4B2;--bd:rgba(255,255,255,0.06);--shadow:0 10px 30px rgba(0,0,0,0.35);}
+:root{--bg:#EDF1E7;--surface:#FFFFFF;--forest:#14401E;--green:#2FA048;--lime:#C6F24E;--tx:#12290F;--muted:#6B7A63;--bd:rgba(20,64,30,.10);--shadow:0 6px 18px rgba(20,64,30,.08);}
 body{background:var(--bg);color:var(--tx);}
 .ic{width:20px;height:20px;display:block;flex:none}
-.header{background:rgba(15,17,23,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--bd);padding:13px 18px;}
-.header-title{color:var(--tx);font-size:1rem;font-weight:700;display:flex;align-items:center;gap:10px;}
-.htitle-mark{width:28px;height:28px;border-radius:9px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--accent);flex:none;}
-.htitle-mark .ic{width:16px;height:16px}
-.header-icons{display:flex;gap:8px;align-items:center;}
-.iconbtn{width:36px;height:36px;border-radius:11px;background:var(--surface);border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:0;}
-.iconbtn .ic{width:18px;height:18px}.iconbtn:hover{color:var(--tx);}
-.lang-switcher{gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:11px;padding:3px;}
-.lang-btn{padding:5px 8px;border-radius:8px;font-size:.68rem;border:none;}
-.lang-btn.active{background:var(--accent);color:#0F1117;}.lang-btn:not(.active){color:var(--muted);background:transparent;}
-.content{padding:20px 18px 104px;}
-.card{background:var(--surface);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow);}
-.card-title{color:var(--tx);font-weight:600;font-size:1rem;}
-.btn-lime{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#0F1117;font-weight:700;font-size:.92rem;padding:15px 20px;border-radius:16px;text-decoration:none;border:none;cursor:pointer;width:100%;box-shadow:var(--shadow);}
-.btn-lime:hover{opacity:.9}.btn-lime .ic{width:18px;height:18px}
+.header{background:var(--bg);border-bottom:none;padding:14px 16px 6px;display:flex;align-items:center;justify-content:flex-start;gap:12px;}
+.backbtn{color:var(--tx);display:flex;align-items:center;text-decoration:none;}
+.backbtn .ic{width:24px;height:24px}
+.header-title{color:var(--tx);font-size:1.25rem;font-weight:800;}
+.hicons{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.lang-switcher{gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:10px;padding:3px;display:flex;}
+.lang-btn{padding:5px 8px;border-radius:7px;font-size:.66rem;border:none;font-weight:800;text-decoration:none;}
+.lang-btn.active{background:var(--forest);color:#fff;}.lang-btn:not(.active){color:var(--muted);background:transparent;}
+.content{padding:10px 16px 104px;}
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow);}
+.card-title{color:var(--tx);font-weight:800;font-size:1.05rem;}
+.btn-lime{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--forest);color:#fff;font-weight:800;font-size:.95rem;padding:15px 20px;border-radius:16px;text-decoration:none;border:none;cursor:pointer;width:100%;box-shadow:var(--shadow);}
+.btn-lime .ic{width:18px;height:18px}
 .empty{text-align:center;padding:44px 20px;}
-.empty-ic{width:56px;height:56px;border-radius:18px;background:var(--surface2);color:var(--muted);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
-.empty-ic .ic{width:26px;height:26px}.empty h4{font-weight:600;font-size:1rem;color:var(--tx);}.empty p{color:var(--muted);font-size:.82rem;margin-top:6px;}
-.bottom-nav{background:rgba(24,28,36,.72);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--bd);}
-.nav-item{color:var(--muted);gap:5px;font-size:.64rem;font-weight:500;padding:9px 4px;}
-.nav-item.active,.nav-item:hover{color:var(--accent);}
-.nav-item .icon{display:flex;align-items:center;justify-content:center;}.nav-item .icon .ic{width:22px;height:22px}
+.empty-ic{width:60px;height:60px;border-radius:20px;background:#E6F5DC;color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;}
+.empty-ic .ic{width:28px;height:28px}.empty h4{font-weight:800;font-size:1.05rem;color:var(--tx);}.empty p{color:var(--muted);font-size:.85rem;margin-top:6px;}
 .map-card{padding:0;overflow:hidden;}
-#map{height:280px;width:100%;border-radius:20px;}
-.plot-type{font-size:.8rem;color:var(--muted);margin-top:6px;}
+#map{height:260px;width:100%;border-radius:18px;}
+.plot-type{font-size:.82rem;color:var(--muted);margin-top:6px;font-weight:600;}
 .vtags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
-.vtag{background:var(--surface2);border:1px solid var(--bd);border-radius:10px;padding:5px 11px;font-size:.76rem;color:var(--muted);}
-.plot-addr{display:flex;align-items:center;gap:6px;font-size:.78rem;color:var(--muted);margin-top:14px;}
-.plot-addr .ic{width:14px;height:14px}
+.vtag{background:#E6F5DC;border:1px solid var(--bd);border-radius:10px;padding:5px 11px;font-size:.76rem;color:#2F5E1C;font-weight:600;}
+.plot-addr{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);margin-top:14px;font-weight:600;}
+.plot-addr .ic{width:14px;height:14px;color:var(--green);}
+.bottom-nav{background:rgba(255,255,255,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--bd);}
+.nav-item{color:var(--muted);gap:5px;font-size:.66rem;font-weight:700;padding:9px 4px;}
+.nav-item.active{color:var(--forest);}
+.nav-item .icon{display:flex;align-items:center;justify-content:center;}.nav-item .icon .ic{width:23px;height:23px}
 {% endblock %}
 
 {% block body %}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <div class="header">
-  <div class="header-title">
-    <span class="htitle-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span>
-    {% if lang=='kz' %}Менің учаскелерім{% else %}Мои участки{% endif %}
-  </div>
-  <div class="header-icons">
+  <a href="/dashboard" class="backbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m15 18-6-6 6-6"/></svg></a>
+  <div class="header-title">{% if lang=='kz' %}Менің учаскелерім{% else %}Мои участки{% endif %}</div>
+  <div class="hicons">
     <div class="lang-switcher">
       <a href="/set-lang/ru" class="lang-btn {% if lang != 'kz' %}active{% endif %}">RU</a>
       <a href="/set-lang/kz" class="lang-btn {% if lang == 'kz' %}active{% endif %}">ҚАЗ</a>
     </div>
-    <a href="/chat" class="iconbtn" title="Чат"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></a>
   </div>
 </div>
 <div class="content">
-  <a href="/plots/create" class="btn-lime" style="margin-bottom:20px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M5 12h14"/><path d="M12 5v14"/></svg> {% if lang=='kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</a>
+  <a href="/plots/create" class="btn-lime" style="margin-bottom:18px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M5 12h14"/><path d="M12 5v14"/></svg> {% if lang=='kz' %}Учаске қосу{% else %}Добавить участок{% endif %}</a>
 
   {% if not plots %}
   <div class="card empty">
@@ -63,7 +58,6 @@ body{background:var(--bg);color:var(--tx);}
   </div>
   {% else %}
 
-  <!-- Leaflet Map -->
   <div class="card map-card">
     <div id="map"></div>
   </div>
@@ -71,7 +65,7 @@ body{background:var(--bg);color:var(--tx);}
   {% for plot in plots %}
   <div class="card">
     <div class="card-title">{{ plot.name }}</div>
-    <div class="plot-type">{{ plot.area_ha }} {% if lang=='kz' %}га{% else %}га{% endif %} ·
+    <div class="plot-type">{{ plot.area_ha }} га ·
       {% if plot.garden_type == 'intensive' %}{% if lang=='kz' %}Қарқынды{% else %}Интенсивный{% endif %}
       {% elif plot.garden_type == 'semi_intensive' %}{% if lang=='kz' %}Жартылай қарқынды{% else %}Полуинтенсивный{% endif %}
       {% elif plot.garden_type == 'extensive' %}{% if lang=='kz' %}Экстенсивті{% else %}Экстенсивный{% endif %}
@@ -80,7 +74,7 @@ body{background:var(--bg);color:var(--tx);}
     {% if plot.varieties %}
     <div class="vtags">
       {% for v in plot.varieties %}
-      <span class="vtag">{{ v.variety_name }} · {{ v.area_ha }}{% if lang=='kz' %}га{% else %}га{% endif %}</span>
+      <span class="vtag">{{ v.variety_name }} · {{ v.area_ha }}га</span>
       {% endfor %}
     </div>
     {% endif %}
@@ -94,27 +88,18 @@ body{background:var(--bg);color:var(--tx);}
 
 <nav class="bottom-nav">
   <a href="/dashboard" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg></span><span>{% if lang=='kz' %}Басты{% else %}Главная{% endif %}</span></a>
-  <a href="/contracts" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><span>{% if lang=='kz' %}Шарттар{% else %}Договоры{% endif %}</span></a>
-  <a href="/plots" class="nav-item active"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg></span><span>{% if lang=='kz' %}Учаскелер{% else %}Участки{% endif %}</span></a>
-  <a href="/tasks" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg></span><span>{% if lang=='kz' %}Жоспар{% else %}План{% endif %}</span></a>
+  <a href="/progress" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="11" width="3" height="7" rx="1"/><rect x="12" y="7" width="3" height="11" rx="1"/><rect x="17" y="13" width="3" height="5" rx="1"/></svg></span><span>{% if lang=='kz' %}Прогресс{% else %}Прогресс{% endif %}</span></a>
+  <a href="/chat" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span><span>{% if lang=='kz' %}Чат{% else %}Чат{% endif %}</span></a>
+  <a href="/bonus-shop" class="nav-item"><span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></span><span>{% if lang=='kz' %}Бонустар{% else %}Бонусы{% endif %}</span></a>
 </nav>
 
 {% if plots %}
 <script>
 var map = L.map('map');
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© OpenStreetMap',
-  maxZoom: 18
-}).addTo(map);
-
-var greenIcon = L.icon({
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
-  iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34]
-});
-
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap', maxZoom: 18 }).addTo(map);
+var greenIcon = L.icon({ iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34] });
 var plots = {{ plots_json|safe }};
 var bounds = [];
-
 if (plots.length > 0) {
   plots.forEach(function(p) {
     if (p.lat && p.lng) {
@@ -123,14 +108,8 @@ if (plots.length > 0) {
       bounds.push([p.lat, p.lng]);
     }
   });
-  if (bounds.length > 0) {
-    map.fitBounds(bounds, {padding: [30, 30]});
-  } else {
-    map.setView([43.25, 76.95], 9);
-  }
-} else {
-  map.setView([43.25, 76.95], 9);
-}
+  if (bounds.length > 0) { map.fitBounds(bounds, {padding: [30, 30]}); } else { map.setView([43.25, 76.95], 9); }
+} else { map.setView([43.25, 76.95], 9); }
 </script>
 {% endif %}
 {% endblock %}
