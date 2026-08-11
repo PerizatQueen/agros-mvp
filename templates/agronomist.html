@@ -7,12 +7,11 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#F3F5F1;--surface:#FFFFFF;--forest:#123A1E;--forest2:#1B4D2A;--green:#16A34A;--lime:#C6F24E;
-  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 4px 14px rgba(18,58,30,.06);
+  --bg:#EDF1E7;--surface:#FFFFFF;--forest:#14401E;--forest2:#1B4D2A;--green:#2FA048;--lime:#C6F24E;
+  --tx:#12290F;--muted:#6B7A63;--bd:rgba(20,64,30,.10);--shadow:0 4px 14px rgba(20,64,30,.07);
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh;}
 .ic{width:20px;height:20px;display:block;flex:none;stroke-width:2;}
-/* SIDEBAR */
 .sidebar{width:240px;background:var(--forest);color:#fff;flex:none;display:flex;flex-direction:column;padding:18px 14px;position:sticky;top:0;height:100vh;}
 .logo{display:flex;align-items:center;gap:10px;padding:6px 8px 20px;}
 .logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--lime));display:flex;align-items:center;justify-content:center;color:var(--forest);font-weight:900;font-size:1.05rem;}
@@ -26,7 +25,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .nav-cat{font-size:.66rem;font-weight:800;letter-spacing:.08em;color:rgba(255,255,255,.4);padding:16px 12px 6px;}
 .side-foot{margin-top:auto;padding-top:12px;}
 .side-foot a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:9px;padding:10px 12px;}
-/* MAIN */
 .main{flex:1;min-width:0;padding:22px 26px;}
 .topbar{display:flex;align-items:center;gap:16px;margin-bottom:22px;}
 .topbar h1{font-size:1.5rem;font-weight:800;flex:none;}
@@ -34,23 +32,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .search .ic{width:16px;height:16px;}
 .search input{border:none;outline:none;background:transparent;flex:1;font-size:.9rem;color:var(--tx);}
 .me{margin-left:auto;display:flex;align-items:center;gap:9px;}
-.me .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#8BD450,#C6F24E);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--forest);font-size:.78rem;}
+.me .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#9BDB4F,#C6F24E);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--forest);font-size:.78rem;}
 .me span{font-size:.88rem;font-weight:700;}
-.me a{color:var(--muted);text-decoration:none;font-size:.8rem;font-weight:600;margin-left:6px;}
 .lang{display:flex;gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:10px;padding:3px;margin-left:6px;}
 .lang a{padding:4px 8px;border-radius:7px;font-size:.68rem;font-weight:800;text-decoration:none;color:var(--muted);}
 .lang a.active{background:var(--forest);color:#fff;}
-/* STAT CARDS */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
 .stat{background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);}
 .stat-top{display:flex;justify-content:space-between;align-items:flex-start;}
 .stat-lbl{font-size:.78rem;color:var(--muted);font-weight:600;}
-.stat-ic{width:32px;height:32px;border-radius:10px;background:#EAF7E0;color:var(--green);display:flex;align-items:center;justify-content:center;}
+.stat-ic{width:32px;height:32px;border-radius:10px;background:#E6F5DC;color:var(--green);display:flex;align-items:center;justify-content:center;}
 .stat-ic .ic{width:17px;height:17px;}
 .stat-num{font-size:1.9rem;font-weight:900;margin:10px 0 3px;}
 .stat-note{font-size:.74rem;color:var(--muted);font-weight:600;}
 .stat-note.warn{color:#B45309;}.stat-note.up{color:var(--green);}
-/* TABLE CARD */
 .tcard{background:var(--surface);border:1px solid var(--bd);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;}
 .tcard-head{display:flex;align-items:center;gap:12px;padding:18px 20px;flex-wrap:wrap;}
 .tcard-head h2{font-size:1.1rem;font-weight:800;flex:none;}
@@ -61,9 +56,9 @@ table{width:100%;border-collapse:collapse;}
 thead th{text-align:left;font-size:.68rem;font-weight:800;letter-spacing:.05em;color:var(--muted);padding:10px 20px;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);text-transform:uppercase;}
 tbody td{padding:14px 20px;border-bottom:1px solid var(--bd);font-size:.9rem;vertical-align:middle;}
 tbody tr:last-child td{border-bottom:none;}
-tbody tr:hover{background:#FAFBF8;cursor:pointer;}
+tbody tr.clickable:hover{background:#FAFBF8;cursor:pointer;}
 .f-cell{display:flex;align-items:center;gap:11px;}
-.f-ava{width:36px;height:36px;border-radius:50%;background:#EAF7E0;color:var(--forest);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.76rem;flex:none;}
+.f-ava{width:36px;height:36px;border-radius:50%;background:#E6F5DC;color:var(--forest);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.76rem;flex:none;}
 .f-name{font-weight:700;}.f-sub{font-size:.74rem;color:var(--muted);}
 .prog{display:flex;align-items:center;gap:9px;}
 .prog-bar{width:90px;height:7px;border-radius:99px;background:#E7ECE2;overflow:hidden;}
@@ -71,45 +66,50 @@ tbody tr:hover{background:#FAFBF8;cursor:pointer;}
 .prog-v{font-size:.82rem;font-weight:700;color:var(--muted);}
 .st{display:inline-block;padding:5px 11px;border-radius:99px;font-size:.72rem;font-weight:800;}
 .st-review{background:#FEF3C7;color:#B45309;}.st-work{background:#DCFCE7;color:#15803D;}
-.st-overdue{background:#FEE2E2;color:#B91C1C;}.st-ready{background:#E7ECE2;color:#3F5340;}
+.st-overdue{background:#FEE2E2;color:#B91C1C;}.st-ready{background:#E7ECE2;color:#3F5340;}.st-gray{background:#E7ECE2;color:#3F5340;}
 .prob{font-weight:800;}.prob.low{color:#B91C1C;}.prob.mid{color:#B45309;}.prob.hi{color:#15803D;}
+.money{font-weight:800;}
+.emptybox{padding:44px 20px;text-align:center;color:var(--muted);}
+.emptybox .eic{width:56px;height:56px;border-radius:18px;background:#E6F5DC;color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
 @media(max-width:860px){.sidebar{display:none;}.stats{grid-template-columns:1fr 1fr;}.main{padding:16px;}table{font-size:.82rem;}}
 </style>
 </head>
 <body>
+{% set section = request.args.get('section', 'farmers') %}
 <aside class="sidebar">
   <div class="logo"><div class="logo-mark">A</div><div class="logo-name">AgrOS</div></div>
   <nav class="nav">
-    <a href="/agronomist" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg> {{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</a>
-    <a href="/agronomist?f=review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {{ 'Тексеруге есептер' if lang=='kz' else 'Отчёты на проверку' }} {% if agro_stats.reports %}<span class="badge">{{ agro_stats.reports }}</span>{% endif %}</a>
-    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> {{ 'Тапсырмалар мен жоспар' if lang=='kz' else 'Задачи и план' }}</a>
-    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg> {{ 'Шарттар' if lang=='kz' else 'Договоры' }}</a>
+    <a href="/agronomist?section=farmers" class="{% if section=='farmers' %}active{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg> {{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</a>
+    <a href="/agronomist?section=reports" class="{% if section=='reports' %}active{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {{ 'Тексеруге есептер' if lang=='kz' else 'Отчёты на проверку' }} {% if agro_stats.reports %}<span class="badge">{{ agro_stats.reports }}</span>{% endif %}</a>
+    <a href="/agronomist?section=tasks" class="{% if section=='tasks' %}active{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> {{ 'Тапсырмалар мен жоспар' if lang=='kz' else 'Задачи и план' }}</a>
+    <a href="/agronomist?section=contracts" class="{% if section=='contracts' %}active{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg> {{ 'Шарттар' if lang=='kz' else 'Договоры' }}</a>
     <a href="/agronomist/chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> {{ 'Хабарламалар' if lang=='kz' else 'Сообщения' }}</a>
     <div class="nav-cat">{{ 'АНЫҚТАМАЛАР' if lang=='kz' else 'СПРАВОЧНИКИ' }}</div>
-    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> {{ 'Дақыл тех. карталары' if lang=='kz' else 'Тех. карты культур' }}</a>
-    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg> {{ 'Бонустар мен тауарлар' if lang=='kz' else 'Бонусы и товары' }}</a>
+    <a href="/agronomist?section=templates" class="{% if section=='templates' %}active{% endif %}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg> {{ 'Дақыл тех. карталары' if lang=='kz' else 'Тех. карты культур' }}</a>
+    <a href="/agronomist?section=items" class="{% if section=='items' %}active{% endif %}"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg> {{ 'Бонустар мен тауарлар' if lang=='kz' else 'Бонусы и товары' }}</a>
   </nav>
   <div class="side-foot"><a href="/logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> {{ 'Шығу' if lang=='kz' else 'Выйти' }}</a></div>
 </aside>
 
 <main class="main">
+  {% set titles = {'farmers': ('Мои фермеры','Менің фермерлерім'), 'reports': ('Отчёты на проверку','Тексеруге есептер'), 'tasks': ('Задачи и план','Тапсырмалар мен жоспар'), 'contracts': ('Договоры','Шарттар'), 'templates': ('Тех. карты культур','Дақыл тех. карталары'), 'items': ('Бонусы и товары','Бонустар мен тауарлар')} %}
   <div class="topbar">
-    <h1>{{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</h1>
-    <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="fsearch" oninput="filterFarmers()" placeholder="{{ 'Аты немесе дақыл бойынша іздеу…' if lang=='kz' else 'Поиск по имени или культуре…' }}"></div>
+    <h1>{{ titles[section][1] if lang=='kz' else titles[section][0] }}</h1>
+    {% if section=='farmers' %}<div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="fsearch" oninput="filterFarmers()" placeholder="{{ 'Аты немесе дақыл бойынша іздеу…' if lang=='kz' else 'Поиск по имени или культуре…' }}"></div>{% endif %}
     <div class="me">
       <div class="lang"><a href="/set-lang/ru" class="{% if lang!='kz' %}active{% endif %}">RU</a><a href="/set-lang/kz" class="{% if lang=='kz' %}active{% endif %}">ҚАЗ</a></div>
       <div class="ava">{{ (user_name or 'АГ')[:2]|upper }}</div>
-      <span>{{ user_name or ('Агроном' if lang!='kz' else 'Агроном') }}</span>
+      <span>{{ user_name or 'Агроном' }}</span>
     </div>
   </div>
 
+  {% if section=='farmers' %}
   <div class="stats">
-    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Бақылаудағы фермерлер' if lang=='kz' else 'Фермеров под контролем' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/></svg></div></div><div class="stat-num">{{ agro_stats.farmers }}</div><div class="stat-note up">{{ 'осы аптада бақылауда' if lang=='kz' else 'все под контролем' }}</div></div>
+    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Бақылаудағы фермерлер' if lang=='kz' else 'Фермеров под контролем' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/></svg></div></div><div class="stat-num">{{ agro_stats.farmers }}</div><div class="stat-note up">{{ 'бәрі бақылауда' if lang=='kz' else 'все под контролем' }}</div></div>
     <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Тексеруге есептер' if lang=='kz' else 'Отчётов на проверке' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div></div><div class="stat-num">{{ agro_stats.reports }}</div><div class="stat-note">{{ 'шешім күтуде' if lang=='kz' else 'ждут решения' }}</div></div>
-    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Мерзімі өткен тапсырмалар' if lang=='kz' else 'Просрочки задач' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div></div><div class="stat-num">{{ agro_stats.overdue }}</div><div class="stat-note warn">{{ 'назар аудару қажет' if lang=='kz' else 'требуют внимания' }}</div></div>
-    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Орташа жоспар прогресі' if lang=='kz' else 'Средний прогресс плана' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="11" width="3" height="7" rx="1"/><rect x="12" y="7" width="3" height="11" rx="1"/><rect x="17" y="13" width="3" height="5" rx="1"/></svg></div></div><div class="stat-num">{{ agro_stats.avg_progress }}%</div><div class="stat-note up">{{ 'жоспар бойынша' if lang=='kz' else 'по плану ухода' }}</div></div>
+    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Мерзімі өткен' if lang=='kz' else 'Просрочки задач' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div></div><div class="stat-num">{{ agro_stats.overdue }}</div><div class="stat-note warn">{{ 'назар қажет' if lang=='kz' else 'требуют внимания' }}</div></div>
+    <div class="stat"><div class="stat-top"><div class="stat-lbl">{{ 'Орташа прогресс' if lang=='kz' else 'Средний прогресс' }}</div><div class="stat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="11" width="3" height="7" rx="1"/><rect x="12" y="7" width="3" height="11" rx="1"/><rect x="17" y="13" width="3" height="5" rx="1"/></svg></div></div><div class="stat-num">{{ agro_stats.avg_progress }}%</div><div class="stat-note up">{{ 'жоспар бойынша' if lang=='kz' else 'по плану ухода' }}</div></div>
   </div>
-
   <div class="tcard">
     <div class="tcard-head">
       <h2>{{ 'Фермерлер тізімі' if lang=='kz' else 'Список фермеров' }}</h2>
@@ -123,34 +123,104 @@ tbody tr:hover{background:#FAFBF8;cursor:pointer;}
     </div>
     <div style="overflow-x:auto">
     <table id="ftable">
-      <thead><tr>
-        <th>{{ 'ФЕРМЕР' if lang=='kz' else 'ФЕРМЕР' }}</th>
-        <th>{{ 'ДАҚЫЛ' if lang=='kz' else 'КУЛЬТУРА' }}</th>
-        <th>{{ 'КЕЗЕҢ' if lang=='kz' else 'ЭТАП' }}</th>
-        <th>{{ 'ЖОСПАР ПРОГРЕСІ' if lang=='kz' else 'ПРОГРЕСС ПЛАНА' }}</th>
-        <th>{{ 'МӘРТЕБЕ' if lang=='kz' else 'СТАТУС' }}</th>
-        <th>{{ 'ЕГІН ЫҚТИМАЛДЫҒЫ' if lang=='kz' else 'ВЕРОЯТНОСТЬ УРОЖАЯ' }}</th>
-      </tr></thead>
+      <thead><tr><th>{{ 'ФЕРМЕР' }}</th><th>{{ 'ДАҚЫЛ' if lang=='kz' else 'КУЛЬТУРА' }}</th><th>{{ 'КЕЗЕҢ' if lang=='kz' else 'ЭТАП' }}</th><th>{{ 'ПРОГРЕСС' if lang=='kz' else 'ПРОГРЕСС ПЛАНА' }}</th><th>{{ 'МӘРТЕБЕ' if lang=='kz' else 'СТАТУС' }}</th><th>{{ 'ЫҚТИМАЛДЫҒЫ' if lang=='kz' else 'ВЕРОЯТНОСТЬ УРОЖАЯ' }}</th></tr></thead>
       <tbody>
       {% for f in farmers_view %}
-      <tr onclick="location.href='/agronomist/farmer/{{ f.id }}'" data-status="{{ f.status }}" data-culture="{{ f.culture }}" data-name="{{ f.name|lower }} {{ f.culture|lower }}">
+      <tr class="clickable" onclick="location.href='/agronomist/farmer/{{ f.id }}'" data-status="{{ f.status }}" data-culture="{{ f.culture }}" data-name="{{ f.name|lower }} {{ f.culture|lower }}">
         <td><div class="f-cell"><div class="f-ava">{{ f.initials }}</div><div><div class="f-name">{{ f.name }}</div><div class="f-sub">{{ 'Шарт' if lang=='kz' else 'Договор' }} №{{ f.contract_no }}</div></div></div></td>
         <td>{{ f.culture }}</td>
         <td>{{ f.stage_kz if lang=='kz' else f.stage_ru }}</td>
         <td><div class="prog"><div class="prog-bar"><span style="width:{{ f.progress }}%"></span></div><div class="prog-v">{{ f.progress }}%</div></div></td>
-        <td>
-          {% if f.status == 'review' %}<span class="st st-review">{{ 'Тексеруде' if lang=='kz' else 'На проверке' }}</span>
-          {% elif f.status == 'overdue' %}<span class="st st-overdue">{{ 'Мерзімі өтті' if lang=='kz' else 'Просрочка' }}</span>
-          {% elif f.status == 'ready' %}<span class="st st-ready">{{ 'Тапсыруға дайын' if lang=='kz' else 'Готов к сдаче' }}</span>
-          {% else %}<span class="st st-work">{{ 'Жұмыста' if lang=='kz' else 'В работе' }}</span>{% endif %}
-        </td>
-        <td><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span class="prob {% if f.probability < 60 %}low{% elif f.probability < 80 %}mid{% else %}hi{% endif %}">{{ f.probability }}%</span><svg viewBox="0 0 24 24" fill="none" stroke="#B9C7B2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex:none"><path d="m9 18 6-6-6-6"/></svg></div></td>
+        <td>{% if f.status=='review' %}<span class="st st-review">{{ 'Тексеруде' if lang=='kz' else 'На проверке' }}</span>{% elif f.status=='overdue' %}<span class="st st-overdue">{{ 'Мерзімі өтті' if lang=='kz' else 'Просрочка' }}</span>{% elif f.status=='ready' %}<span class="st st-ready">{{ 'Дайын' if lang=='kz' else 'Готов к сдаче' }}</span>{% else %}<span class="st st-work">{{ 'Жұмыста' if lang=='kz' else 'В работе' }}</span>{% endif %}</td>
+        <td><div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><span class="prob {% if f.probability<60 %}low{% elif f.probability<80 %}mid{% else %}hi{% endif %}">{{ f.probability }}%</span><svg viewBox="0 0 24 24" fill="none" stroke="#B9C7B2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex:none"><path d="m9 18 6-6-6-6"/></svg></div></td>
       </tr>
       {% endfor %}
       </tbody>
     </table>
     </div>
   </div>
+
+  {% elif section=='reports' %}
+  <div class="tcard">
+    <div class="tcard-head"><h2>{{ 'Тексеру кезегі' if lang=='kz' else 'Очередь отчётов' }}</h2></div>
+    {% set review_tasks = all_tasks|selectattr('status','equalto','review')|list %}
+    {% if review_tasks %}
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>{{ 'ФЕРМЕР' }}</th><th>{{ 'ТАПСЫРМА' if lang=='kz' else 'ЗАДАЧА' }}</th><th>{{ 'УЧАСКЕ' if lang=='kz' else 'УЧАСТОК' }}</th><th>{{ 'МӘРТЕБЕ' if lang=='kz' else 'СТАТУС' }}</th></tr></thead>
+      <tbody>
+      {% for t in review_tasks %}
+      <tr class="clickable" onclick="location.href='/agronomist/farmer/{{ t.user_id }}'">
+        <td><strong>{{ t.farmer_name }}</strong></td><td>{{ t.title }}</td><td>{{ t.plot_name }}</td>
+        <td><span class="st st-review">{{ 'Тексеруде' if lang=='kz' else 'На проверке' }}</span></td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}<div class="emptybox"><div class="eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>{{ 'Тексеруге есеп жоқ' if lang=='kz' else 'Нет отчётов на проверке' }}</div>{% endif %}
+  </div>
+
+  {% elif section=='tasks' %}
+  <div class="tcard">
+    <div class="tcard-head"><h2>{{ 'Барлық тапсырмалар' if lang=='kz' else 'Все задачи' }}</h2></div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>{{ 'ТАПСЫРМА' if lang=='kz' else 'ЗАДАЧА' }}</th><th>{{ 'ФЕРМЕР' }}</th><th>{{ 'УЧАСКЕ' if lang=='kz' else 'УЧАСТОК' }}</th><th>{{ 'МӘРТЕБЕ' if lang=='kz' else 'СТАТУС' }}</th><th>{{ 'БОНУС' }}</th></tr></thead>
+      <tbody>
+      {% for t in all_tasks %}
+      <tr><td><strong>{{ t.title }}</strong></td><td>{{ t.farmer_name }}</td><td>{{ t.plot_name }}</td>
+        <td>{% if t.status=='review' %}<span class="st st-review">{{ 'На проверке' if lang!='kz' else 'Тексеруде' }}</span>{% elif t.status=='approved' %}<span class="st st-work">{{ 'Одобрена' if lang!='kz' else 'Бекітілді' }}</span>{% elif t.status=='overdue' %}<span class="st st-overdue">{{ 'Просрочена' if lang!='kz' else 'Мерзімі өтті' }}</span>{% else %}<span class="st st-gray">{{ 'Предстоит' if lang!='kz' else 'Алдағы' }}</span>{% endif %}</td>
+        <td>+{{ t.bonus_amount }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+
+  {% elif section=='contracts' %}
+  <div class="tcard">
+    <div class="tcard-head"><h2>{{ 'Барлық шарттар' if lang=='kz' else 'Все договоры' }}</h2></div>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>{{ 'ФЕРМЕР' }}</th><th>{{ 'УЧАСКЕ' if lang=='kz' else 'УЧАСТОК' }}</th><th>{{ 'МӘРТЕБЕ' if lang=='kz' else 'СТАТУС' }}</th><th>{{ 'СОМА' if lang=='kz' else 'СУММА' }}</th></tr></thead>
+      <tbody>
+      {% for c in all_contracts %}
+      <tr><td><strong>{{ c.farmer_name }}</strong></td><td>{{ c.plot_name }}</td>
+        <td>{% if c.status=='active' %}<span class="st st-work">{{ 'Активен' if lang!='kz' else 'Белсенді' }}</span>{% elif c.status=='awaiting_sign' %}<span class="st st-review">{{ 'Ждёт подписи' if lang!='kz' else 'Қол күтуде' }}</span>{% elif c.status=='pending' %}<span class="st st-review">{{ 'На согласовании' if lang!='kz' else 'Келісуде' }}</span>{% else %}<span class="st st-gray">{{ c.status }}</span>{% endif %}</td>
+        <td class="money">{{ '{:,.0f}'.format(c.total_amount or 0).replace(',',' ') }} ₸</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+  </div>
+
+  {% elif section=='templates' %}
+  <div class="tcard">
+    <div class="tcard-head"><h2>{{ 'Күтім жоспарының шаблондары' if lang=='kz' else 'Шаблоны плана ухода' }}</h2></div>
+    {% if care_templates %}
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>{{ 'ТАПСЫРМА' if lang=='kz' else 'ЗАДАЧА' }}</th><th>{{ 'СИПАТТАМА' if lang=='kz' else 'ОПИСАНИЕ' }}</th><th>{{ 'АЙ' if lang=='kz' else 'МЕСЯЦ' }}</th><th>{{ 'БОНУС' }}</th></tr></thead>
+      <tbody>
+      {% for t in care_templates %}
+      <tr><td><strong>{{ t.title }}</strong></td><td>{{ t.description }}</td><td>{{ t.month }}</td><td>+{{ t.bonus_amount }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}<div class="emptybox"><div class="eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/></svg></div>{{ 'Шаблондар жоқ' if lang=='kz' else 'Шаблонов пока нет' }}</div>{% endif %}
+  </div>
+
+  {% elif section=='items' %}
+  <div class="tcard">
+    <div class="tcard-head"><h2>{{ 'Бонус тауарлары' if lang=='kz' else 'Товары за бонусы' }}</h2></div>
+    {% if bonus_items %}
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>{{ 'ТАУАР' if lang=='kz' else 'ТОВАР' }}</th><th>{{ 'БАҒАСЫ' if lang=='kz' else 'ЦЕНА' }}</th><th>{{ 'ҚОРЫ' if lang=='kz' else 'ОСТАТОК' }}</th></tr></thead>
+      <tbody>
+      {% for it in bonus_items %}
+      <tr><td><strong>{{ it.name }}</strong></td><td>{{ it.cost }} {{ 'балл' if lang=='kz' else 'баллов' }}</td><td>{{ it.stock }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table></div>
+    {% else %}<div class="emptybox"><div class="eic"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none" class="ic"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.6 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"/></svg></div>{{ 'Тауарлар жоқ' if lang=='kz' else 'Товаров пока нет' }}</div>{% endif %}
+  </div>
+  {% endif %}
 </main>
 
 <script>
@@ -163,7 +233,8 @@ function setFilter(btn, f){
 }
 function filterFarmers(){ applyFilters(); }
 function applyFilters(){
-  const q = (document.getElementById('fsearch').value||'').toLowerCase();
+  const s = document.getElementById('fsearch');
+  const q = (s ? s.value : '').toLowerCase();
   document.querySelectorAll('#ftable tbody tr').forEach(r=>{
     let ok = true;
     if(curFilter==='review'||curFilter==='overdue') ok = r.dataset.status===curFilter;
@@ -172,13 +243,6 @@ function applyFilters(){
     r.style.display = ok ? '' : 'none';
   });
 }
-(function(){
-  var f = new URLSearchParams(location.search).get('f');
-  if(f==='review'){
-    var btn = Array.prototype.slice.call(document.querySelectorAll('.fchip')).filter(function(b){var t=b.textContent.trim();return t.indexOf('провер')>-1||t.indexOf('Тексер')>-1;})[0];
-    if(btn) setFilter(btn,'review');
-  }
-})();
 </script>
 </body>
 </html>

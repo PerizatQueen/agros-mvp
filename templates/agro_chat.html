@@ -1,32 +1,33 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="{{ 'kk' if lang=='kz' else 'ru' }}">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AgrOS — {% if lang=='kz' %}Чат{% else %}Чат{% endif %}</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0A0C10;--surface:#141821;--surface2:#1B212C;--accent:#B7FF3C;--accent2:#6EE7A8;--tx:#F3F5F8;--muted:#868F9E;--bd:rgba(255,255,255,0.06);--shadow:0 10px 30px rgba(0,0,0,0.4)}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;background:var(--bg);color:var(--tx);max-width:860px;margin:0 auto;padding:28px 22px;-webkit-font-smoothing:antialiased}
+:root{--bg:#EDF1E7;--surface:#FFFFFF;--forest:#14401E;--green:#2FA048;--lime:#C6F24E;--tx:#12290F;--muted:#6B7A63;--bd:rgba(20,64,30,.10);--shadow:0 6px 18px rgba(20,64,30,.08)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Inter,sans-serif;background:var(--bg);color:var(--tx);max-width:860px;margin:0 auto;padding:26px 20px;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 svg{flex:none}
-.top{display:flex;align-items:center;gap:12px;margin-bottom:24px}
-.back{width:38px;height:38px;border-radius:12px;background:var(--surface);border:1px solid var(--bd);color:var(--muted);display:flex;align-items:center;justify-content:center}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.back{width:40px;height:40px;border-radius:12px;background:var(--surface);border:1px solid var(--bd);color:var(--tx);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow)}
 .back svg{width:18px;height:18px}
-.top h1{font-size:1.3rem;color:var(--tx);font-weight:700;letter-spacing:-.02em}
-.thread{background:linear-gradient(160deg,var(--surface),#10141B);border:1px solid var(--bd);border-radius:18px;padding:18px 20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;transition:.15s;box-shadow:var(--shadow)}
-.thread:hover{border-color:rgba(183,255,60,.28)}
-.tavatar{width:44px;height:44px;border-radius:13px;background:var(--surface2);color:var(--accent);display:flex;align-items:center;justify-content:center;flex:none}
-.tavatar svg{width:20px;height:20px}
-.tname{font-weight:600;display:flex;align-items:center;gap:8px}
-.tlast{font-size:.82rem;color:var(--muted);margin-top:4px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(183,255,60,.6)}
-.chev{color:var(--muted)}.chev svg{width:20px;height:20px}
+.top h1{font-size:1.4rem;color:var(--tx);font-weight:800;letter-spacing:-.01em}
+.thread{background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:15px 18px;margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;transition:.15s;box-shadow:var(--shadow)}
+.thread:hover{border-color:rgba(47,160,72,.35)}
+.tavatar{width:46px;height:46px;border-radius:50%;background:#E6F5DC;color:var(--forest);display:flex;align-items:center;justify-content:center;flex:none;font-weight:800}
+.tavatar svg{width:22px;height:22px}
+.tname{font-weight:800;display:flex;align-items:center;gap:8px;color:var(--tx)}
+.tlast{font-size:.84rem;color:var(--muted);margin-top:3px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.chev{color:#B9C7B2}.chev svg{width:22px;height:22px}
 .empty{text-align:center;padding:70px 20px;color:var(--muted)}
-.empty svg{width:34px;height:34px;margin-bottom:14px;opacity:.7}
+.empty .eic{width:64px;height:64px;border-radius:20px;background:#E6F5DC;color:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
+.empty svg{width:30px;height:30px}
 </style></head>
 <body>
 <div class="top">
-  <a href="/agronomist" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg></a>
+  <a href="/agronomist" class="back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></a>
   <h1>{% if lang=='kz' %}Фермерлермен чат{% else %}Чат с фермерами{% endif %}</h1>
 </div>
 {% for t in threads %}
@@ -41,6 +42,6 @@ svg{flex:none}
   <div class="chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
 </div></a>
 {% else %}
-<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg><div>{% if lang=='kz' %}Фермерлерден хабарлама жоқ{% else %}Пока нет сообщений от фермеров{% endif %}</div></div>
+<div class="empty"><div class="eic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></div><div>{% if lang=='kz' %}Фермерлерден хабарлама жоқ{% else %}Пока нет сообщений от фермеров{% endif %}</div></div>
 {% endfor %}
 </body></html>
