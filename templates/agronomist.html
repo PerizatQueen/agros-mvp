@@ -133,7 +133,7 @@ tbody tr:hover{background:#FAFBF8;cursor:pointer;}
       </tr></thead>
       <tbody>
       {% for f in farmers_view %}
-      <tr data-status="{{ f.status }}" data-culture="{{ f.culture }}" data-name="{{ f.name|lower }} {{ f.culture|lower }}">
+      <tr onclick="location.href='/agronomist/farmer/{{ f.id }}'" data-status="{{ f.status }}" data-culture="{{ f.culture }}" data-name="{{ f.name|lower }} {{ f.culture|lower }}">
         <td><div class="f-cell"><div class="f-ava">{{ f.initials }}</div><div><div class="f-name">{{ f.name }}</div><div class="f-sub">{{ 'Шарт' if lang=='kz' else 'Договор' }} №{{ f.contract_no }}</div></div></div></td>
         <td>{{ f.culture }}</td>
         <td>{{ f.stage_kz if lang=='kz' else f.stage_ru }}</td>

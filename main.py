@@ -898,6 +898,7 @@ def _get_panel_data(template):
         parts = nm.split()
         initials = (parts[0][:1] + (parts[1][:1] if len(parts) > 1 else '')).upper()
         farmers_view.append({
+            'id': f.get('id'),
             'name': nm, 'initials': initials,
             'contract_no': 1030 + i,
             'culture': _cultures[i % len(_cultures)],
@@ -1026,6 +1027,60 @@ def approve_task():
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)})
     return jsonify({'status': 'success'})
+
+
+@app.route('/agronomist/task/reject', methods=['POST'])
+@agronomist_required
+def reject_task():
+    data = request.get_json() or {}
+    task_id = data.get('task_id')
+    try:
+        db.db_update('tasks', {'status': 'upcoming'}, {'id': f'eq.{task_id}'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)})
+    return jsonify({'status': 'success'})
+
+
+@app.route('/agronomist/farmer/<user_id>')
+@agronomist_required
+def agro_farmer_card(user_id):
+    farmer = db.get_user_by_id(user_id)
+    if not farmer:
+        return redirect(url_for('agronomist_panel'))
+    tasks = db.get_tasks(user_id) or []
+    contracts = db.get_contracts(user_id) or []
+    plots = db.get_plots(user_id) or []
+    active = [c for c in contracts if c['status'] == 'active']
+    goal_amount = sum((c.get('total_amount') or 0) for c in active) or 2000000
+    total = len(tasks)
+    done = len([t for t in tasks if t['status'] in ('approved', 'done')])
+    progress = round(done / total * 100) if total else 0
+    probability = min(97, 50 + round(progress * 0.47))
+    review_task = next((t for t in tasks if t.get('status') == 'review'), None) \
+        or next((t for t in tasks if t.get('status') not in ('approved', 'done')), None)
+    area = plots[0].get('area_ha') if plots else None
+    plot_name = (review_task or {}).get('plot_name') or (plots[0].get('name') if plots else '')
+    _stages = [
+        ('Подготовка почвы', 'Топырақ дайындау', 'неделя 1–2'),
+        ('Посадка', 'Отырғызу', 'неделя 3'),
+        ('Уход и полив', 'Күтім және суару', 'неделя 4–8'),
+        ('Обработка', 'Өңдеу', 'неделя 9–11'),
+        ('Сбор урожая', 'Егін жинау', 'неделя 12–16'),
+    ]
+    stages = []
+    for si, (ru, kz, wk) in enumerate(_stages):
+        start, end = si * 20, (si + 1) * 20
+        state = 'done' if progress >= end else ('active' if progress >= start else 'planned')
+        stages.append({'ru': ru, 'kz': kz, 'week': wk, 'state': state})
+    try:
+        cno = 1030 + int(user_id.replace('-', '')[-4:], 16) % 60
+    except Exception:
+        cno = 1042
+    return render_template('farmer_card.html',
+        farmer=farmer, review_task=review_task, goal_amount=goal_amount,
+        probability=probability, progress=progress, area=area, plot_name=plot_name,
+        stages=stages, contract_no=cno, agro_stats={'reports': len([t for t in tasks if t.get('status') == 'review'])},
+        user_name=session.get('user_name'), lang=lang())
 
 
 @app.route('/agronomist/price/update', methods=['POST'])

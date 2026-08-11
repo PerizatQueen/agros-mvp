@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="{{ 'kk' if lang=='kz' else 'ru' }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgrOS — {{ farmer.name }}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#F3F5F1;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;--tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 4px 14px rgba(18,58,30,.06);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh;}
+.ic{width:20px;height:20px;display:block;flex:none;stroke-width:2;}
+.sidebar{width:240px;background:var(--forest);color:#fff;flex:none;display:flex;flex-direction:column;padding:18px 14px;position:sticky;top:0;height:100vh;}
+.logo{display:flex;align-items:center;gap:10px;padding:6px 8px 20px;}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--lime));display:flex;align-items:center;justify-content:center;color:var(--forest);font-weight:900;font-size:1.05rem;}
+.logo-name{font-size:1.05rem;font-weight:800;}
+.nav{display:flex;flex-direction:column;gap:3px;}
+.nav a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;color:rgba(255,255,255,.72);text-decoration:none;font-size:.88rem;font-weight:600;}
+.nav a:hover{background:rgba(255,255,255,.06);color:#fff;}.nav a.active{background:rgba(255,255,255,.1);color:#fff;}
+.nav a .ic{width:18px;height:18px;}.nav a .badge{margin-left:auto;background:var(--lime);color:var(--forest);font-size:.68rem;font-weight:800;padding:1px 8px;border-radius:99px;}
+.side-foot{margin-top:auto;}.side-foot a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:9px;padding:10px 12px;}
+.main{flex:1;min-width:0;padding:22px 26px;}
+.crumb{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
+.crumb a{width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;color:var(--tx);text-decoration:none;}
+.crumb h1{font-size:1.35rem;font-weight:800;}
+.pill{padding:5px 12px;border-radius:99px;font-size:.74rem;font-weight:800;background:#FEF3C7;color:#B45309;}
+.me{margin-left:auto;display:flex;align-items:center;gap:9px;}
+.me .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#8BD450,#C6F24E);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--forest);font-size:.78rem;}
+.me span{font-size:.88rem;font-weight:700;}
+.grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start;}
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:18px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px;}
+.card-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.card-h b{font-size:1rem;font-weight:800;}
+.card-h .pill{background:#FEF3C7;color:#B45309;}
+.photo{width:100%;height:300px;border-radius:14px;background:#EAEFE5;display:flex;align-items:center;justify-content:center;color:#AEBBA6;overflow:hidden;margin-bottom:14px;}
+.photo img{width:100%;height:100%;object-fit:cover;}
+.photo .ic{width:44px;height:44px;}
+.rmeta{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);font-weight:600;margin-bottom:14px;}
+.rmeta span{display:flex;align-items:center;gap:6px;}.rmeta .ic{width:15px;height:15px;color:var(--green);}
+.rcomment{width:100%;border:1px solid var(--bd);border-radius:12px;padding:12px 14px;font-family:inherit;font-size:.9rem;color:var(--tx);outline:none;background:#FAFBF8;margin-bottom:14px;min-height:44px;}
+.ractions{display:flex;gap:12px;}
+.btn-accept{flex:1;background:var(--forest);color:#fff;border:none;border-radius:13px;padding:14px;font-weight:800;font-size:.92rem;cursor:pointer;}
+.btn-reject{flex:1;background:var(--surface);color:#B91C1C;border:1px solid rgba(185,28,28,.3);border-radius:13px;padding:14px;font-weight:800;font-size:.92rem;cursor:pointer;}
+.krow{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--bd);font-size:.88rem;}
+.krow:last-child{border-bottom:none;}.krow .k{color:var(--muted);font-weight:600;}.krow .v{font-weight:800;}
+.krow .v.hi{color:var(--green);}
+.stage{display:flex;align-items:flex-start;gap:12px;padding:9px 0;}
+.sdot{width:14px;height:14px;border-radius:50%;flex:none;margin-top:3px;border:2px solid #D3DBCC;background:#fff;}
+.sdot.done{background:var(--green);border-color:var(--green);}.sdot.active{background:#F59E0B;border-color:#F59E0B;}
+.stage b{font-size:.9rem;font-weight:800;display:block;}
+.stage span{font-size:.76rem;color:var(--muted);font-weight:600;}
+.empty{text-align:center;padding:50px 20px;color:var(--muted);}
+.empty .ic{width:48px;height:48px;margin:0 auto 14px;color:var(--green);}
+@media(max-width:900px){.sidebar{display:none;}.grid{grid-template-columns:1fr;}.main{padding:16px;}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo"><div class="logo-mark">A</div><div class="logo-name">AgrOS</div></div>
+  <nav class="nav">
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/><path d="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3"/></svg> {{ 'Менің фермерлерім' if lang=='kz' else 'Мои фермеры' }}</a>
+    <a href="/agronomist" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {{ 'Тексеруге есептер' if lang=='kz' else 'Отчёты на проверку' }} {% if agro_stats.reports %}<span class="badge">{{ agro_stats.reports }}</span>{% endif %}</a>
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg> {{ 'Тапсырмалар мен жоспар' if lang=='kz' else 'Задачи и план' }}</a>
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg> {{ 'Шарттар' if lang=='kz' else 'Договоры' }}</a>
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> {{ 'Хабарламалар' if lang=='kz' else 'Сообщения' }}</a>
+  </nav>
+  <div class="side-foot"><a href="/logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> {{ 'Шығу' if lang=='kz' else 'Выйти' }}</a></div>
+</aside>
+
+<main class="main">
+  <div class="crumb">
+    <a href="/agronomist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m15 18-6-6 6-6"/></svg></a>
+    <h1>{{ farmer.name }}</h1>
+    {% if review_task %}<span class="pill">{{ 'Тексеруде' if lang=='kz' else 'Отчёт на проверке' }}</span>{% endif %}
+    <div class="me"><div class="ava">{{ (user_name or 'АГ')[:2]|upper }}</div><span>{{ user_name or ('Агроном' if lang=='kz' else 'Агроном') }}</span></div>
+  </div>
+
+  <div class="grid">
+    <!-- Отчёт -->
+    <div>
+      <div class="card">
+        {% if review_task %}
+        <div class="card-h"><b>{{ 'Есеп' if lang=='kz' else 'Отчёт' }}: {{ review_task.title }}</b></div>
+        <div class="photo">{% if review_task.photo_url %}<img src="{{ review_task.photo_url }}" alt="">{% else %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>{% endif %}</div>
+        <div class="rmeta">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>{{ review_task.due_date or '2026-08-11' }}</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>{{ 'Учаске' if lang=='kz' else 'Участок' }} {{ plot_name }}</span>
+        </div>
+        <textarea class="rcomment" id="agroComment" placeholder="{{ 'Агрономға түсініктеме (міндетті емес)…' if lang=='kz' else 'Комментарий агроному (необязательно)…' }}"></textarea>
+        <div class="ractions">
+          <button class="btn-accept" onclick="decide('approve')">{{ 'Есепті қабылдау' if lang=='kz' else 'Принять отчёт' }}</button>
+          <button class="btn-reject" onclick="decide('reject')">{{ 'Себеппен қайтару' if lang=='kz' else 'Отклонить с причиной' }}</button>
+        </div>
+        {% else %}
+        <div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>{{ 'Тексеруге есеп жоқ' if lang=='kz' else 'Нет отчётов на проверке' }}</div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Договор + План -->
+    <div>
+      <div class="card">
+        <div class="card-h"><b>{{ 'Шарт және дақыл' if lang=='kz' else 'Договор и культура' }}</b></div>
+        <div class="krow"><span class="k">{{ 'Шарт' if lang=='kz' else 'Договор' }}</span><span class="v">№{{ contract_no }}</span></div>
+        <div class="krow"><span class="k">{{ 'Дақыл' if lang=='kz' else 'Культура' }}</span><span class="v">{{ 'Қызанақ' if lang=='kz' else 'Помидор' }}, «{{ 'Рио' }}»</span></div>
+        <div class="krow"><span class="k">{{ 'Ауданы' if lang=='kz' else 'Площадь' }}</span><span class="v">{{ area or '0,8' }} {{ 'га' }}</span></div>
+        <div class="krow"><span class="k">{{ 'Табыс мақсаты' if lang=='kz' else 'Цель дохода' }}</span><span class="v">{{ '{:,.0f}'.format(goal_amount).replace(',',' ') }} ₸</span></div>
+        <div class="krow"><span class="k">{{ 'Ықтималдық' if lang=='kz' else 'Вероятность' }}</span><span class="v hi">{{ probability }}%</span></div>
+      </div>
+      <div class="card">
+        <div class="card-h"><b>{{ 'Кезеңдер бойынша жоспар' if lang=='kz' else 'План по этапам' }}</b></div>
+        {% for s in stages %}
+        <div class="stage">
+          <div class="sdot {{ s.state }}"></div>
+          <div>
+            <b>{{ s.kz if lang=='kz' else s.ru }}</b>
+            <span>{% if s.state == 'done' %}{{ 'Аяқталды' if lang=='kz' else 'Завершено' }} · {{ s.week }}{% elif s.state == 'active' %}{{ 'Жүріп жатыр' if lang=='kz' else 'Идёт' }} · {{ s.week }}{% else %}{{ 'Жоспарланған' if lang=='kz' else 'Запланировано' }}{% endif %}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</main>
+
+{% if review_task %}
+<script>
+function decide(action){
+  const url = action === 'approve' ? '/agronomist/task/approve' : '/agronomist/task/reject';
+  fetch(url, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({task_id: '{{ review_task.id }}'})})
+  .then(r => r.json())
+  .then(d => { if(d.status==='success'){ window.location.href='/agronomist'; } else { alert(d.message || 'Ошибка'); } });
+}
+</script>
+{% endif %}
+</body>
+</html>
