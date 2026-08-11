@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="{{ 'kk' if lang=='kz' else 'ru' }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgrOS — {{ 'Сатушы панелі' if lang=='kz' else 'Панель продажника' }}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F3F5F1;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
+  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 4px 14px rgba(18,58,30,.06);
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);display:flex;min-height:100vh;}
+.ic{width:20px;height:20px;display:block;flex:none;stroke-width:2;}
+.sidebar{width:240px;background:var(--forest);color:#fff;flex:none;display:flex;flex-direction:column;padding:18px 14px;position:sticky;top:0;height:100vh;}
+.logo{display:flex;align-items:center;gap:10px;padding:6px 8px 20px;}
+.logo-mark{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--green),var(--lime));display:flex;align-items:center;justify-content:center;color:var(--forest);font-weight:900;font-size:1.05rem;}
+.logo-name{font-size:1.05rem;font-weight:800;}
+.nav{display:flex;flex-direction:column;gap:3px;}
+.nav a{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:11px;color:rgba(255,255,255,.72);text-decoration:none;font-size:.88rem;font-weight:600;}
+.nav a:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav a.active{background:rgba(255,255,255,.1);color:#fff;}
+.nav a .ic{width:18px;height:18px;}
+.side-foot{margin-top:auto;}
+.side-foot a{color:rgba(255,255,255,.6);font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:9px;padding:10px 12px;}
+.main{flex:1;min-width:0;padding:22px 26px;}
+.topbar{display:flex;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap;}
+.topbar h1{font-size:1.5rem;font-weight:800;}
+.season{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--bd);border-radius:12px;padding:9px 14px;color:var(--muted);font-size:.88rem;font-weight:700;}
+.season .ic{width:16px;height:16px;}
+.me{margin-left:auto;display:flex;align-items:center;gap:9px;}
+.me .ava{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#8BD450,#C6F24E);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--forest);font-size:.78rem;}
+.me span{font-size:.88rem;font-weight:700;}
+.lang{display:flex;gap:2px;background:var(--surface);border:1px solid var(--bd);border-radius:10px;padding:3px;}
+.lang a{padding:4px 8px;border-radius:7px;font-size:.68rem;font-weight:800;text-decoration:none;color:var(--muted);}
+.lang a.active{background:var(--forest);color:#fff;}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px;}
+.stat{background:var(--surface);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow);}
+.stat-lbl{font-size:.76rem;color:var(--muted);font-weight:600;}
+.stat-num{font-size:1.9rem;font-weight:900;margin:8px 0 3px;}
+.stat-num small{font-size:1rem;font-weight:800;color:var(--muted);}
+.stat-note{font-size:.74rem;color:var(--muted);font-weight:600;}
+.stat-note.warn{color:#B45309;}
+.grid2{display:grid;grid-template-columns:1.1fr 1fr;gap:16px;}
+.card{background:var(--surface);border:1px solid var(--bd);border-radius:18px;padding:20px;box-shadow:var(--shadow);}
+.card h2{font-size:1.05rem;font-weight:800;margin-bottom:4px;}
+.legend{display:flex;gap:16px;margin-bottom:18px;font-size:.76rem;color:var(--muted);font-weight:600;}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle;}
+.chart{display:flex;align-items:flex-end;justify-content:space-around;gap:20px;height:230px;padding-top:10px;}
+.col{flex:1;max-width:90px;display:flex;flex-direction:column;align-items:center;gap:10px;height:100%;justify-content:flex-end;}
+.bar{width:56px;border-radius:10px 10px 6px 6px;background:#E1E7DC;position:relative;display:flex;align-items:flex-end;overflow:hidden;}
+.bar .fill{width:100%;background:var(--green);border-radius:0 0 6px 6px;}
+.col-lbl{font-size:.82rem;font-weight:800;text-align:center;}
+.col-sub{font-size:.72rem;color:var(--muted);font-weight:600;text-align:center;margin-top:-4px;}
+table{width:100%;border-collapse:collapse;}
+thead th{text-align:left;font-size:.68rem;font-weight:800;letter-spacing:.05em;color:var(--muted);padding:8px 6px;border-bottom:1px solid var(--bd);text-transform:uppercase;}
+thead th:not(:first-child){text-align:right;}
+tbody td{padding:12px 6px;border-bottom:1px solid var(--bd);font-size:.9rem;}
+tbody td:not(:first-child){text-align:right;font-weight:700;}
+tbody tr.total td{border-bottom:none;font-weight:900;padding-top:14px;}
+.vp{font-weight:800;}.vp.low{color:#B91C1C;}.vp.mid{color:#B45309;}.vp.hi{color:#15803D;}
+.dnote{font-size:.74rem;color:var(--muted);margin-top:14px;line-height:1.5;}
+@media(max-width:900px){.sidebar{display:none;}.stats{grid-template-columns:1fr 1fr;}.grid2{grid-template-columns:1fr;}.main{padding:16px;}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="logo"><div class="logo-mark">A</div><div class="logo-name">AgrOS</div></div>
+  <nav class="nav">
+    <a href="#" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="11" width="3" height="7" rx="1"/><rect x="12" y="7" width="3" height="11" rx="1"/><rect x="17" y="13" width="3" height="5" rx="1"/></svg> {{ 'Көлем болжамы' if lang=='kz' else 'Прогноз объёма' }}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v6h6"/></svg> {{ 'Контрактілер (лидтер)' if lang=='kz' else 'Контракты (лиды)' }}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg> {{ 'Тапсыруға дайын' if lang=='kz' else 'Готовность к сдаче' }}</a>
+    <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M18 21a8 8 0 0 0-16 0"/><circle cx="10" cy="8" r="5"/></svg> {{ 'Фермерлер бойынша' if lang=='kz' else 'По фермерам' }}</a>
+  </nav>
+  <div class="side-foot"><a href="/logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg> {{ 'Шығу' if lang=='kz' else 'Выйти' }}</a></div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <h1>{{ 'Сату көлемінің болжамы' if lang=='kz' else 'Прогноз объёма продаж' }}</h1>
+    <div class="season"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="M8 2v4"/><path d="M16 2v4"/></svg> {{ 'Маусым 2026' if lang=='kz' else 'Сезон 2026' }}</div>
+    <div class="me">
+      <div class="lang"><a href="/set-lang/ru" class="{% if lang!='kz' %}active{% endif %}">RU</a><a href="/set-lang/kz" class="{% if lang=='kz' %}active{% endif %}">ҚАЗ</a></div>
+      <div class="ava">{{ (user_name or 'МТ')[:2]|upper }}</div>
+      <span>{{ user_name or ('Сатушы' if lang=='kz' else 'Продажи') }}</span>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-lbl">{{ 'Келісілген көлем' if lang=='kz' else 'Законтрактовано объёма' }}</div><div class="stat-num">{{ sales_stats.contracted }} <small>т</small></div><div class="stat-note">{{ sales_stats.contracts }} {{ 'договор бойынша' if lang=='kz' else 'по договорам' }}</div></div>
+    <div class="stat"><div class="stat-lbl">{{ 'Салмақталған болжам' if lang=='kz' else 'Взвешенный прогноз' }}</div><div class="stat-num">{{ sales_stats.forecast }} <small>т</small></div><div class="stat-note">{{ 'ықтималдықпен' if lang=='kz' else 'с учётом вероятности' }}</div></div>
+    <div class="stat"><div class="stat-lbl">{{ 'Тапсыруға дайын' if lang=='kz' else 'Готово к сдаче' }}</div><div class="stat-num">{{ sales_stats.ready }} <small>т</small></div><div class="stat-note">{{ sales_stats.ready_farmers }} {{ 'фермер' if lang=='kz' else 'фермеров' }}</div></div>
+    <div class="stat"><div class="stat-lbl">{{ 'Жетіспеу қаупі' if lang=='kz' else 'Риск недобора' }}</div><div class="stat-num">{{ sales_stats.risk }} <small>т</small></div><div class="stat-note warn">{{ 'мерзімі өткендер бойынша' if lang=='kz' else 'по просрочкам' }}</div></div>
+  </div>
+
+  {% set maxplan = (sales_crops|map(attribute='plan')|max) or 1 %}
+  <div class="grid2">
+    <div class="card">
+      <h2>{{ 'Дақылдар бойынша жоспар мен болжам' if lang=='kz' else 'План и взвешенный прогноз по культурам' }}</h2>
+      <div class="legend"><span><i style="background:#E1E7DC"></i>{{ 'Договор бойынша жоспар' if lang=='kz' else 'План по договорам' }}</span><span><i style="background:#16A34A"></i>{{ 'Салмақталған болжам' if lang=='kz' else 'Взвешенный прогноз' }}</span></div>
+      <div class="chart">
+        {% for c in sales_crops %}
+        <div class="col">
+          <div class="bar" style="height:{{ (c.plan / maxplan * 100)|round|int }}%">
+            <div class="fill" style="height:{{ (c.forecast / c.plan * 100)|round|int }}%"></div>
+          </div>
+          <div>
+            <div class="col-lbl">{{ c.crop }}</div>
+            <div class="col-sub">{{ c.plan }} / {{ c.forecast }} т</div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>{{ 'Толығырақ' if lang=='kz' else 'Детализация' }}</h2>
+      <table style="margin-top:12px">
+        <thead><tr><th>{{ 'ДАҚЫЛ' if lang=='kz' else 'КУЛЬТУРА' }}</th><th>{{ 'ЖОСПАР' if lang=='kz' else 'ПЛАН' }}</th><th>{{ 'ЫҚТ.' if lang=='kz' else 'ВЕР.' }}</th><th>{{ 'БОЛЖАМ' if lang=='kz' else 'ПРОГНОЗ' }}</th></tr></thead>
+        <tbody>
+          {% for c in sales_crops %}
+          <tr><td>{{ c.crop }}</td><td>{{ c.plan }} т</td><td><span class="vp {% if c.prob < 80 %}mid{% else %}hi{% endif %}">{{ c.prob }}%</span></td><td>{{ c.forecast }} т</td></tr>
+          {% endfor %}
+          <tr class="total"><td>{{ 'Барлығы' if lang=='kz' else 'Итого' }}</td><td>{{ sales_stats.contracted }} т</td><td>—</td><td>{{ sales_stats.forecast }} т</td></tr>
+        </tbody>
+      </table>
+      <div class="dnote">{{ 'Ықтималдық фермерлердің тапсырмаларды орындауына және агроном шешімдеріне қарай жаңарады.' if lang=='kz' else 'Вероятность обновляется по мере выполнения задач фермерами и решений агронома.' }}</div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

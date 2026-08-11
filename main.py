@@ -17,6 +17,7 @@ ADMIN_PHONE = 'admin'
 ADMIN_PIN = '9999'
 AGRONOMIST_PHONE = 'agro'
 AGRONOMIST_PIN = '1111'
+SALES_PIN = '2222'
 
 
 def hash_pin(pin):
@@ -66,6 +67,8 @@ def index():
         return redirect(url_for('admin_panel'))
     elif role == 'agronomist':
         return redirect(url_for('agronomist_panel'))
+    elif role == 'sales':
+        return redirect(url_for('sales_panel'))
     return redirect(url_for('dashboard'))
 
 
@@ -116,6 +119,11 @@ def login():
                 session['user_name'] = 'Агроном'
                 session['role'] = 'agronomist'
                 return redirect(url_for('agronomist_panel'))
+            if role == 'sales' and pin == SALES_PIN:
+                session['user_id'] = 'sales'
+                session['user_name'] = 'Продажник'
+                session['role'] = 'sales'
+                return redirect(url_for('sales_panel'))
             if role == 'farmer':
                 user = db.get_user_by_phone(phone)
                 if user and user['pin_hash'] == hash_pin(pin):
@@ -145,6 +153,8 @@ def set_lang(lg):
         return redirect(url_for('admin_panel'))
     elif role == 'agronomist':
         return redirect(url_for('agronomist_panel'))
+    elif role == 'sales':
+        return redirect(url_for('sales_panel'))
     return redirect(url_for('dashboard'))
 
 
@@ -740,6 +750,13 @@ def agronomist_panel():
 @agronomist_required
 def admin_panel():
     return _get_panel_data('admin.html')
+
+
+@app.route('/sales')
+def sales_panel():
+    if session.get('role') not in ['sales', 'admin']:
+        return redirect(url_for('login'))
+    return _get_panel_data('sales.html')
 
 
 def _get_panel_data(template):
