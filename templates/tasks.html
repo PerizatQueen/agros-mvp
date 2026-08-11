@@ -3,8 +3,8 @@
 
 {% block extra_styles %}
 :root{
-  --bg:#EEF1EC;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
-  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 6px 18px rgba(18,58,30,.07);
+  --bg:#EDF1E7;--surface:#FFFFFF;--forest:#14401E;--green:#2FA048;--lime:#C6F24E;
+  --tx:#12290F;--muted:#6B7A63;--bd:rgba(20,64,30,.10);--shadow:0 6px 18px rgba(20,64,30,.08);
 }
 body{background:var(--bg);color:var(--tx);}
 .ic{width:20px;height:20px;display:block;flex:none}
@@ -111,7 +111,7 @@ body{background:var(--bg);color:var(--tx);}
       {% if t.status == 'review' %}
       <span class="stat-inline review"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> {% if lang == 'kz' %}Тексеруде{% else %}На проверке{% endif %}</span>
       {% elif t.status != 'approved' %}
-      <button onclick="completeTask('{{ t.id }}', {{ t.bonus_amount }})" class="btn-report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {% if lang == 'kz' %}Есеп беру{% else %}Отчёт{% endif %}</button>
+      <a href="/tasks/{{ t.id }}" class="btn-report"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg> {% if lang == 'kz' %}Есеп беру{% else %}Отчёт{% endif %}</a>
       {% else %}
       <span class="stat-inline done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 6 9 17l-5-5"/></svg> {% if lang == 'kz' %}Орындалды{% else %}Готово{% endif %}</span>
       {% endif %}

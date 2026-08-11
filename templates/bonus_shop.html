@@ -3,8 +3,8 @@
 
 {% block extra_styles %}
 :root{
-  --bg:#EEF1EC;--surface:#FFFFFF;--forest:#123A1E;--green:#16A34A;--lime:#C6F24E;
-  --tx:#12210D;--muted:#6B7669;--bd:rgba(18,58,30,.10);--shadow:0 6px 18px rgba(18,58,30,.07);
+  --bg:#EDF1E7;--surface:#FFFFFF;--forest:#14401E;--green:#2FA048;--lime:#C6F24E;
+  --tx:#12290F;--muted:#6B7A63;--bd:rgba(20,64,30,.10);--shadow:0 6px 18px rgba(20,64,30,.08);
 }
 body{background:var(--bg);color:var(--tx);}
 .ic{width:20px;height:20px;display:block;flex:none}
@@ -56,7 +56,6 @@ body{background:var(--bg);color:var(--tx);}
     <div class="item-body">
       <div class="item-name">{{ item.name }}</div>
       <div class="item-sub">{{ item.description or ('Қабылдау пунктінде' if lang=='kz' else 'В пункте приёмки') }}</div>
-      {% if user.bonus_balance < item.price %}<div class="item-lack">{% if lang == 'kz' %}Жетпейді: {{ item.price - user.bonus_balance }}{% else %}Не хватает {{ item.price - user.bonus_balance }}{% endif %}</div>{% endif %}
     </div>
     <div class="item-price">
       <div class="p">{{ item.price }}</div>

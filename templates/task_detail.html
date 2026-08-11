@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}- {{ task.title }}{% endblock %}
+
+{% block extra_styles %}
+:root{
+  --bg:#EDF1E7;--surface:#FFFFFF;--forest:#14401E;--green:#2FA048;--lime:#C6F24E;
+  --tx:#12290F;--muted:#6B7A63;--bd:rgba(20,64,30,.10);--shadow:0 6px 18px rgba(20,64,30,.08);
+}
+body{background:var(--bg);color:var(--tx);}
+.ic{width:20px;height:20px;display:block;flex:none}
+.header{background:var(--bg);border-bottom:none;padding:14px 16px 6px;display:flex;align-items:center;justify-content:flex-start;gap:12px;}
+.backbtn{color:var(--tx);display:flex;align-items:center;text-decoration:none;}
+.backbtn .ic{width:24px;height:24px}
+.header-title{font-size:1.2rem;font-weight:800;}
+.content{padding:8px 16px 110px;}
+.due{display:inline-flex;align-items:center;gap:7px;background:#FEF3C7;color:#B45309;font-size:.76rem;font-weight:800;padding:7px 13px;border-radius:99px;margin-bottom:20px;}
+.due .ic{width:14px;height:14px}
+.how{font-size:1rem;font-weight:800;margin-bottom:14px;}
+.step{display:flex;gap:13px;margin-bottom:16px;}
+.step-n{width:26px;height:26px;border-radius:50%;background:#E6F5DC;color:var(--green);font-weight:800;font-size:.82rem;display:flex;align-items:center;justify-content:center;flex:none;}
+.step-t{font-size:.92rem;color:var(--tx);line-height:1.45;padding-top:2px;}
+.photobox{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border:2px dashed #B9CBAE;border-radius:18px;background:var(--surface);padding:34px 20px;cursor:pointer;margin-top:8px;}
+.photobox .pic{width:54px;height:54px;border-radius:16px;background:#E6F5DC;color:var(--green);display:flex;align-items:center;justify-content:center;}
+.photobox .pic .ic{width:26px;height:26px}
+.photobox .lbl{font-size:.9rem;font-weight:800;color:var(--tx);}
+.photobox.filled{border-style:solid;border-color:var(--green);}
+.preview{width:100%;max-height:220px;object-fit:cover;border-radius:14px;margin-top:8px;display:none;}
+.bottombtn{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;padding:14px 16px calc(14px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 70%,transparent);}
+.btn-send{width:100%;background:var(--forest);color:#fff;border:none;border-radius:16px;padding:16px;font-size:1.02rem;font-weight:800;cursor:pointer;}
+/* SUCCESS */
+.success{text-align:center;padding:40px 20px 0;display:flex;flex-direction:column;align-items:center;}
+.check{width:96px;height:96px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(47,160,72,.35);margin-bottom:22px;}
+.check .ic{width:48px;height:48px;color:#fff;stroke-width:3;}
+.success h2{font-size:1.5rem;font-weight:900;margin-bottom:10px;}
+.success p{font-size:.92rem;color:var(--muted);line-height:1.5;max-width:300px;margin-bottom:24px;}
+.spill{width:100%;max-width:330px;padding:13px 16px;border-radius:14px;font-weight:800;font-size:.92rem;margin-bottom:10px;}
+.spill-lime{background:var(--lime);color:#213A05;}
+.spill-soft{background:#E6F5DC;color:#1F5312;}
+{% endblock %}
+
+{% block body %}
+<div id="formView">
+  <div class="header">
+    <a href="/tasks" class="backbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="m15 18-6-6 6-6"/></svg></a>
+    <div class="header-title">{{ task.title }}</div>
+  </div>
+  <div class="content">
+    <div class="due"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>{% if task.due_date %}{{ task.due_date }} · {% endif %}{% if lang=='kz' %}фото міндетті{% else %}обязательно фото{% endif %}</div>
+    <div class="how">{% if lang=='kz' %}Қалай істеу керек{% else %}Как сделать{% endif %}</div>
+    {% for s in steps %}
+    <div class="step"><div class="step-n">{{ loop.index }}</div><div class="step-t">{{ s }}</div></div>
+    {% endfor %}
+
+    <label class="photobox" id="photobox" for="photoInput">
+      <div class="pic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></div>
+      <div class="lbl" id="photolbl">{% if lang=='kz' %}Есеп фотосын түсіру{% else %}Сделать фото отчёта{% endif %}</div>
+    </label>
+    <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" onchange="onPhoto(this)">
+    <img id="preview" class="preview" alt="">
+  </div>
+  <div class="bottombtn"><button class="btn-send" onclick="submitReport()">{% if lang=='kz' %}Есеп жіберу{% else %}Отправить отчёт{% endif %}</button></div>
+</div>
+
+<div id="successView" style="display:none">
+  <div class="success">
+    <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="ic"><path d="M20 6 9 17l-5-5"/></svg></div>
+    <h2>{% if lang=='kz' %}Есеп жіберілді{% else %}Отчёт отправлен{% endif %}</h2>
+    <p>{% if lang=='kz' %}Агроном фотоны тексеріп, орындалуын растайды. Әдетте бұл бірнеше сағат.{% else %}Агроном проверит фото и подтвердит выполнение. Обычно это пара часов.{% endif %}</p>
+    <div class="spill spill-lime">{% if lang=='kz' %}Мақсат +3% жақындады{% else %}Цель приблизилась на +3%{% endif %}</div>
+    <div class="spill spill-soft">{% if lang=='kz' %}Тексеруден кейін +{{ task.bonus_amount }} балл есептеледі{% else %}Начислено +{{ task.bonus_amount }} баллов после проверки{% endif %}</div>
+  </div>
+  <div class="bottombtn"><a href="/dashboard" class="btn-send" style="display:block;text-align:center;text-decoration:none">{% if lang=='kz' %}Басты бетке{% else %}На главную{% endif %}</a></div>
+</div>
+
+{% block scripts %}
+<script>
+let photoData = '';
+function onPhoto(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const scale = Math.min(1, 500/img.width);
+      const c = document.createElement('canvas');
+      c.width = img.width*scale; c.height = img.height*scale;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      photoData = c.toDataURL('image/jpeg', 0.6);
+      const pv = document.getElementById('preview');
+      pv.src = photoData; pv.style.display = 'block';
+      document.getElementById('photobox').classList.add('filled');
+      document.getElementById('photolbl').textContent = '{% if lang=="kz" %}Фото қосылды ✓{% else %}Фото прикреплено ✓{% endif %}';
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function submitReport(){
+  if(!photoData){ alert('{% if lang=="kz" %}Алдымен фото түсіріңіз{% else %}Сначала сделайте фото{% endif %}'); return; }
+  fetch('/tasks/{{ task.id }}/complete', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({note:'', photo: photoData})})
+  .then(r => r.json())
+  .then(d => {
+    if(d.status==='success'){
+      document.getElementById('formView').style.display='none';
+      document.getElementById('successView').style.display='block';
+      window.scrollTo(0,0);
+    } else { alert(d.message || 'Ошибка'); }
+  });
+}
+</script>
+{% endblock %}
+{% endblock %}
